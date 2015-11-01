@@ -1,0 +1,64 @@
+<maly-cutws>
+  <maly-set default=1 var="LOOPNAME" from="TABLE_META{LOOPNAME}"/>
+  <maly-set default=1 var="LOOPNAME" value="#TABLE#_ITEM"/>
+  <maly-if var="PREFIX">
+    <maly-set var="VAR" value="#PREFIX#{#TABLE#}"/>
+  <maly-else/>
+    <maly-set var="VAR" value="#TABLE#"/>
+  </maly-if>
+  <maly-set var="FIELDS" from="TABLE_META{LIST}"/>
+  <maly-if var="PARENT_META">
+    <maly-set var="PQS" value="#PARENT_META{KEY}#=\\#FORM{#PARENT_META{KEY}#}\\#"/>
+  </maly-if>
+</maly-cutws><table border=0 width="100%">
+  <tr>
+    <th align=left colspan="#COLSPAN#">
+    #TABLE_META{DESCRIPTION}# List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align=right colspan="#COLSPAN#">
+      <a href="Javascript:void(0)" onClick="widgetPopup('\#URL\#/#TABLE#/Add?#PQS#', 'add_#TABLE#_\#FORM{#PARENT_META{KEY}#}\#', 450, 550);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    <maly-loop var="FIELDS" name="COL">
+    <th align=center>
+      #TABLE_META{FIELDS}{#COL#}{NAME}#
+    </th>
+    </maly-loop>
+  </tr>
+
+  <maly-print text="
+    <maly-loop var='#VAR#' name='#LOOPNAME#' sort='#TABLE_META{SORTBY}#' loopvar='MITER'>
+  "/>
+  <maly-print>
+    <maly-set var="BGCLASS" eval=1 value="'\#MITER\#' % 2 == 0 ? 'data1' : 'data2' "/>
+  </maly-print>
+
+  <tr class="\#BGCLASS\#">
+    <maly-loop var="FIELDS" name="COL">
+      <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+      <td align=center valign=top class="\#BGCLASS\#">
+        <maly-if var="COL" in="TABLE_META{HYPERLINK}">
+	  <a href="Javascript:void(0)" onClick="widgetPopup('\#URL\#/#TABLE#/Edit?#TABLE_META{KEY}#=\##LOOPNAME#{#TABLE_META{KEY}#}\#', 'edit_#TABLE#_\##LOOPNAME#{#TABLE_META{KEY}#}\#');">
+	    <widget-viewfield/>
+	  </a>
+	<maly-elsif var="FIELD{LISTMODE_EDIT}"/>
+	  <input type=hidden name="#TABLE#[\#MITER\#]{#TABLE_META{KEY}#}" value="\##LOOPNAME#{#TABLE_META{KEY}#}\#">
+	  <widget-editfield prefix="#PREFIX#" table="#TABLE#" prefixiter="\\#MITER\\#"/>
+	<maly-else/>
+          <widget-viewfield/>
+	</maly-if>
+      </td>
+    </maly-loop>
+  </tr>
+
+  <maly-print text="
+    </maly-loop>
+  "/>
+
+
+  </table>

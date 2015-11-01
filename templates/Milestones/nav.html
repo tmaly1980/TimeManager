@@ -1,0 +1,23 @@
+    <a href="#URL#/Browse">Browse</a> |
+    <a href="#URL#/Search">Search</a> |
+    <a href="Javascript:void(0)" onClick="addMilestonePopup();">Add Task Group</a> |
+    <a href="Javascript:void(0)" onClick="helpPopup('component_tgroups');" class="help">HELP</a>
+    <br><br>
+    <maly-if var="SESSION{SITEADMIN}">
+      <maly-set var="AVAILABLE_OWNERS" as="ARRAY" from="ALL_USERS"/>
+    <maly-else/>
+      <maly-set var="AVAILABLE_OWNERS" as="ARRAY" from="SESSION{MANAGED},SESSION,SESSION{MANAGED_GROUPS}{MEMBERS}"/>
+    </maly-if>
+    
+    <maly-if eval="'#SCALAR:AVAILABLE_OWNERS#' and '#MODE#' eq 'Browse'">
+    <form action="#URL#/Browse" method="GET" name="browseByUidForm">
+    <a href="Javascript:void(0)" onClick="helpPopup('view_by_user')">View By User:</a>
+      <select name="BY_UID" onChange="document.browseByUidForm.submit();">
+        <option value="">Myself</option>
+        <option value="-1">Everyone</option>
+	<maly-loop name="EACH_USER" var="AVAILABLE_OWNERS">
+	<option value="#EACH_USER{UID}#">#EACH_USER{FULLNAME}#</option>
+	</maly-loop>
+      </select>
+    </form>
+    </maly-if>

@@ -1,0 +1,34 @@
+	<tr>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TID}#</a>
+	  </td>
+	    <td class="box #PRIORITYCLASSMAP{#TASK{PRIORITY}#}#" align="center" width="80">#PRIORITYMAP{#TASK{PRIORITY}#}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left">
+	    <maly-if var="TASK{STATUS}" ge="10">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')" class="done">#TASK{TITLE}#</a>
+	    <maly-else/>
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TITLE}#</a>
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left" width="75">
+	    <maly-if var="TASK{OWNER}{EMAIL}">
+	    <a href="mailto:#TASK{OWNER}{FULLNAME}#">
+	      #TASK{OWNER}{FULLNAME}#
+	    </a>
+	    <maly-else/>
+	      #TASK{OWNER}{FULLNAME}#
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align=center width="75">
+	      #TASK{DUEDATE}#
+	  </td>
+	  <td class="box #STATUSCLASSMAP{#TASK{STATUS}#}#"  width="75" align="center">#STATUSMAP{#TASK{STATUS}#}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width="75">#TASK{UPDATED}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center">
+	    #TASK{PERCENT}#
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center">
+	    #NUM:TASK{HOURS}#/#NUM:TASK{ESTHOURS}#
+	  </td>
+	</tr>
+

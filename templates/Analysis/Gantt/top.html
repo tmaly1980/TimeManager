@@ -1,0 +1,73 @@
+<maly-set var="CUSTOM_SCRIPT">
+function zoomToFit(f)
+{
+  f.startdate.value = '';
+  f.enddate.value = '';
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr>
+  <td align=left class="transparent">
+  <form method="POST" name="form" target="gantt_main" action="cgi-bin/Analysis.pl/Gantt/image">
+    <maly-loop var="FORM{PTID}" name="ID">
+        <input type=hidden name="PTID" value="#ID#">
+    </maly-loop>
+    <maly-loop var="FORM{TID}" name="ID">
+        <input type=hidden name="TID" value="#ID#">
+    </maly-loop>
+    <maly-loop var="FORM{MID}" name="ID">
+        <input type=hidden name="MID" value="#ID#">
+    </maly-loop>
+    <maly-loop var="FORM{PID}" name="ID">
+        <input type=hidden name="PID" value="#ID#">
+    </maly-loop>
+
+    <table border=0 cellspacing=0 cellpadding=1 width="95%">
+    <tr class="transparent">
+      <td align=center width="20%">
+        <input type=submit value="Close Window" class="button" onClick="return closeFramesetPopup(1);">
+      </td>
+      <th align=center width="30%">
+        <a class="largetext" href="Javascript:void(0)" onClick="window.parent.location.reload()">
+        Gantt Timeline Chart
+	</a>
+	<br>
+	<a class="help" href="Javascript:void(0)" onClick="helpPopup('component_gantt');">HELP</a>
+      </th>
+      <td align=right>
+        <table border=0 cellspacing=0 cellpadding=1 align=right width="100%">
+	  <tr>
+	    <th colspan=3 align=left class="transparent">Set Dates (YYYY-MM-DD):</th>
+	  </tr>
+	  <tr>
+            <th align=right class="transparent">From:</th>
+            <td class="transparent" align=center>
+              <input size=10 maxlength=10 type=text id=startdate name=startdate>
+	      (<a href="javascript:void(0)" onClick="setDatePopup('startdate', startdate.value);">Calendar</a>)
+
+            </td>
+	    <td align=left class="transparent">
+	      <input type=submit value="Refresh" name=action>
+	    </td>
+          </tr>
+          <tr>
+            <th align=right class="transparent">To:</th>
+            <td align=center class="transparent">
+              <input type=text id=enddate size=10 maxlength=10 name=enddate>
+	      (<a href="javascript:void(0)" onClick="setDatePopup('enddate', enddate.value);">Calendar</a>)
+            </td>
+	    <td align=left class="transparent">
+	      <input type=submit value="Zoom To Fit" name=action onClick="return zoomToFit(this.form);">
+	    </td>
+        </table>
+        </form>
+	&nbsp;
+      </td>
+    </tr>
+    </table>
+  </td>
+</tr>
+</maly-set>
+#include popup_main

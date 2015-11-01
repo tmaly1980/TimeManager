@@ -1,0 +1,28 @@
+#include Tasks/fieldmap
+<maly-if var="IS_NEW">A new task (#TITLE#) has been added to the system.<maly-else/>Task # #TID# (#TITLE#) has been updated in the system.</maly-if>
+
+View it here: #GLOBAL{COMPLETE_URL}#/View?tid=#TID#
+
+<maly-loop name="MSG" var="MESSAGES">#MSG#
+</maly-loop>
+
+Title: #TITLE#
+Priority: #META{PRIORITYMAP}{#PRIORITY#}#
+Assigned To: #OWNER{FULLNAME}#
+Start Date: #STARTDATE#
+Due Date: #DUEDATE#
+Estimated Finish Date: #ESTCOMDATE#
+Work Hours: #HOURS#
+Status: #META{STATUSMAP}{#STATUS#}#
+Percent Completed: #PERCENT#
+
+Description:
+#DESCRIPTION#
+
+Notes:
+<maly-loop var="NOTES" name="NOTE">
+-----------------------------------
+At #NOTE{TIMESTAMP_FORMATTED}#, #NOTE{USER}{FULLNAME}# wrote:
+
+#NOTE{TEXT}#
+</maly-loop>

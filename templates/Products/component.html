@@ -1,0 +1,251 @@
+<maly-set var="CUSTOM_ONLOAD">
+  set_select(document.componentForm.prod_ver_id, "#COMPONENT{PROD_ID}#:#COMPONENT{VER_ID}#", "#FORM{PROD_VER_ID}#");
+  <maly-loop var="COMPONENT{FEATURES}" name="FEATURE" sort="FEATURE_NUM">
+    set_select('feature_num_#FEATURE{CFEATURE_ID}#', '#FEATURE{FEATURE_NUM}#', '#MALYITERNUM#');
+  </maly-loop>
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.versions);
+  selectSubmit('ACCESS_IMAGES');
+  selectSubmit('OVERVIEW_IMAGES');
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="#PATHINFO_URL#" onSubmit="return formSubmit(this);" name="componentForm">
+<input type=hidden name="COMPONENT_ID" value="#COMPONENT{COMPONENT_ID}#">
+<table border=0 cellspacing=0 cellpadding=5 width=600>
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <maly-if var="MODE" eq="Add">
+	    Add Product Component:
+	  <maly-else/>
+	    Edit Product Component:
+	  </maly-if>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if eval="'#SESSION{SITEADMIN}#' and '#FORM{COMPONENT_ID}#' ne ''">
+	    <a href="#PATHINFO_URL#?component_id=#COMPONENT{COMPONENT_ID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Name: </th>
+	<td align=left colspan=2>
+		<input type="text" name="name" size=30 maxlength=30 value="#COMPONENT{NAME}#">
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Abbreviation: </th>
+	<td align=left colspan=2>
+		<input type="text" name="abbrev" size=30 maxlength=30 value="#COMPONENT{ABBREV}#">
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Product: </th>
+	<td align=left colspan=2>
+	      <select name=prod_ver_id id='prod_ver_id'>
+	        <option value="">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	      </select>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Marketing Summary: (PURPOSE)</th>
+	<td align=left colspan=2>
+	  <textarea name=summary style="width: 400px; height: 100px">#COMPONENT{SUMMARY}#</textarea>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Documentation Description:</th>
+	<td align=left colspan=2>
+	  <textarea name=description style="width: 400px; height: 100px">#COMPONENT{DESCRIPTION}#</textarea>
+	</td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Overview:</th>
+  <td align=left colspan=2 valign=top>
+    <a href="Javasript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/COMPONENT_OVERVIEW/Multiedit?COMPONENT_ID=#COMPONENT{COMPONENT_ID}#', 'editComponentOverview_#COMPONENT{COMPONENT_ID}#', 700, 400)">Edit</a>
+  </td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Access Methods:</th>
+  <td align=left colspan=2 valign=top>
+    <a href="Javasript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/COMPONENT_ACCESS/Multiedit?COMPONENT_ID=#COMPONENT{COMPONENT_ID}#', 'editComponentAccess_#COMPONENT{COMPONENT_ID}#', 700, 400)">Edit</a>
+  </td>
+</tr>
+
+<!--
+<tr>
+  <th class="left_header" valign=top align=right>Visual Overview:</th>
+  <td align=left colspan=2>
+    <widget-multilist ID="OVERVIEW_IMAGES" NAME="OVERVIEW_IMAGES" OPTTEXT="\#SRC\#" OPTVAL="\#IMAGE_ID\#:\#SRC\#" REORDER="1" REORDER_HILIGHT="1" SORTBY="ORDER_ID" VAR="COMPONENT{OVERVIEW_IMAGES}">
+<table border="0">
+<tr>
+  <td>
+    <select id="OVERVIEW_IMAGES" multiple="multiple" name="OVERVIEW_IMAGES" onchange="return multiList_edit(this, new Array(&apos;OVERVIEW_IMAGES_hidden&apos;, &apos;OVERVIEW_IMAGES_text&apos;));" size="5" style="width: 100%">
+      <maly-loop sort="ORDER_ID" var="COMPONENT{OVERVIEW_IMAGES}">
+        <option value="#IMAGE_ID#:#SRC#">#SRC#</option>
+      </maly-loop>
+
+    </select>
+  </td>
+  
+    <td align="left" valign="middle">
+      <a href="Javascript:void(0)" onclick="multiList_up(&apos;OVERVIEW_IMAGES&apos;, new Array(&apos;OVERVIEW_IMAGES_hidden&apos;, &apos;OVERVIEW_IMAGES_text&apos;), &apos;1&apos;);">Up</a><br></br>
+      <a href="Javascript:void(0)" onclick="multiList_down(&apos;OVERVIEW_IMAGES&apos;, new Array(&apos;OVERVIEW_IMAGES_hidden&apos;, &apos;OVERVIEW_IMAGES_text&apos;), &apos;1&apos;);">Down</a>
+    </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <a href="Javascript:void(0)" onclick="multiList_add(&apos;OVERVIEW_IMAGES&apos;, new Array(&apos;OVERVIEW_IMAGES_hidden&apos;, &apos;OVERVIEW_IMAGES_text&apos;), &apos;%1%&apos;);">Add</a> |
+    <a href="Javascript:void(0)" onclick="multiList_replace(&apos;OVERVIEW_IMAGES&apos;, new Array(&apos;OVERVIEW_IMAGES_hidden&apos;, &apos;OVERVIEW_IMAGES_text&apos;), &apos;%1%&apos;);">Replace</a> |
+    <a href="Javascript:void(0)" onclick="multiList_remove(&apos;OVERVIEW_IMAGES&apos;, new Array(&apos;OVERVIEW_IMAGES_hidden&apos;, &apos;OVERVIEW_IMAGES_text&apos;), &apos;%1%&apos;);">Remove</a>
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align="left">
+    <input id="OVERVIEW_IMAGES_text" name="OVERVIEW_IMAGES_text" style="width: 100%" type="text"></input>
+    
+    <input id="OVERVIEW_IMAGES_hidden" name="OVERVIEW_IMAGES_hidden" type="hidden"></input>
+    
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+</table>
+
+</widget-multilist>
+
+  </td>
+</tr>
+-->
+
+<maly-if var="COMPONENT{COMPONENT_ID}">
+<tr>
+	<th class="left_header" valign=top align=right>Goals: </th>
+	<td align=left colspan=2>
+	<table border=0 cellspacing=1 cellpadding=2>
+	  <tr>
+	    <td align=left colspan=3>
+	      What problems does this component solve? How does it make things easier for the customers? What do the customers get out of the component? This component helps customers ... :
+	    </td>
+	  </tr>
+	  <tr>
+	    <th colspan=3 align=right>
+	      <a href="Javascript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/goal/Add?component_id=#COMPONENT{COMPONENT_ID}#&prod_ver_id=#COMPONENT{PROD_ID}#:#COMPONENT{VER_ID}#', 'addComponentGoal_#COMPONENT{COMPONENT_ID}#', 650, 450);">Add</a>
+	    </th>
+	  </tr>
+	  <tr>
+	    <th align=center>Priority</th>
+	    <th>Summary</th>
+	    <th align=center>Status</th>
+	  </tr>
+	  <maly-loop var="COMPONENT{GOALS}" name=GOAL>
+	  <maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+	  <tr class="#BGCLASS#">
+	    <td align=center class="box #CLASSMAP:CONF{PRIORITYMAP}{#GOAL{PRIORITY}#}#">
+	      #CONF{PRIORITYMAP}{#GOAL{PRIORITY}#}#
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="editGoalPopup('#GOAL{GOAL_ID}#');">
+	        #GOAL{SUMMARY}#
+	      </a>
+	    </td>
+	    <td align=center class="box #CLASSMAP:CONF{STATUSMAP}{#GOAL{STATUS}#}#">
+	      #CONF{STATUSMAP}{#GOAL{STATUS}#}#
+	    </td>
+	  </tr>
+	  </maly-loop>
+	</table>
+
+	</td>
+</tr>
+</maly-if>
+
+</table>
+
+
+<table border=0 width="600">
+
+<tr>
+  <th class="header" colspan=1 align=left>Component Features</th>
+  <th align=right class="header">
+    <a href="Javascript:void(0)" onClick="addComponentFeaturePopup('#COMPONENT{COMPONENT_ID}#');">Add</a>
+  </th>
+</tr>
+
+<tr>
+  <th colspan=2 align=left>Name</th>
+</tr>
+
+<maly-loop var="COMPONENT{FEATURES}" name="FEATURE" sort="FEATURE_NUM">
+<maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+<tr class="#BGCLASS#">
+  <td>
+    <input type=hidden name="cfeature_id" value="#FEATURE{CFEATURE_ID}#">
+    <select name="feature_num" id="feature_num_#FEATURE{CFEATURE_ID}#">
+      <maly-loop name="NUM" from=1 to="#SCALAR:COMPONENT{FEATURES}#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+  </td>
+  <td colspan=1>
+    <a href="Javascript:void(0)" onClick="editComponentFeaturePopup('#FEATURE{CFEATURE_ID}#');">
+    #FEATURE{NAME}#
+    </a>
+  </td>
+</tr>
+</maly-loop>
+
+</table>
+
+
+<table border=0 width="600">
+
+<tr class="input">
+	<td align=left colspan=2>
+		<input type=submit name=action value="Update">
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

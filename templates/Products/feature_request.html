@@ -1,0 +1,170 @@
+<maly-set var="CUSTOM_ONLOAD">
+  if ('#MODE#' == 'Edit')
+  {
+    window.name = "editFeatureRequest_#FREQ{FREQ_ID}#";
+  }
+  set_select('uid', '#FREQ{UID}#');
+  set_select('priority', '#FREQ{PRIORITY}#', '3');
+  set_select('status', '#FREQ{STATUS}#');
+  set_select('scope', '#FREQ{SCOPE}#');
+  set_select('prod_ver_id', '#FREQ{PROD_ID}#:#FREQ{VER_ID}#');
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="#PATHINFO_URL#" onSubmit="return formSubmit(this);" name="featureRequestForm">
+<input type=hidden name="REQ_ID" value="#FREQ{REQ_ID}#">
+<table border=0 cellspacing=0 cellpadding=5 width=500>
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <a href="#PATHINFO_URL#?req_id=#FORM{REQ_ID}#">
+	  <maly-if var="MODE" eq="Add">
+	    Add Enhancement Request:
+	  <maly-else/>
+	    Edit Enhancement Request:
+	  </maly-if>
+	  </a>
+	</th>
+	<td align=right class="transparent">
+	    &nbsp;
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Name: </th>
+	<td align=left colspan=2>
+	  <input type=text size=30 name="name" value="#FREQ{NAME}#" maxlength="100">
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Product Version: </th>
+	<td align=left colspan=2>
+	      <select name=prod_ver_id id='prod_ver_id'>
+	        <option value="">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	      </select>
+
+	</td>
+
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Description: </th>
+	<td align=left colspan=2>
+	  <textarea style="width: 400px; height: 100px" name="description">#FREQ{DESCRIPTION}#</textarea>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Manager: </th>
+	<td align=left colspan=2>
+		<select name="uid" id="uid">
+		  <option value="">  </option>
+		  <maly-loop var="ALL_USERS">
+		      <option value="#UID#">#FULLNAME#</option>
+		  </maly-loop>
+		</select>
+	</maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Priority: </th>
+	<td align=left colspan=2>
+	  <select name="priority" id=priority>
+	    <maly-loop hash=1 var="CONF{PRIORITYMAP}" sort="KEY" reverse=1>
+	      <option value="#KEY#">#VALUE#</option>
+	    </maly-loop>
+
+	  </select>
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Scope: </th>
+	<td align=left colspan=2>
+	  <select name="scope" id=scope>
+	    <maly-loop hash=1 var="CONF{SCOPEMAP}" sort="KEY">
+	      <option value="#KEY#">#VALUE#</option>
+	    </maly-loop>
+
+	  </select>
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Status: </th>
+	<td align=left colspan=2>
+	  <select name="status" id=status>
+	    <maly-loop hash=1 var="CONF{FRSTATUSMAP}" sort="KEY">
+	      <option value="#KEY#">#VALUE#</option>
+	    </maly-loop>
+
+	  </select>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Submitted Date: </th>
+	<td align=left colspan=2>
+	  <input type=text name="submit_date" value="#FREQ{SUBMIT_DATE}#" maxlength=10 size=12 id='submit_date'>
+	  YYYY-MM-DD
+	  (<a href="Javascript:void(0)" onClick="setDatePopup('submit_date', request_date.value);">Calendar</a>)
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Desired By Date: </th>
+	<td align=left colspan=2>
+	  <input type=text name="request_date" value="#FREQ{REQUEST_DATE}#" maxlength=10 size=12 id='request_date'>
+	  YYYY-MM-DD
+	  (<a href="Javascript:void(0)" onClick="setDatePopup('request_date', request_date.value);">Calendar</a>)
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Estimated Date: </th>
+	<td align=left colspan=2>
+	  <input type=text name="estimated_date" value="#FREQ{ESTIMATED_DATE}#" maxlength=10 size=12 id='estimated_date'>
+	  YYYY-MM-DD
+	  (<a href="Javascript:void(0)" onClick="setDatePopup('estimated_date', estimated_date.value);">Calendar</a>)
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Actual Implementation Date: </th>
+	<td align=left colspan=2>
+	  <input type=text name="implemented_date" value="#FREQ{implemented_date}#" maxlength=10 size=12 id='implemented_date'>
+	  YYYY-MM-DD
+	  (<a href="Javascript:void(0)" onClick="setDatePopup('implemented_date', implemented_date.value);">Calendar</a>)
+	</td>
+</tr>
+
+<tr class="input">
+	<td align=left colspan=2>
+		<input type=submit name=action value="Update">
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

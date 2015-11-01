@@ -1,0 +1,133 @@
+<maly-cutws>
+  <maly-set var="COLSPAN" eval=1 value="'#SCALAR:TABLE_META{EDIT}#'"/>
+  <maly-set var="FIELDS" from="TABLE_META{EDIT}"/>
+  <maly-set default=1 var="LOOPNAME" from="TABLE_META{LOOPNAME}"/>
+  <maly-set default=1 var="LOOPNAME" value="#TABLE#_ITEM"/>
+  <maly-if var="TABLE_META{PARENT}">
+    <maly-set var="PQS" value="#TABLE_META{PARENT}#=\#FORM{#TABLE_META{PARENT}#}\#"/>
+  </maly-if>
+  <maly-set var="POSTFIX" value="_\\##LOOPNAME#{#TABLE_META{KEY}#}\\#" if="'#TABLE_META{KEY_POSTFIX}#'"/>
+
+</maly-cutws>
+<maly-print text="
+  <maly-set var='CUSTOM_ONLOAD'>
+"/><maly-cutws>
+  <maly-loop var="FIELDS" name="COL">
+    <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+    <maly-if var="FIELD{TYPE}" eq="select">
+      <maly-print>
+            set_select('#COL#', '\##TABLE#{#COL#}\#', '\#MALYITERNUM\#');
+      </maly-print>
+    <maly-elsif var="FIELD{TYPE}" eq="checkbox"/>
+      <maly-print>
+            set_checkbox('#COL#', '\##TABLE#{#COL#}\#');
+      </maly-print>
+    <maly-elsif var="FIELD{TYPE}" eq="radio"/>
+      <maly-print>
+            set_radio('#COL#', '\##TABLE#{#COL#}\#');
+      </maly-print>
+    <maly-elsif var="FIELD{SUBREC}"/>
+      <maly-loop var="DBOCONF{#COL#}{LIST}" name="SRCOL">
+        <maly-set var="SRFIELD" from="DBOCONF{#COL#}{FIELDS}{#SRCOL#}"/>
+	<maly-if eval="'#DBOCONF{#COL#}{SORTBY}#' eq '#SRCOL#' and '#SRFIELD{LISTMODE_EDIT}#'">
+	  <maly-print>
+	    <maly-loop var="#TABLE#{#COL#}" name="#COL#_ITEM" loopvar="MITER" loopvarnum="MITERNUM" sort="#DBOCONF{#COL#}{SORTBY}#">
+	      set_select('#COL#[\#MITER\#]{#SRCOL#}', '\##COL#_ITEM{#SRCOL#}\#', '\#MITERNUM\#');
+	    </maly-loop>
+	  </maly-print>
+	</maly-if>
+      </maly-loop>
+    </maly-if>
+  </maly-loop>
+
+</maly-cutws><maly-print text="
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+"/><maly-cutws>
+      <maly-loop var="FIELDS" name="COL">
+        <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+        <maly-if var="FIELD{TYPE}" eq="multilist">
+	<maly-print>
+            selectSubmit('#COL#');
+	</maly-print>
+	</maly-if>
+
+      </maly-loop>
+</maly-cutws><maly-print text="
+
+      return true;
+    }
+  </maly-set>
+
+"/>
+
+<maly-print text="<maly-set var='CONTENT'>"/>
+<form method="POST" action="\#PATHINFO_URL\#" onSubmit="return formSubmit(this);">
+<maly-print>
+  <maly-if var="FORM{#TABLE_META{KEY}#}">
+  <div align=right>
+    <a href="\#PATHINFO_URL\#?#TABLE_META{KEY}#=\#FORM{#TABLE_META{KEY}#}\#&action=Delete">Delete</a>
+  </div>
+  </maly-if>
+</maly-print>
+  
+  <table border=0 width="100%">
+  <tr>
+    <th align=left colspan="#COLSPAN#">
+      <a href="\#PATHINFO_URL\#?#TABLE_META{KEY}#=\#FORM{#TABLE_META{KEY}#}\#">
+    Edit #TABLE_META{DESCRIPTION}# Entry:
+      </a>
+    </th>
+  </tr>
+
+      <maly-if var="PARENT_META">
+        <maly-print>
+	  <maly-if var="MODE" eq="Add">
+        <input type="hidden" name="#PARENT_META{KEY}#" value="\#FORM{#PARENT_META{KEY}#}\#">
+	  </maly-if>
+	</maly-print>
+      </maly-if>
+      <input type="hidden" name="#TABLE_META{KEY}#" value="\#FORM{#TABLE_META{KEY}#}\#">
+
+  <maly-loop var="FIELDS" name="COL">
+    <tr>
+      <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+      <th align=right valign=top class="left_header">
+        #FIELD{NAME}#:
+      </th>
+      <td align=left valign=top class="input">
+        <maly-if eval="'#FIELD{SUBREC}#' and '#FIELD{TYPE}#' ne 'multilist'">
+	  <maly-if var="FIELD{TYPE}" eq="multiedit">
+	    BORK3N, FILL IN LATER!!!
+	  <maly-else/>
+	    <widget-list table="#COL#" prefix="#TABLE#" loopname="#COL#_ITEM"/>
+	  </maly-if>
+	<maly-else/>
+          <widget-editfield/>
+	</maly-if>
+      </td>
+    </tr>
+  </maly-loop>
+
+  <tr>
+    <td colspan="#COLSPAN#" align=right>
+    <div style="float: left">
+      <input type=submit name=action value="Update">
+    </div>
+    <div style="float: right">
+      <input type=submit value="Close" onClick="closePopup()">
+    </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+<maly-print text="
+</maly-set>
+
+#include popup_main
+"/>

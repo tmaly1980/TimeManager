@@ -1,0 +1,53 @@
+<maly-cutws>
+  <maly-set default=1 var="ID" from="NAME"/>
+  <maly-set default=1 var="WIDTH" value="100%"/>
+  <maly-set default=1 var="SIZE" value="5"/>
+  <maly-set default=1 var="VAR" value="#NAME#"/>
+  <maly-set default=1 var="OPTVAL" value="\#LOOPITER\#"/>
+  <maly-set default=1 var="OPTTEXT" value="\#LOOPITER\#"/>
+  <maly-if eval="'#OPTVAL#' =~ /:/">
+    <maly-set var="HIDDEN" value=1/>
+  </maly-if>
+  <maly-if var="HIDDEN">
+    <maly-set var="TEXT" value="new Array('\#NAME\#_hidden', '\#NAME\#_text')"/>
+    <maly-set var="TEXT_FORMAT" value="%1%"/>
+  <maly-else/>
+    <maly-set var="TEXT" value="'\#NAME\#_text'"/>
+  </maly-if>
+</maly-cutws><table border=0>
+<tr>
+  <td>
+    <select name="#NAME#" id="#ID#" multiple=multiple style="width: #WIDTH#" size="#SIZE#" onChange="return multiList_edit(this, #TEXT#);">
+      <maly-print><maly-loop var="#VAR#" sort="#SORTBY#">
+        <option value="#OPTVAL#">#OPTTEXT#</option>
+      </maly-loop></maly-print>
+    </select>
+  </td>
+  <maly-if var="REORDER">
+    <td valign=middle align=left>
+      <a href="Javascript:void(0)" onClick="multiList_up('#NAME#', #TEXT#, '#REORDER_HILIGHT#');">Up</a><br>
+      <a href="Javascript:void(0)" onClick="multiList_down('#NAME#', #TEXT#, '#REORDER_HILIGHT#');">Down</a>
+    </td>
+  </maly-if>
+</tr>
+
+<tr>
+  <td align=left>
+    <a href="Javascript:void(0)" onClick="multiList_add('#ID#', #TEXT#, '#TEXT_FORMAT#');">Add</a> |
+    <a href="Javascript:void(0)" onClick="multiList_replace('#ID#', #TEXT#, '#TEXT_FORMAT#');">Replace</a> |
+    <a href="Javascript:void(0)" onClick="multiList_remove('#ID#', #TEXT#, '#TEXT_FORMAT#');">Remove</a>
+  </td>
+  <maly-if var="REORDER"><td>&nbsp;</td></maly-if>
+</tr>
+
+<tr>
+  <td align=left>
+    <input type=text name="#NAME#_text" id="#ID#_text" style="width: 100%">
+    <maly-if var="HIDDEN">
+    <input type=hidden name="#NAME#_hidden" id="#ID#_hidden" >
+    </maly-if>
+  </td>
+  <maly-if var="REORDER"><td>&nbsp;</td></maly-if>
+</tr>
+
+</table>

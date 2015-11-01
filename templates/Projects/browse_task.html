@@ -1,0 +1,89 @@
+	<tr>
+	  <maly-if eval="'#PROJECT#' and '#WRITEABLE#' and not '#IN_FLOATING_TASKS#'">
+	  <td class="transparent">
+	      <a name="#ANCHOR#"></a>
+	    <maly-if var="ADDING_THIS_PROJECT_TASK">
+	      <input type=submit name=action value="Add">
+	    <maly-elsif var="EDIT_PROJECT_TASK"/>
+	      <input type=submit name=action value="Save">
+            <maly-else/>
+	      <a href="cgi-bin/Projects.pl/Edit?pid=#PID#&mid=#MILESTONE{MID}#&edit_project_task=#TASK{TID}###ANCHOR#">Edit</a>
+	    </maly-if>
+	  </td>
+	  </maly-if>
+	  <!-- <maly-if eval="'#PROJECT#' eq '' or '#TASK{MID}#' ne ''"> -->
+	  <maly-if not=1 var="IN_FLOATING_TASKS">
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center">
+	    <maly-if var="PROJECT">
+	      <maly-if eval="'#EDIT_PROJECT_TASK#' or '#ADDING_THIS_PROJECT_TASK#'">
+	        <input type=text name=mtid value="#TASK{MTID}#" size=3 maxlength=10>
+              <maly-else/>
+	        <a href="Javascript:void(0)" onClick="editTaskPopup(#TASK{TID}#)">#TASK{MTID}#</a>
+	      </maly-if>
+	    <maly-else/>
+	      <a href="Javascript:void(0)" onClick="editTaskPopup(#TASK{TID}#)">#TASK{TID}#</a>
+	    </maly-if>
+	  </td>
+	  </maly-if>
+	  <maly-if not=1 var="PROJECT">
+	    <td class="box #PRIORITYCLASSMAP{#TASK{PRIORITY}#}#" align="center">#PRIORITYMAP{#TASK{PRIORITY}#}#</td>
+	  </maly-if>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left">
+	    <maly-if var="EDIT_PROJECT_TASK">
+	      <input type=text name=title size=20 maxlength=50 value="#TASK{TITLE}#">
+	    <maly-else/>
+	      <a href="Javascript:void(0)" onClick="editTaskPopup(#TASK{TID}#)">#TASK{TITLE}#</a>
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left">
+	    <maly-if var="EDIT_PROJECT_TASK">
+	      <maly-set var="AVAILABLE_OWNERS" from="PARTICIPANTS"/>
+#include Tasks/owner_select
+	    <maly-else/>
+	      #TASK{OWNER}{FULLNAME}#
+	    </maly-if>
+	  </td>
+	  <maly-if var="PID" defined=1>
+	    <td class="#TASK{OVERDUE}##CLASS#" align=center>
+	    <maly-if var="EDIT_PROJECT_TASK">
+	      <input type=text name="STARTDATE" value="#TASK{STARTDATE}#" size=10 maxlength=10>
+	    <maly-else/>
+	      #TASK{STARTDATE}#
+	    </maly-if>
+	    </td>
+	  </maly-if>
+	  <td class="#TASK{OVERDUE}##CLASS#" align=center>
+	    <maly-if var="EDIT_PROJECT_TASK">
+	      <input type=text name="DUEDATE" value="#TASK{DUEDATE}#" size=10 maxlength=10>
+	    <maly-else/>
+	      #TASK{DUEDATE}#
+	    </maly-if>
+	  </td>
+	  <maly-if var="EDIT_PROJECT_TASK">
+	    <td class="#TASK{OVERDUE}##CLASS#" align="center">
+#include Tasks/status_select
+	    </td>
+	  <maly-else/>
+	    <td class="box #STATUSCLASSMAP{#TASK{STATUS}#}#" align="center">#STATUSMAP{#TASK{STATUS}#}#</td>
+	  </maly-if>
+	  <maly-if not=1 var=PROJECT>
+	    <td class="#TASK{OVERDUE}##CLASS#" align="center">#TASK{UPDATED}#</td>
+	  </maly-if>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center">
+	  <maly-if var="EDIT_PROJECT_TASK">
+#include Tasks/percent_select
+	  <maly-else/>
+	    #TASK{PERCENT}#
+	  </maly-if>
+	  </td>
+	</tr>
+	<maly-if eval="'#PROJECT#' ne '' and '#PATH_INFO{MODE}#' eq 'View'">
+	<maly-if var="TASK{DESCRIPTION}">
+	<tr>
+	  <td>&nbsp;</td>
+	  <td align=left colspan=6>
+	  #TASK{DESCRIPTION}#
+	  </td>
+	</tr>
+	</maly-if>
+	</maly-if>

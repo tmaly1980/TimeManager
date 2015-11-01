@@ -1,0 +1,10 @@
+  	    <select name=uid id="uid_#TASK{TID}#" onChange="return owner_change();">
+  	      <option value=""> </option>
+	      <!-- RE ADDED blank option in case dont want to assign quite yet, or moved to new pid -->
+	      <maly-if not=1 var="AVAILABLE_OWNERS{UID=#SESSION{UID}#}">
+	        <option value="#SESSION{UID}#">#SESSION{FULLNAME}#</option>
+	      </maly-if>
+  	      <maly-loop name="EACH_USER" var="AVAILABLE_OWNERS">
+  	        <option value="#EACH_USER{UID}#">#EACH_USER{FULLNAME}#</option>
+  	      </maly-loop>
+  	    </select>

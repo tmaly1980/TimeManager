@@ -1,0 +1,14 @@
+        <maly-if var="FIELD{TYPE}" eq="multilist">
+	  <maly-print>
+	    <maly-loop var="#LOOPNAME#{#COL#}">
+	      #FIELD{OPTTEXT}#
+	      <br>
+	    </maly-loop>
+	  </maly-print>
+	<maly-elsif var="FIELD{TYPE}" eq="textarea"/>
+	  \#HTML:#LOOPNAME#{#COL#}\#
+	<maly-elsif var="FIELD{TYPE}" eq="select"/>
+	  \##LOOPNAME#{#COL#}\#
+	<maly-else/>
+	  \##LOOPNAME#{#COL#}\#
+	</maly-if>

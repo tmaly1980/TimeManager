@@ -1,0 +1,441 @@
+
+
+
+
+<html>
+<head>
+  <title>
+  
+    Maly Soft Time Manager 2.0 Manual
+  
+  </title>
+  <link href="style.css" rel="stylesheet" type="text/css"></link>
+</head>
+<body>
+
+  <div style="font-size: 24px; text-align: center">
+    Maly Soft Time Manager 2.0 Manual
+  </div>
+
+<div style="font-size: 12px; text-align: left; padding-bottom: 20px">
+  Navigation:
+  
+  <a href="intro.html">Previous</a>
+  |
+  
+  
+  <a href="index.html">Up</a>
+  |
+  
+  <a href="index.html">Top</a>
+  
+  |
+  <a href="userguide.html">Next</a>
+  
+</div>
+
+  <div>
+    
+
+  </div>
+
+
+  <div style="font-size: 16px">
+    
+Installation
+
+  </div>
+
+
+  <div style="">
+    
+<a name="top">&nbsp;</a>
+<ol>
+  <li>
+    <a href="#appinstall">
+      Application Installation
+    </a>
+  </li>
+  
+    
+    
+      <li>
+        <a href="#Perl">
+        Perl
+        </a>
+      </li>
+    
+  
+    
+    
+  
+    
+    
+      <li>
+        <a href="#Web Server">
+        Web Server
+        </a>
+      </li>
+    
+  
+    
+    
+      <li>
+        <a href="#Relational SQL Database Server">
+        Relational SQL Database Server
+        </a>
+      </li>
+    
+  
+    
+    
+  
+    
+    
+  
+  <li>
+    <a href="#postinstall">
+      Post Installation
+    </a>
+  </li>
+</ol>
+
+  </div>
+
+
+<hr>
+
+<div>
+  
+
+<a href="#top" name="appinstall">
+<div style="font-size: 18px">
+Application Installation
+</div>
+</a>
+
+<p>Time Manager depends on Perl, a web server (such as Apache), and a database server (such as MySQL). It comes in a Tar/GNU Zip (.tgz) file that needs to be unzipped in a location accessible by the web server. The database server need not be the same physical server as the web server.
+
+<b>Note: All examples (information in the white boxes) are meant as pure examples, and do not necessarily reflect the exact changes and processes you must follow.</b></p>
+
+<ol>
+  
+  <li>
+    <div>
+      Unzip the downloaded file into a directory that your web server can serve as a URL.
+    </div>
+    
+    <div>
+      <pre style="background-color: white">cd /usr/local;
+tar zxvf TimeManager.tgz</pre>
+    </div>
+    
+    <div>
+      
+    </div>
+  </li>
+  
+  <li>
+    <div>
+      Alter all .pl files (in cgi-bin/) to be executable
+    </div>
+    
+    <div>
+      <pre style="background-color: white">chmod +x cgi-bin/*.pl</pre>
+    </div>
+    
+    <div>
+      
+    </div>
+  </li>
+  
+  <li>
+    <div>
+      Copy etc/TMCGI.conf.default to etc/TMCGI.conf, and set reasonable defaults, such as database access.
+    </div>
+    
+    <div>
+      <pre style="background-color: white">cd etc/
+cp TMCGI.conf.default TMCGI.conf
+vi TMCGI.conf</pre>
+    </div>
+    
+    <div>
+      
+    </div>
+  </li>
+  
+  <li>
+    <div>
+      Using a text editor such as vi, edit etc/TMCGI.conf and alter the database settings to match the proper DBD driver (such as DBD::MySQL) for your database server, the database name, and hostname. The exact syntax depends on the DBD driver. Refer to it's documentation available from http://search.cpan.org/.
+
+The example below uses MySQL, with the localhost as the database server, and the database name being "TimeManagerB".
+    </div>
+    
+    <div>
+      <pre style="background-color: white">my $DBD = &quot;DBI:mysql:database=TimeManagerB;hostname=localhost&quot;;</pre>
+    </div>
+    
+    <div>
+      
+    </div>
+  </li>
+  
+  <li>
+    <div>
+      Using a text editor such as vi, edit etc/TMCGI.conf and set the username and password for database access.
+    </div>
+    
+    <div>
+      <pre style="background-color: white"># This is the database username.
+my $USERNAME = &quot;TimeManagerB&quot;;
+                                                                                                                  
+# This is the database password. It should be changed.
+my $PASSWORD = &quot;TimeManagerB&quot;;
+</pre>
+    </div>
+    
+    <div>
+      
+    </div>
+  </li>
+  
+  <li>
+    <div>
+      If this product is purchased from our site (as opposed to a trial version), you must save the license file as 'license.conf' within the etc/ directory of the unzipped directory tree. Also make sure that the file is group and globally readable.
+    </div>
+    
+    <div>
+      <pre style="background-color: white">cp TM-2.0-license.conf TimeManager/etc/license.conf
+chmod 0644 TimeManager/etc/license.conf</pre>
+    </div>
+    
+    <div>
+      
+    </div>
+  </li>
+  
+</ol>
+
+<hr>
+
+<div style="font-size: 18px">Prerequisite Installation</div>
+
+
+
+
+<div style="padding-top: 15px">
+<a href="#top" name="Perl" style="font-size: 16px">
+Perl:
+</a>
+</div>
+
+
+<div style="padding-left: 10px">
+Perl 5.6.1 or higher is required to be installed. Consult http://www.perl.org/ for download and installation.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<div style="padding-top: 15px">
+<a href="#top" name="Web Server" style="font-size: 16px">
+Web Server:
+</a>
+</div>
+
+
+<div style="padding-left: 10px">
+The web server can be used in either two ways, using Virtual Hosts (where an entire subdomain, such as http://timemanager.company.com/ is used), or using a subdirectory with an already existing Web Site (such as http://intranet.company.com/apps/TimeManager/).
+</div>
+
+
+
+<div style="padding-left: 10px">
+  <p style="font-size: 14px">Virtual Host:</p>
+  <div style="padding-left: 10px">
+    <p>This setup reserves an entire subdomain, such as http://TimeManager.company.com/ for the software. It requires administrative privileges over the Apache web server, and also requires a new hostname in DNS, so this setup option must be done by the server's System Administrator capable of managing Apache and DNS.</p>
+
+    
+      
+      <p style="font-weigth: bold">
+        Adding a Virtual Host:
+      </p>
+      
+      <p style="padding-left: 10px">
+        1)
+        Edit Apache's configuration file (httpd.conf) to contain a virtual host (such as the example), with the DocumentRoot set to the public_html directory and ScriptAlias set to the cgi-bin directory, both under the directory tree. If you hare using name-based virtual hosts, make sure a directive declares such for the IP address. Consult the Apache Manual for further information, such as to use named-based virtual hosts.
+      </p>
+      
+        <pre style="background-color: white">NameVirtualHost 10.1.1.102
+
+&lt;VirtualHost 10.1.1.102:80&gt;
+  ServerName time.malysoft.com
+  ServerAlias time
+  DocumentRoot /usr/local/TimeManager/public_html
+  ScriptAlias /cgi-bin /usr/local/TimeManager/cgi-bin
+&lt;/VirtualHost&gt;</pre>
+      
+    
+      
+      <p style="font-weigth: bold">
+        Apache access:
+      </p>
+      
+      <p style="padding-left: 10px">
+        2)
+        Next, you need to make sure that Apache is granted access to serve the directory you unzipped it in (this Apache directive should be placed near others like it). This can be done by a Directory directive, at or above in the filesystem. Keep in mind that the system account that Apache runs as (i.e. 'nobody' or 'apache') MUST have read and execute permissions on the directory and all parent directories.
+      </p>
+      
+        <pre style="background-color: white">&lt;Directory /usr/local/TimeManager&gt;
+  Order allow,deny
+  allow from all
+  Options +FollowSymLinks +Indexes +ExecCGI
+&lt;/Directory&gt;</pre>
+      
+    
+      
+      <p style="font-weigth: bold">
+        Add DNS entry:
+      </p>
+      
+      <p style="padding-left: 10px">
+        3)
+        Your DNS server for your domain needs to be modified if you wish to use a dedicated hostname, rather than just an IP Address (i.e. http://TimeManager.company.com/ versus http://10.1.1.110/). Refer to your DNS server documentation. Make sure that the DNS server reloads the configuration (i.e. via a restart). 
+      </p>
+      
+    
+      
+      <p style="font-weigth: bold">
+        Restart Apache:
+      </p>
+      
+      <p style="padding-left: 10px">
+        4)
+        The web server must be restarted for the changes to take effect.
+      </p>
+      
+        <pre style="background-color: white">/etc/init.d/apache restart</pre>
+      
+    
+  </div>
+
+</div>
+
+<div style="padding-left: 10px">
+  <p style="font-size: 14px">Subdirectory of an existing Web Site:</p>
+  <div style="padding-left: 10px">
+    <p>This option provides the software as a subdirectory under an existing web site, such as http://intranet.company.com/apps/TimeManager . This setup option is recommended for people who cannot administer or change their web server to use Virtual Hosts, or do not have a domain (i.e. a DNS server that they can manage).</p>
+
+    
+      
+      <p style="font-weigth: bold">
+        Enabling Perl Scripts:
+      </p>
+      
+      <p style="padding-left: 10px">
+        1)
+        Apache needs to be told that perl scripts should be run rather than having their code displayed. To do this, a handler needs to be set up. If you can alter your Apache server's configuration (httpd.conf), add the following code to it. Otherwise, create a file called '.htaccess' within the unzipped directory with this content. See Apache's documentation for more details.
+      </p>
+      
+        <pre style="background-color: white">AddHandler cgi-script .pl</pre>
+      
+    
+  </div>
+
+</div>
+
+
+
+
+
+
+<div style="padding-top: 15px">
+<a href="#top" name="Relational SQL Database Server" style="font-size: 16px">
+Relational SQL Database Server:
+</a>
+</div>
+
+
+<div style="padding-left: 10px">
+All data is stored within a relational database such as MySQL. 
+</div>
+
+
+
+<div style="padding-left: 10px">
+  <p style="font-size: 14px">MySQL 3.23+:</p>
+  <div style="padding-left: 10px">
+    <p>To integrate the MySQL Server with the application, the database, user and password must be entered in the database to be granted access. It should match the information set within the application's configuration file.</p>
+
+    
+      
+      <p style="font-weigth: bold">
+        Create the database and user account:
+      </p>
+      
+      <p style="padding-left: 10px">
+        1)
+        The etc/mysql.sql file contains an example as to setting up the database. The database name should match that entered in the application's configuration file. It also should match the respective username and password. For example:
+      </p>
+      
+        <pre style="background-color: white">CREATE DATABASE IF NOT EXISTS TimeManager;
+GRANT ALL ON TimeManager.* TO TimeManager@'%' IDENTIFIED BY 'TimeManager';
+GRANT ALL ON TimeManager.* TO TimeManager@localhost IDENTIFIED BY 'TimeManager';
+</pre>
+      
+    
+      
+      <p style="font-weigth: bold">
+        Import application schema:
+      </p>
+      
+      <p style="padding-left: 10px">
+        2)
+        The application has schema that must be imported prior to application use. It is in the etc/ directory, named after the application, such as TimeManager.sql . To import it with the mysql client application, you must use the database, username and password as just created. For example:
+      </p>
+      
+        <pre style="background-color: white">mysql --user=TimeManager --password=TimeManager TimeManager &lt; etc/TimeManager.sql</pre>
+      
+    
+  </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+<hr>
+
+<a href="#top" name="postinstall" style="font-size: 18px">Post Installation</a>
+<div style="text-indent: 10px">
+After installation is complete, you can log into the site, using the default administrator account, whose username is 'admin' and password is 'admin'. It is recommended to change this immediately.
+
+From there, you can create group and user accounts for other people to use.
+</div>
+
+<hr>
+
+
+</div>
+
+<div style="text-align: center">
+Copyright &copy; 2004 <a href="http://www.malysoft.com/">Maly Soft</a>
+</div>
+
+</body>
+</html>

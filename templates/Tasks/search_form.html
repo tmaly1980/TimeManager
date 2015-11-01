@@ -1,0 +1,222 @@
+<form method=GET name="searchForm" action="cgi-bin/Tasks.pl/Search">
+<input type=hidden name="LINK_FIELD" value="#FORM{LINK_FIELD}#">
+<input type=hidden name="POPUP" value="#FORM{POPUP}#">
+
+<table border=0 cellspacing=0 cellpadding=1 align=center>
+  <tr>
+    <th class="header" colspan=2>Search Tasks
+    (<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_searchtasks');">HELP</a>)
+    </th>
+  </tr>
+  <!--
+  <tr class="input">
+    <td> Task Group: </td>
+    <td> Status: </td>
+    <td> Urgency: </td>
+    <td> Assigned To: </td>
+    <td> Due: </td>
+  </tr>
+  -->
+  <tr class="input">
+    <td valign=top>
+      <table border=0 cellspacing=0 cellpadding=1 align=center class="input">
+
+	<tr>
+	  <th colspan=1 align=left style="width: 150px"> Project / Task Group / Milestone: </th>
+	  <td colspan=5 align=left>
+	    <select name="pidmid">
+	      <option value=""> </option>
+	      <option value="-1">None</option>
+	      <maly-loop var="PROJECTS" name="P" sort="PID">
+	        <option value="#P{PID}#" style="font-weight: bold">#P{TITLE}#</option>
+	        <maly-loop var="TGROUPS{PID+=#P{PID}#}" name="TG" sort="SUMMARY">
+		  <maly-set var="IN_MID_LIST{#TG{MID}#}"/>
+		  <option value=":#TG{MID}#">&nbsp;&nbsp;#TG{SUMMARY}#</option>
+		</maly-loop>
+	      </maly-loop>
+	      <option value="">--------</option>
+	      <maly-loop var="TGROUPS" name="TG" sort="SUMMARY">
+	        <maly-if not=1 var="IN_MID_LIST{#TG{MID}#}">
+	          <option value=":#TG{MID}#">#TG{SUMMARY}# </option>
+		</maly-if>
+	      </maly-loop>
+	    </select>
+	  </td>
+	</tr>
+
+	<tr>
+	  <th align=left style="width: 150px">Product: </th>
+	  <td colspan=5>
+	    <select name="prod_id">
+	        <option value=""></option>
+	        <option value="-1">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	    </select>
+	  </td>
+	</tr>
+
+
+        <tr>
+          <th align=left style="width: 150px">Group / Category:</th>
+	  <td colspan=2>
+	    <select name=gid>
+              <option value=""> </option>
+	      <maly-loop name=G sort=NAME var=AVAILABLE_GROUPS>
+	      <maly-if not=1 var="IN_GROUP_LIST{#G{GID}#}">
+	        <maly-set var="IN_GROUP_LIST{#G{GID}#}" value=1/>
+	        <option value="#G{GID}#">#G{NAME}# ::</option>
+		<maly-loop name="TC" var="G{TASK_CATEGORIES}">
+	          <option value="#G{GID}#:#TC{TCID}#">&nbsp;&nbsp;&nbsp;#TC{NAME}#</option>
+		</maly-loop>
+	      </maly-if>
+	      </maly-loop>
+            </select>
+          </td>
+	  <th align=right>Text:</th>
+	  <td colspan=2>
+	    <input type=text name=text size=20 value="#FORM{TEXT}#">
+	  </td>
+	</tr>
+	<tr>
+	  <th align=left style="width: 150px">Assigned To:</th>
+	  <td>
+            <select name=uid>
+              <option value=""> </option>
+              <option value="-1">Unassigned</option>
+	      <maly-loop name=O var="AVAILABLE_OWNERS" sort=FULLNAME>
+	      <maly-if not=1 var="SEARCH_IN_LIST{#O{UID}#}">
+	        <maly-set var="SEARCH_IN_LIST{#O{UID}#}" value=1/>
+	        <option value="#O{UID}#">#O{FULLNAME}#</option>
+	      </maly-if>
+	      </maly-loop>
+            </select>
+          </td>
+
+	  <th align=left>Priority:</th>
+	  <td>
+	    <select name=priority>
+	      <option value=""> </option>
+	      <maly-loop hash=1 sort=1 var="PRIORITYMAP">
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+	    </select>
+	  </td>
+          <th align=left>Status:</th>
+	  <td align=left>
+            <select name=status>
+              <option value=""></option>
+              <option value="-2">Overdue</option>
+              <option value="-1">Active</option>
+	      <maly-loop hash=1 sort=1 var="STATUSMAP">
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+            </select>
+	  </td>
+	</tr>
+
+	<tr>
+	</tr>
+
+	<tr>
+	  <th align=left valign=top style="width: 150px">Task ID:</th>
+	  <td valign=top>
+	    <input type=text name=TID value="#FORM{TID}#" size=6>
+	  </td>
+	  <th align=left valign=top>Parent ID:</th>
+	  <td>
+	    <input type=text name=PTID value="#FORM{PTID}#" size=6>
+	  </td>
+	</tr>
+
+	<tr>
+	  <th align=left valign=top style="width: 150px">Work Time (Less Than):</th>
+	  <td valign=top colspan=3>
+	    <input type=text name=TIME_COUNT value="#FORM{TIME_COUNT}#" size=6>
+	    <select name="time_unit">
+	      <option value="1">Hours</option>
+	      <option value="60">Minutes</option>
+	    </select>
+	    <select name="time_type">
+	      <option value="remain">Remaining</option>
+	      <option value="total">Total (Estimate)</option>
+	    </select>
+	  </td>
+	</tr>
+
+	<tr>
+	  <th align=left valign=top style="width: 150px">
+	    Date: (YYYY-MM-DD)
+	  </th>
+	  <td colspan=1 align=left valign=top>
+	    <select name="date_vector">
+	        <option value="STARTDATE">Started</option>
+	        <option value="ACTCOMDATE">Finished</option>
+	        <option value="DUEDATE">Due</option>
+	        <option value="during">Worked on</option>
+	        <option value="SUBMITTED">Submitted</option>
+	        <option value="CHANGED">Last Updated</option>
+	    </select>
+	    <br>
+	    <select name="date_span">
+	      <option value="between">Between</option>
+	      <option value="after">After</option>
+	      <option value="before">Before</option>
+	      <option value="on">On</option>
+	    </select>
+	  </td>
+	  <td colspan=4 align=left valign=top>
+	    <select name="date1span">
+	      <option value="day">Day Of</option>
+	      <option value="week">Week Of</option>
+	    </select>
+	      <input type=text name=date1 id=date1 size="10" maxlength="10" value="#FORM{DATE1}#">
+	      (<a href="Javascript:void(0)" onClick="return setDatePopup('date1', document.searchForm.date1.value);">Calendar</a>)
+	      <br>
+
+	    <select name="date2span">
+	      <option value="day">Day Of</option>
+	      <option value="week">Week Of</option>
+	    </select>
+	      <input type=text name=date2 id=date2 size="10" maxlength="10" value="#FORM{DATE2}#">
+	      (<a href="Javascript:void(0)" onClick="return setDatePopup('date2', document.searchForm.date2.value);">Calendar</a>)
+	  </td>
+	</tr>
+
+	<tr>
+          <th align=left style="width: 150px">
+            Group by:
+	  </th>
+	  <td colspan=2 align=left>
+            <select name=group_by>
+              <option value=""></option>
+              <option value="uid">Owner</option>
+              <option value="tcid">Category</option>
+              <option value="tgroups">Task Group/Milestone</option>
+              <option value="pid">Project</option>
+              <option value="prod_id">Product</option>
+              <option value="priority">Priority</option>
+              <option value="status">Status</option>
+              <option value="duedate">Due Date</option>
+              <option value="dueweek">Due Week</option>
+            </select>
+          </th>
+          <td align=right colspan=3>
+            <input type=submit name=action value="Search">
+          </td>
+	</tr>
+      </table>
+    </td>
+  </tr>
+</table>
+
+
+</form>

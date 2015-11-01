@@ -1,0 +1,8 @@
+ChangeLog:
+
+12/12:
+	MalyDBO->update(), line 618: Use getold to generate where clause for update, as may change pri keys.
+	MalyDBO->set_unchecked: simplified when to set values. allow for both undef setting (timestamp) and form clearing, etc...
+	MalyDBO->delete(): Sets marker on specific record if deleted from db, so skip on records().
+	MalyDBO->set_unchecked(): Resets deletion marker for current record.
+	MalyDBOCore->mark_deleted(): Marks a record as deleted, removes data. Called after delete()

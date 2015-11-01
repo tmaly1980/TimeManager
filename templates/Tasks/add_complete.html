@@ -1,0 +1,28 @@
+<maly-set var="CUSTOM_SCRIPT">
+function linkFieldClosePopup(field_id)
+{
+  closePopup(1);
+}
+
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr>
+  <td align=center>
+
+  <table border=0 cellspacing=0 cellpadding=5 class="transparent" width="100%">
+    <tr><td>
+      The task has been added.
+    </td></tr>
+    <tr><td>
+      <maly-if var="FORM{LINK_FIELD}">
+        <input type=submit value="Close" onClick="linkFieldClosePopup('#FORM{LINK_FIELD}#');">
+      <maly-else/>
+        <input type=submit value="Close" onClick="closePopup(1);">
+        <input type=submit value="Close/Refresh Main" onClick="closePopup();">
+      </maly-if>
+    </td></tr>
+  </table>
+</maly-set>
+
+#include popup_main

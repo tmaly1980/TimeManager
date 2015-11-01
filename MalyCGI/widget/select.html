@@ -1,0 +1,21 @@
+<maly-cutws>
+  <maly-set default=1 var="ID" value="#NAME#"/>
+  <maly-set default=1 var="LOOPNAME" value="#VAR#"/>
+
+</maly-cutws><select name="#NAME#" id="#ID#">
+  <maly-if var="TO">
+    <maly-print>
+      <maly-loop from=1 to="#TO#" name="NUM" plus="#PLUS#">
+        <option value="\#NUM\#">\#NUM\#</option>
+      </maly-loop>
+    </maly-print>
+  <maly-elsif var="VAR"/>
+    <maly-print>
+      <maly-loop var="#VAR#">
+        <option value="#LIST_COLON:OPTVAL#">#OPTTEXT#</option>
+      </maly-loop>
+    </maly-print>
+  <maly-else/>
+  </maly-if>
+
+</select>

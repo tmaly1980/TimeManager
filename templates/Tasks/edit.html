@@ -1,0 +1,984 @@
+<maly-if eval="'#MODE#' eq 'Add'">
+  <maly-if var="TASK{UID}" not=1 defined=1 hack=1>
+    <maly-set var="TASK{UID}" value="#SESSION{UID}#"/>
+  </maly-if>
+</maly-if>
+
+<!--
+
+// NEED TO get all MEMBERS out of GROUPS (multiple groups!)
+// NEED A WAY TO SIGNIFY TO var-evaluate to get all, not just one....
+// IN THIS CASE, MALYSET CAN TELL, SINCE USING DFROM= (AND ASSIGNING TO ARRAY), THAT WE WANT ALL!!!! OTHERWISE, GET JUST ONE....
+// ONLY GETTING FIRST ONE OF GROUPS, AS DOING {} ON ARRAY....
+// ONLY DO THIS WHEN ULTIMATELY ASKING FOR 
+// THIS ONLY WORKS WHEN THE ARRAY IS THE SECOND-TO-LAST THING.....
+-->
+
+<maly-set var="CUSTOM_SCRIPT">
+    // #AVAILABLE_OWNERS{USERNAME=eric}{TASK_CATEGORIES}[0]{NAME}#
+
+    // Now lets load the users and categories per user.
+    var categories = new Object();
+    var owners = new Object();
+    var owner_category_map = new Array();
+    var category_owner_map = new Array();
+    <maly-loop name=O var="AVAILABLE_OWNERS">
+    <maly-if not=1 var="IN_LIST{#O{UID}#}">
+      <maly-set var="IN_LIST{#O{UID}#}" value=1/>
+      owners['#O{UID}#'] = '#O{XFULLNAME}#';
+      <maly-loop var="O{TASK_CATEGORIES}" name="TC">
+      <maly-if not=1 var="O{TASK_CATEGORIES_REMOVED}{TCID=#TC{TCID}#}">
+      owner_category_map.push(new Array ('#O{UID}#', '#TC{TCID}#'));
+        categories['#TC{TCID}#'] = '#TC{XNAME}#';
+        category_owner_map.push(new Array ('#TC{TCID}#', '#O{UID}#'));
+      </maly-if>
+      </maly-loop>
+    </maly-if>
+    </maly-loop>
+
+function inheritField()
+{
+  if (!window.opener) { return false; }
+  var pForm = window.opener.document.editForm;
+  if (!pForm) { return false; }
+  for (var i = 0; i < arguments.length; i++)
+  {
+    var name = arguments[i];
+    var value = get_field_value(pForm[name]);
+    var old_value = get_field_value(document.editForm[name]);
+    if (old_value == '')
+    {
+      set_field(document.editForm[name], value);
+    }
+  }
+}
+
+function copyFromEstimatedHours(act, est)
+{
+  if (!act || !est) { return; }
+  act.value = est.value;
+}
+
+function confirmDeleteTask()
+{
+  return confirm("Are you sure you want to delete this task AND ALL SUBTASKS? Perhaps keeping the task and setting the status to 'Cancelled' would be better. THE TASK AND ALL OF IT'S SUBTASKS ARE NOT RECOVERABLE AFTER DELETION!");
+}
+
+function formSubmit(form)
+{
+  if (! require_field_value('title', 'Title') )
+  {
+    return false;
+  }
+  <maly-loop name=FIELD var="REQUIRE_FIELDS">
+  if (form.#FIELD#)
+  {
+    var f = form.#FIELD#;
+    if (! field_has_value(f) )
+    {
+      alert("Must enter in a value.");
+      f.focus();
+      return false;
+    }
+  }
+  </maly-loop>
+
+  selectSubmit("TGROUPS");
+  <maly-if var="TASK{TID}">
+    selectSubmit("SUBTASKS");
+  </maly-if>
+  selectSubmit("PARTICIPANTS");
+  selectSubmit("RESOURCES");
+  selectSubmit("WEBREF");
+
+  var st = get_field_value(form.status);
+  if (st >= 20 &&
+    require_field_value('startdate', 'Start Date') &&
+    require_field_value('duedate', 'Due Date') &&
+    require_field_value('actcomdate', 'Actual Completion Date') &&
+    require_field_value('esthours', 'Estimated Hours') &&
+    require_field_value('hours', 'Actual Hours')
+  )
+  {
+    return true;
+  } else if (st < 20 && st >= 10 && form.SUBTASKS.length > 0) {
+    alert("All subtasks/dependencies will keep their existing status. If you wish to change that to this newly changed status, search by the parent Task ID and do a 'Bulk Change'.");
+    return true;
+  } else if (st != 20) {
+    return true;
+  } else {
+    return false;
+  }
+
+
+
+
+  form.FORM_SUBMITTED.value = 1;
+  return true;
+}
+
+function resetProject()
+{
+  clear_select(document.editForm.mid);
+  clear_select(document.editForm.dependent_tid);
+}
+
+  function viewMilestone()
+  {
+    window.noreload = 1;
+    var field = document.editForm.TGROUPS;
+    if (!field || field.selectedIndex == -1) { return false; }
+    var opt = field.options[field.selectedIndex];
+    if (!opt) { return false; }
+    var parts = opt.value.split(":");
+    var mid = parts[1];
+    if (mid != '')
+    {
+      viewMilestonePopup(mid);
+    }
+
+    return false;
+  }
+
+  function removeTaskGroup()
+  {
+    var field = document.editForm.TGROUPS;
+    if (!field || field.selectedIndex == -1) { return false; }
+    field.options[field.selectedIndex] = null;
+  }
+
+  function viewSubtask()
+  {
+    var field = document.editForm.SUBTASKS;
+    if (!field || field.selectedIndex == -1) { return false; }
+    var opt = field.options[field.selectedIndex];
+    if (!opt) { return false; }
+    var parts = opt.value.split(":");
+    var tid = parts[1];
+    window.noreload = 1;
+    editTaskPopup(tid); // NEED TO FIX SO DOESNT REFRESH THIS WINDOW!!!!
+    return false;
+  }
+
+  function removeSubtask()
+  {
+    var field = document.editForm.SUBTASKS;
+    if (!field || field.selectedIndex == -1) { return false; }
+    field.options[field.selectedIndex] = null;
+  }
+
+  function delegateSubtask(form)
+  {
+    var party = document.editForm.participants;
+    if (party.selectedIndex == -1) // Add to list. select.
+    {
+      moveDualList(document.editForm.all_participants, party);
+      party.selectedIndex = party.length-1;
+    }
+    var uid = get_field_value(party);
+    return addTaskPopup(null, null, 'SUBTASKS', 'uid='+uid+'&ptid=#TASK{TID}#');
+  }
+
+  function setStrictDependence(select, check)
+  {
+    var sel = get_field(select);
+    var value = new String(get_field_value(sel));
+    if (!sel || sel.selectedIndex == -1) { return; }
+    var parts = value.split(":");
+    parts[2] = check.checked ? 1 : 0;
+    sel.options[sel.selectedIndex].value = parts.join(":");
+  }
+
+  function markStrictDependenceCheckbox(select, check)
+  {
+    var sel = get_field(select);
+    var value = new String(get_field_value(sel));
+    var parts = value.split(":");
+    check.checked = parts[2] == 1 ? 1 : 0;
+  }
+</maly-set>
+
+
+<maly-set var="CUSTOM_ONLOAD">
+  if ('#TASK{TID}#' != '')
+  {
+    window.name = 'editTask_#TASK{TID}#';
+  }
+  if (document.editForm)
+  {
+
+    // Populate lists
+    if (document.editForm.uid)
+    {
+      crossList_populate(document.editForm.uid, owners, category_owner_map, "#TASK{TCID}#");
+      set_select(document.editForm.uid, "#TASK{UID}#");
+      // Trigger the change event handler.
+    }
+    if (document.editForm.tcid)
+    {
+      crossList_populate(document.editForm.tcid, categories, owner_category_map, "#TASK{UID}#");
+      set_select(document.editForm.tcid, "#TASK{TCID}#");
+      // Trigger the category change event handler
+    }
+
+    if (document.editForm.FORM_SUBMITTED.value == 1) { return; }
+
+    set_select(document.editForm.requestor_uid, "#TASK{REQUESTOR_UID}#", "#SESSION{UID}#");
+    set_select(document.editForm.priority, "#TASK{PRIORITY}#", "3");
+    set_checkbox(document.editForm.cost_hourly, "#TASK{COST_HOURLY}#");
+    set_select(document.editForm.percent, "#TASK{PERCENT}#");
+    set_select(document.editForm.status, "#TASK{STATUS}#");
+    set_select(document.editForm.prod_id, "#TASK{PROD_ID}#");
+    set_select(document.editForm.stage, "#TASK{STAGE}#");
+
+    if ('#MODE#' == 'Add')
+    {
+      if ('#FORM{MID}#' != '')
+      {
+        var sel = document.getElementById("TGROUPS");
+	sel.options[sel.length] = new Option('#FORM{MILE_SUMMARY}#', ':#FORM{MID}#');
+      }
+    }
+
+    var link_field = '#FORM{LINK_FIELD}#';
+
+    if (link_field) 
+    {
+      if ('#FORM{TASK_ADDED}#') // Second stage, just added task. Now set name/id in parent window.
+      {
+        linkField(link_field, ':#TASK{TID}#', '#NOQUOT:TASK{TITLE}#');
+      } else { // It's a parent task via js select list.
+        // First time we're loading new task, it's still empty at this point.
+	// sohuld be done via cgi code now
+        //inheritField('prod_id', 'tcid', 'uid', 'priority', 'startdate', 'duedate');
+        // Inherit info from parent.
+      }
+    }
+
+    if ('#SESSION{POWER_USER}#' == '0' || !'#SESSION{POWER_USER}#')
+    {
+      hideSection('people');
+      document.editForm.people_checkbox.checked = 0;
+      hideSection('structure');
+      document.editForm.structure_checkbox.checked = 0;
+      hideSection('prevnotes');
+      document.editForm.prevnotes_checkbox.checked = 0;
+    }
+  }
+
+
+</maly-set>
+
+
+
+<maly-set var="CONTENT">
+
+<tr>
+<td align=center>
+
+<form method="POST" action="#PATHINFO_URL#" name="editForm" onSubmit="return formSubmit(this);">
+  <input type=hidden name="FORM_SUBMITTED" value="0">
+  <input type=hidden name="TID" value="#TASK{TID}#">
+  <input type=hidden name="PTID" value="#TASK{PTID}#">
+  <input type=hidden name="LINK_FIELD" value="#FORM{LINK_FIELD}#">
+  
+
+          <maly-if var="MODE" ne="Add">
+	      <table border=0 width="100%" cellspacing=0 cellpadding=1>
+	        <tr class="transparent">
+	          <td align=left style="font-style: bold; color: #DD0000; font-size: 14px">
+	          <maly-if eval="'#FORM{SAVED}#' or '#FORM{ACTION}#' eq 'Save' or '#FORM{TASK_ADDED}#'">
+		    <maly-if var="FORM{TASK_ADDED}">
+		      Task Added
+		    <maly-else/>
+		      Task Saved
+		    </maly-if>
+		  <maly-else/>
+		    &nbsp;
+		  </maly-if>
+		  </td>
+	          <td align=right>
+		    <maly-if var="KEYS:EDITABLE">
+  	              <input type=submit name=action value="Save">
+		    </maly-if>
+  	              <input type=submit value="Close" onClick="closePopup(1);">
+		    <maly-if eval="'#FORM{TASK_ADDED}#' eq '' or '#FORM{LINK_FIELD}#' eq ''">
+  	              <input type=submit value="Close/Refresh" onClick="closePopup();">
+		    </maly-if>
+	          </td>
+		</tr>
+	      </table>
+	  </maly-if>
+
+<table border=0 cellspacing=0 cellpadding=1 width=100%>
+          <tr>
+  	  <th class="transparent largetext" align=left colspan=2>
+  	    <maly-if eval="'#MODE#' ne 'Add' and '#TASK{UID}#' ne '#SESSION{UID}#' and '#TASK{REQUESTOR_UID}#' ne '#SESSION{UID}#'">
+  	      View Task
+  	    <maly-else/>
+  	      #MODE# Task
+	    </maly-if>
+	    <maly-if eval="'#MODE#' ne 'Add'">
+	      <a href="cgi-bin/Tasks.pl/Edit?tid=#TASK{TID}#"> # #TASK{TID}# </a>
+	    </maly-if>
+	      :
+  	  </th>
+	  <th class="transparent" align=right>
+	    <maly-if var="MODE" eq="Add">
+	    <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_addtask');">HELP</a>
+	    <maly-else/>
+	    <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_edittask');">HELP</a>
+	    </maly-if>
+	  </th>
+  	</tr>
+
+        <maly-if var="TASK{DEP_NOT_MET}">
+	<tr>
+	  <th colspan=3 align=left class="transparent" style="font-size: 12px; font-weight: bold; color: red">
+	    This task cannot be started because a dependent task must be completed first.
+	  </th>
+	</tr>
+	</maly-if>
+</table>
+
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'general');" value=1 checked=checked>
+    General Information:
+</div>
+
+
+<table border=0 width="100%" cellspacing=0 cellpadding=1 id="general">
+<tr>
+  <th colspan=3 align=left class="header">
+  </th>
+</tr>
+  <tr>
+    <th colspan=2 align=left valign=top width="40%">
+    Title:
+    </th>
+    <th align=left valign=top>
+    Description:
+    </th>
+  </tr>
+
+  <tr>
+    <td colspan=2 align=left valign=top width="40%">
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{TITLE}#'">
+  	    #TASK{TITLE}#
+  	    <maly-else/>
+  	    <input type=text name=title id="title" value="#TASK{TITLE}#" size=36 maxlength=50>
+  	    </maly-if>
+    </td>
+    <td rowspan=5 align=left valign=top>
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{DESCRIPTION}#'">
+  	    #TASK{DESCRIPTION}#
+  	    <maly-else/>
+  	    <textarea name=description rows=5 wrap=virtual style="width: 100%">#TASK{DESCRIPTION}#</textarea>
+  	    </maly-if>
+    </td>
+  </tr>
+
+  <tr>
+    <th align=left valign=top colspan=2>
+    Product:
+    </th>
+  </tr>
+  <tr>
+    <td align=left valign=top colspan=2>
+      <maly-if var="EDITABLE{PROD_ID}">
+	      <select name=prod_id id='prod_id'> 
+	        <option value="">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	      </select>
+      <maly-else/>
+        <maly-set var="PROD_VER_ID" eval=1 value=" [ split(':', '#TASK{PROD_ID}#') ] "/>
+	<maly-set var="PRODUCT" from="PRODUCTS{PROD_ID=#PROD_VER_ID[0]#}"/>
+	<maly-set var="VERSION" from="PRODUCT{VERSIONS}{VER_ID=#PROD_VER_ID[1]#}"/>
+        #PRODUCT{NAME}#
+	#VERSION{VER_NAME}#
+      </maly-if>
+    </td>
+  </tr>
+
+
+  <tr>
+    <th align=left valign=top>
+    Task Category:
+    </th>
+    <th align=left valign=top>
+    Priority:
+    </th>
+  </tr>
+
+  <tr>
+    <td align=left valign=top>
+	    <maly-if eval="'#EDITABLE{TCID}#'">
+	    <select name="tcid" onChange="return crossList_change(this, document.editForm.uid, owners, category_owner_map);">
+	    <!-- LOADED VIA JAVASCRIPT -->
+	    </select>
+	    <maly-else/>
+	      #TASK{TASK_CATEGORY}{NAME}#
+	    </maly-if>
+    </td>
+    <td align=left valign=top>
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{PRIORITY}#'">
+  	      #PRIORITYMAP{#TASK{PRIORITY}#}#
+  	    <maly-else/>
+#include Tasks/priority_select
+  	    </maly-if>
+    </td>
+  </tr>
+  <maly-if var="MODE" ne="Add">
+  <tr>
+    <th align=left colspan=3>
+    Updated:
+    #TASK{UPDATED}#
+    </th>
+  </tr>
+  </maly-if>
+
+</table>
+
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'progress');" value=1 checked=checked>
+    Progress:
+</div>
+
+<maly-if var="MODE" ne="Add">
+<div id='progress'>
+<table border=0 style="width: 100%" cellspacing=0 cellpadding=1>
+  <tr>
+    <th align=center valign=top width="25%">Status:</th>
+    <th align=center valign=top width="25%">Percent:</th>
+    <th align=center valign=top width="25%">Stage:</th>
+    <th align=center valign=top width="25%">Cost:</th>
+  </tr>
+
+  <tr>
+  	  <td align=center valign=top>
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{STATUS}#'">
+	    <span class="box #STATUSCLASSMAP{#TASK{STATUS}#}#">
+  	    #STATUSMAP{#TASK{STATUS}#}#
+	    </span>
+  	    <maly-else/>
+#include Tasks/status_select
+  	    </maly-if>
+  	  </td>
+
+
+
+
+  	  <td align=center valign=top>
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{PERCENT}#'">
+  	    #TASK{PERCENT}#
+  	    <maly-else/>
+#include Tasks/percent_select
+  	    </maly-if>
+  	  </td>
+
+	  <td align=center valign=top>
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{STATUS}#'">
+  	    #TASK{CATEGORY}{STAGES}{STAGE_ID=#TASK{STAGE}#}{NAME}#
+  	    <maly-else/>
+	      <select name=stage style="min-width: 100px">
+	        <option value="">N/A</option>
+	        <maly-loop var="TASK{CATEGORY}{STAGES}" name="STAGE">
+		  <option value="#STAGE{IX}#">#STAGE{NAME}#</option>
+		</maly-loop>
+	      </select>
+  	    </maly-if>
+	  </td>
+
+  	  <td align=center valign=top>
+  	    <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{COST}#'">
+  	    $#TASK{COST}#
+	      <maly-if var="TASK{COST_HOURLY}">PER HOUR
+	      <maly-set var="COST_TOTAL" eval=1 value="('#TASK{COST}#'||0) * ('#TASK{HOURS}#'||0)"/>
+	      ($#COST_TOTAL# TOTAL)
+	      </maly-if>
+  	    <maly-else/>
+  	      $<input type=text name=cost value="#TASK{COST}#" size=5>
+	      <input type=checkbox name=cost_hourly value=1> Hr.
+  	    </maly-if>
+  	  </td>
+
+  </tr>
+</table>
+</div>
+</maly-if>
+
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'timeline');" value=1 checked=checked>
+    Timeline (Dates in YYYY-MM-DD format):
+</div>
+
+
+<div id='timeline'>
+<table border=0 width="100%" cellpadding=1 cellspacing=0>
+
+<tr>
+  <th align=center width="15%">Start Date:</th>
+  <th align=center width="15%">Due Date:</th>
+  <th align=center width="16%">Estimated Finish:</th>
+  <th align=center width="16%">Actual Finish:</th>
+  <th align=center width="18%">Estimated Hours:</th>
+  <th align=center width="20%">Actual Hours:</th>
+</tr>
+
+<tr>
+  <td align=center valign=top>
+  	  <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{STARTDATE}#'">
+  	    #TASK{STARTDATE}#
+  	  <maly-else/>
+  	    <input type=text name="startdate" id="startdate" value="#TASK{STARTDATE}#" size=10 onChange="return checkDateFormat(this);"> 
+	    <br>
+	    (<a href="Javascript:void(0)" onClick="setDatePopup('startdate', document.editForm.startdate.value);">Calendar</a>)
+	    <br>
+	    (<a href="Javascript:void(0)" onClick="document.editForm.startdate.value = '#TODAY_DATE#';">Today</a>)
+  	  </maly-if>
+  </td>
+
+  <td align=center valign=top>
+  	  <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{DUEDATE}#'">
+  	    #TASK{DUEDATE}#
+  	  <maly-else/>
+  	    <input type=text name="duedate" id="duedate" value="#TASK{DUEDATE}#" size=10 onChange="return checkDateFormat(this);"> 
+	    <br>
+	    (<a href="Javascript:void(0)" onClick="setDatePopup('duedate', document.editForm.duedate.value);">Calendar</a>)
+	    <br>
+	    (<a href="Javascript:void(0)" onClick="document.editForm.duedate.value = '#TODAY_DATE#';">Today</a>)
+  	  </maly-if>
+  </td>
+  <td align=center valign=top>
+  	  <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{ESTCOMDATE}#'">
+  	    #TASK{ESTCOMDATE}#
+  	  <maly-else/>
+  	    <input type=text name="estcomdate" id='estcomdate' value="#TASK{ESTCOMDATE}#" size=10 onChange="return checkDateFormat(this);"> 
+	    <br>
+	    (<a href="Javascript:void(0)" onClick="setDatePopup('estcomdate', document.editForm.estcomdate.value);">Calendar</a>)
+  	  </maly-if>
+  </td>
+  <td align=center valign=top>
+  	  <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{ACTCOMDATE}#'">
+  	    #TASK{ACTCOMDATE}#
+  	  <maly-else/>
+  	    <input type=text name="actcomdate" id='actcomdate' value="#TASK{ACTCOMDATE}#" size=10 onChange="return checkDateFormat(this);"> 
+	    <br>
+	    (<a href="Javascript:void(0)" onClick="setDatePopup('actcomdate', document.editForm.actcomdate.value);">Calendar</a>)
+  	  </maly-if>
+  </td>
+
+  <td align=center valign=top>
+  	  <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{ESTHOURS}#'">
+  	    #NUM:TASK{ESTHOURS}#
+  	  <maly-else/>
+  	    <input type=text name=ESTHOURS value="#TASK{ESTHOURS}#" id=esthours size=5>
+  	  </maly-if>
+  </td>
+
+  <td align=center valign=top>
+  	  <maly-if not=1 eval="'#MODE#' eq 'Add' or '#EDITABLE{HOURS}#'">
+  	    #NUM:TASK{HOURS}# Hours
+  	  <maly-else/>
+  	    <input type=text name=HOURS value="#TASK{HOURS}#" id=hours size=5>
+	    <br>
+	    <a href="Javascript:void(0)" onclick="copyFromEstimatedHours('hours', 'esthours');">(Same as Estimated)</a>
+  	  </maly-if>
+  </td>
+</tr>
+</table>
+</div>
+
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'people');" name='people_checkbox' value=1 checked=checked>
+    People Involved/Resources:
+</div>
+
+
+<div id='people'>
+<table border=0 width="100%" cellspacing=0 cellpadding=1>
+
+<tr>
+  <th align=left colspan=2>
+    &nbsp;
+  </th>
+  <th align=center width="45%">
+    Resources:
+  </th>
+</tr>
+
+<tr>
+  <th align=left valign=top>Owner:</th>
+  <td align=left valign=top>
+  	<maly-if eval="('#MODE#' eq 'Add' or '#EDITABLE{UID}#')">
+	  <select name=uid id="uid" onChange="return crossList_change(this, document.editForm.tcid, categories, owner_category_map);">
+	  </select>
+	  <a href="Javascript:void(0)" onClick="workloadPopup('uid', 'startdate', 'duedate');">Workload</a>
+	<maly-else/>
+	  <maly-if var=MODE eq="Add">
+	    #SESSION{FULLNAME}#
+	  <maly-else/>
+	    <a href="Javascript:void(0)" onclick="editUserPopup('#TASK{UID}#');">
+	      #TASK{OWNER}{FULLNAME}#
+	    </a>
+	  </maly-if>
+  	</maly-if>
+  </td>
+
+
+
+
+  <td align=center valign=top rowspan=3>
+  <maly-if var="EDITABLE{RESOURCES}">
+    <select name=resources id="resources" size=3 style="width: 100%" multiple=multiple onClick="multiList_edit(resources, new Array(resources_text, resources_hidden_id))">
+      <maly-loop name="RES" var="TASK{RESOURCES}">
+        <option value="#RES{NAME}#:#RES{RES_ID}#">
+	  #RES{NAME}#
+	</option>
+      </maly-loop>
+    </select>
+    <br>
+
+    <a href="Javascript:void(0)" onClick="multiList_add('resources', new Array('resources_text', 'resources_hidden_id'))">Add</a> |
+    <a href="Javascript:void(0)" onClick="multiList_replace('resources', new Array('resources_text', 'resources_hidden_id'))">Replace</a> |
+    <a href="Javascript:void(0)" onClick="multiList_remove('resources', new Array('resources_text', 'resources_hidden_id'))">Remove</a>
+    <br>
+    <input type=text style="width: 100%" name=resources_text>
+    <input type=hidden name=resources_hidden_id>
+  <maly-else/>
+    <maly-loop var="TASK{RESOURCES}" name="RES">
+      #RES{NAME}#<br>
+    </maly-loop>
+  </maly-if>
+  </td>
+</tr>
+
+<tr>
+  <th align=left valign=top>Requested By:</th>
+  <td align=left valign=top>
+  	<maly-if eval="('#MODE#' eq 'Add' or '#EDITABLE{REQUESTOR_UID}#')">
+          <select name=requestor_uid>
+            <maly-loop var="AVAILABLE_REQUESTORS" name=R sort="UID">
+              <maly-if not=1 var="IN_REQ_LIST{#R{UID}#}">
+	        <maly-set var="IN_REQ_LIST{#R{UID}#}" value=1/>
+	        <option value="#R{UID}#">#R{FULLNAME}#</option>
+	      </maly-if>
+            </maly-loop>
+          </select>
+	<maly-else/>
+	  <maly-if var=MODE eq="Add">
+	    #SESSION{FULLNAME}#
+	  <maly-else/>
+	    <a href="Javascript:void(0)" onclick="editUserPopup('#TASK{REQUESTOR_UID}#');">
+	      #TASK{REQUESTOR}{FULLNAME}#
+	    </a>
+	  </maly-if>
+  	</maly-if>
+  </td>
+</tr>
+
+<maly-if var="TASK{TID}">
+<tr>
+  <th align=left valign=top>Submitted By:</th>
+  <td align=left valign=top>
+      <a href="Javascript:void(0)" onClick="editUserPopup('#TASK{SUBMITBY_UID}#')">
+        #TASK{SUBMITBY}{FULLNAME}#
+      </a><br>
+      #TASK{SUBMITTED}#
+  </td>
+</tr>
+<maly-else/>
+<tr><td colspan=2>&nbsp;</td></tr>
+</maly-if>
+
+<tr>
+  <th align=center colspan=2>
+    URL (Web) References:
+  </th>
+</tr>
+<tr>
+  <td align=left valign=top colspan=2 rowspan=3>
+  <maly-if var="EDITABLE{WEBREFS}">
+    <select name=WEBREF id="WEBREF" size=3 style="width: 100%" multiple=multiple onClick="multiList_edit('WEBREF', new Array('WEBREF_url', 'WEBREF_text'), '|')">
+      <maly-loop name="WEBREF" var="TASK{WEBREFS}">
+        <option value="#WEBREF{URL}#|#WEBREF{DESCRIPTION}#">
+	  #WEBREF{DESCRIPTION}#
+	</option>
+      </maly-loop>
+    </select>
+    <br>
+
+    <a href="Javascript:void(0)" onClick="multiList_add('WEBREF', new Array('WEBREF_url', 'WEBREF_text'), '%1%', '|')">Add</a> |
+    <a href="Javascript:void(0)" onClick="multiList_replace('WEBREF', new Array('WEBREF_url', 'WEBREF_text'), '%1%', '|')">Replace</a> |
+    <a href="Javascript:void(0)" onClick="multiList_remove('WEBREF', new Array('WEBREF_url', 'WEBREF_text'))">Remove</a> |
+    <a href="Javascript:void(0)" onClick="window.open(get_field('WEBREF_url').value)">View Site</a>
+    <br>
+    <table border=0 cellspacing=0 cellpadding=1>
+    <tr><td>Name:</td><td><input type=text id="WEBREF_text" name=WEBREF_text></td></tr>
+    <tr><td>URL:</td><td><input type=text id="WEBREF_url" name=WEBREF_url></td></tr>
+    </table>
+   <maly-else/>
+     <maly-loop var="TASK{WEBREFS}" name="WEBREF">
+     <a href="#WEBREF{URL}#" target="_new">#WEBREF{DESCRIPTION}#</a><br>
+     </maly-loop>
+   </maly-if>
+  </td>
+</tr>
+<tr>
+  <th align=center>
+    Participants:
+  </th>
+</tr>
+<tr>
+
+  <td align=center valign=top width="45%">
+  	<maly-if eval="('#MODE#' eq 'Add' or '#EDITABLE{PARTICIPANTS}#')">
+	  <table border=0 width="100%" align=center cellspacing=0 cellpadding=1>
+	    <tr>
+	      <td align=center>
+	        <select name="participants" id="participants" multiple=multiple style="width: 100%" size=3>
+		  <maly-loop var="TASK{PARTICIPANTS}" name=PARTY sort=UID>
+		    <option value="#PARTY{UID}#">#PARTY{FULLNAME}#</option>
+		  </maly-loop>
+		</select>
+	      </td>
+  	    <tr>
+  	      <td align=center>
+		  <a href="Javascript:void(0)" onClick="moveDualList('all_participants', 'participants');">Add</a> |
+		  <a href="Javascript:void(0)" onClick="moveDualList('participants', 'all_participants');">Remove</a>
+		  <maly-if var="TASK{TID}">
+		    | <a href="Javascript:void(0)" onClick="delegateSubtask();">Delegate Subtask</a>
+		  </maly-if>
+	      </td>
+	    </tr>
+	    <tr>
+	      <td align=center>
+                <select name=all_participants id='all_participants'>
+                  <maly-loop var="AVAILABLE_PARTICIPANTS" name=P sort="UID">
+                    <maly-if not=1 var="TASK{PARTICIPANTS}{UID=#P{UID}#}">
+	              <option value="#P{UID}#">#P{FULLNAME}#</option>
+	            </maly-if>
+                  </maly-loop>
+                </select>
+	      </td>
+	    </tr>
+	  </table>
+	<maly-elsif var="MODE" ne="Add"/>
+	  <maly-loop var="TASK{PARTICIPANTS}" name="PARTY">
+	    <a href="Javascript:void(0)" onClick="editUserPopup('#PARTY{UID}#')">
+	       #PARTY{FULLNAME}#
+	    </a>
+	  </maly-loop>
+  	</maly-if>
+  </td>
+
+</tr>
+
+</table>
+</div>
+
+
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'structure');" name='structure_checkbox' value=1 checked=checked>
+    Task Structure:
+</div>
+
+<div id="structure">
+<table border=0 width="100%" cellspacing=0 cellpadding=1>
+
+<tr>
+  <th align=left>Task Groups / Milestones:
+  <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_tasktomile')">HELP</a>
+  </th>
+</tr>
+
+<tr>
+  	  <td align=center valign=top>
+	    <table border=0 width="100%" cellspacing=0 cellpadding=1>
+	      <tr>
+	        <td>
+		  <maly-if var="SCALAR:TASK{TGROUPS}" lt="3">
+		    <maly-set var="TGSIZE" value=3/>
+		  <maly-else/>
+		    <maly-set var="TGSIZE" value="#SCALAR:TASK{TGROUPS}#"/>
+		  </maly-if>
+	          <select name="TGROUPS" id="TGROUPS" multiple=multiple size="#TGSIZE#" style="width: 100%">
+		    <maly-loop name="TGRPLINK" var="TASK{TGROUP_IDS}">
+		      <maly-set var="TGROUP" from="TASK{TGROUPS}{MID=#TGRPLINK{MID}#}"/>
+		        <option value="#TGRPLINK{LINK_ID}#:#TGRPLINK{MID}#" style="white-space: normal">
+			  <maly-if var="TGROUP{PROJECT}">
+			    #TGROUP{PROJECT}{TITLE}#:
+			  </maly-if>
+			  #TGROUP{SUMMARY}#
+		        </option>
+		    </maly-loop>
+	          </select>
+		</td>
+	      </tr>
+	      <tr>
+		<td valign=top colspan=2 align=left>
+		  <maly-if var="EDITABLE{TGROUPS}">
+		  <a href="Javascript:void(0)" onClick="addMilestonePopup(null, 'TGROUPS');">New</a> |
+		  <a href="Javascript:void(0)" onClick="searchMilestonePopup('TGROUPS', 'prod_id='+get_field_value('prod_id'));">Existing</a> |
+		  <a href="Javascript:void(0)" onClick="removeTaskGroup();">Unlink</a> |
+		  </maly-if>
+		  <a href="Javascript:void(0)" onClick="viewMilestone()">View</a>
+		</td>
+	      </tr>
+            </table>
+  	  </td>
+</tr>
+
+<maly-if var="TASK{TID}" defined=1>
+<tr>
+  <th><hr></th>
+</tr>
+<tr>
+  <th align=left>Subtasks / Dependencies:
+  <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_taskdep')">HELP</a>
+  </th>
+</tr>
+
+<tr>
+
+  	  <td align=center valign=top>
+	    <table border=0 width="100%" cellspacing=0 cellpadding=1>
+	      <tr>
+	        <td style="width: 90%" align=right>
+		  <maly-if var="SCALAR:TASK{SUBTASKS}" lt="3">
+		    <maly-set var="STSIZE" value=3/>
+		  <maly-else/>
+		    <maly-set var="STSIZE" value="#SCALAR:TASK{SUBTASKS}#"/>
+		  </maly-if>
+	          <select name="SUBTASKS" id="SUBTASKS" multiple=multiple size="#STSIZE#" style="width: 100%"
+		    onClick="markStrictDependenceCheckbox(this, subtask_strict);">
+		    <maly-loop name="SUBTLINK" var="TASK{SUBTASK_IDS}" sort="NTID,TID">
+		      <maly-set var="SUBTASK" from="TASK{SUBTASKS}{TID=#SUBTLINK{TID}#}"/>
+		      <maly-if var="SUBTASK{STATUS}" lt="10">
+		        <option value="#SUBTLINK{LINK_ID}#:#SUBTLINK{TID}#:#SUBTLINK{STRICT}#" style="font-weight: bold; color: red; white-space: normal">
+		          #SUBTASK{TITLE}#
+		        </option>
+		      <maly-else/>
+		        <option value="#SUBTLINK{LINK_ID}#:#SUBTLINK{TID}#:#SUBTLINK{STRICT}#" class="done" style="white-space: normal">
+			  #SUBTASK{TITLE}#
+		        </option>
+		      </maly-if>
+		    </maly-loop>
+	          </select>
+		</td>
+		<td align=left style="width: 10%">
+		  <maly-if var="EDITABLE{SUBTASKS}">
+		  <a href="Javascript:void(0)" onClick="multiList_up('SUBTASKS', null, 1)">Up</a>
+		  <br>
+		  <a href="Javascript:void(0)" onClick="multiList_down('SUBTASKS', null, 1)">Down</a>
+		  </maly-if>
+		</td>
+	      </tr>
+	      <tr>
+	        <td align=left colspan=2>
+		<maly-if var="EDITABLE{SUBTASKS}">
+		  <input type=checkbox name="subtask_strict" value=1 onChange="setStrictDependence('SUBTASKS', this)">
+		  Must complete before parent
+		</maly-if>
+
+		</td>
+	      </tr>
+	      <tr>
+		<td valign=top colspan=2 align=left>
+		  <maly-if var="EDITABLE{SUBTASKS}">
+		  <a href="Javascript:void(0)" onClick="addTaskPopup('ptid=#TASK{TID}#', 'SUBTASKS');">New</a> |
+		  <a href="Javascript:void(0)" onClick="searchTaskPopup(null, 'SUBTASKS', 'pidmid=:#TASK{TGROUPS}[0]{MID}#&prod_id='+get_field_value('prod_id'));">Existing</a> |
+		  <a href="Javascript:void(0)" onClick="removeSubtask();">Unlink</a> |
+		  </maly-if>
+		  <a href="Javascript:void(0)" onClick="viewSubtask()">View</a> |
+		  <a href="Javascript:void(0)" onClick="searchTaskPopup('ptid=#TASK{TID}#')">Browse All</a> |
+		  <a href="Javascript:void(0)" onClick="viewGanttPopup('PTID', '#TASK{TID}#')">Gantt</a>
+		</td>
+            </table>
+  	  </td>
+</tr>
+</maly-if>
+</table>
+</div>
+
+<div class="header" align=left>
+    Notes:
+</div>
+
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'addnote');" value=1 checked=checked>
+    Add Note:
+</div>
+
+
+<div id='addnote'>
+<table border=1 width="100%" cellspacing=0 cellpadding=1>
+  	<tr>
+  	  <td align=left>
+  	    <maly-if eval="'#MODE#' eq 'Add' or '#EDITABLE{NOTES}#'">
+  	      <textarea name=notes id='notes_textarea' rows=5 wrap=virtual style="width: 100%"></textarea>
+
+  		    <hr>
+  	    </maly-if>
+	  </td>
+	</tr>
+</table>
+</div>
+
+
+<maly-if var="TASK{NOTES}">
+<div class="header" align=left>
+  <input type=checkbox onChange="toggleSection(this,'prevnotes');" name="prevnotes_checkbox" value=1 checked=checked>
+    Previous Notes:
+</div>
+
+<div id='prevnotes'>
+<table border=0 width="100%" cellspacing=0 cellpadding=1>
+  	        <maly-loop name=NOTE var="TASK{NOTES}" sort="TIMESTAMP_FORMATTED" reverse=1>
+  		  <tr>
+  		    <td align=left>
+  		      At #NOTE{TIMESTAMP_FORMATTED}#, #NOTE{USER}{FULLNAME}# wrote:<br>
+  
+  		      #HTML:NOTE{TEXT}#
+  		    <hr>
+  		    </td>
+  		  </tr>
+  		</maly-loop>
+</table>
+</div>
+</maly-if>
+
+<table border=0 width="100%" cellspacing=0 cellpadding=1>
+  	<tr>
+  	  <td align=left> 
+  	    <maly-if eval="'#MODE#' eq 'Add'">
+  	      <input type=submit name=action value="Add">
+  	    <maly-else />
+  	      <maly-if var="KEYS:EDITABLE">
+  	        <input type=submit name=action value="Save">
+  	      </maly-if>
+  	    </maly-if>
+  	    <input type=submit value="Close" onClick="closePopup(1);">
+	    <maly-if eval="'#FORM{TASK_ADDED}#' eq '' or '#FORM{LINK_FIELD}#' eq ''">
+  	       <input type=submit value="Close/Refresh" onClick="closePopup();">
+	    </maly-if>
+  	  </td>
+  	</tr>
+  </table>
+  
+</form>
+
+</td>
+</tr>
+</maly-set>
+
+#include popup_main

@@ -1,0 +1,91 @@
+<maly-set var="CUSTOM_SCRIPT">
+</maly-set>
+
+<maly-set var="CUSTOM_ONLOAD">
+</maly-set>
+
+
+
+<maly-set var="CONTENT">
+
+<tr>
+<td align=center>
+
+<form method="POST" action="#PATHINFO_URL#" name="dependencyForm">
+  <input type=hidden name="TID" value="#TID#">
+  <input type=hidden name="EDIT_DEPENDENCIES" value="1">
+  
+	    <table border=0 cellspacing=0 cellpadding=2 width="100%">
+	    <tr>
+	      <td align=left><h2>Dependencies for task # #MILESTONE{PMID}#.#MTID#:</h2></td>
+	    </tr>
+	      <maly-if not=1 var="SCALAR:ALL_PROJECT_TASKS">
+	        <tr>
+		  <td align=left>(No other tasks in project)</td>
+		</tr>
+	      <maly-else/>
+	        <maly-if var="DEPENDENCIES">
+	          <maly-loop name="DEP" var="DEPENDENCIES">
+	          <tr>
+	            <td>
+		      <a href="Javascript:void(0)" onClick="editTaskPopup(#DEP{TID}#);">
+		        <maly-if var="DEP{MILESTONE}">
+		          #DEP{MILESTONE}{SUMMARY}# &gt; 
+		        </maly-if>
+		    
+		        #DEP{TITLE}#
+		      </a>
+		    </td>
+		    <td align=middle>
+		      #STATUSMAP{#DEP{STATUS}#}#
+		    </td>
+		    <td align=right>
+		      <maly-if eval="'#MODE#' ne 'Add' and '#EDITABLE{DEPENDENCY}#'">
+		      <a href="cgi-bin/Tasks.pl/Edit?tid=#TID#&dependent_tid=#DEP{TID}#&action=Remove&edit_dependencies=1">
+		        Remove
+		      </a>
+		      <maly-else/>
+		      &nbsp;
+		      </maly-if>
+		    </td>
+	          </tr>
+	        </maly-loop>
+              <maly-else/>
+	        <tr><td align=left>
+	        (No dependencies currently set.)
+		</td></tr>
+	      </maly-if>
+              <maly-if eval="'#MODE#' ne 'Add' and '#EDITABLE{DEPENDENCY}#'">
+	      <tr>
+	        <td align=left colspan=2>
+		  Add Dependency:<br>
+		  <select name="dependent_tid" style="width: 250px">
+		  <maly-loop name=DEP var="ALL_PROJECT_TASKS" sort="MILESTONE{PMID},MTID">
+		    <option value="#DEP{TID}#">
+		      <maly-if var="DEP{MILESTONE}">
+		        #DEP{MILESTONE}{PMID}#.#DEP{MTID}#)
+		      </maly-if>
+		      #DEP{TITLE}# (#DEP{TID}#)
+		    </option>
+		  </maly-loop>
+		  </select>
+		</td>
+		<td align=right>
+		  <input type=submit name=action value="Link">
+		</td>
+	      </tr>
+	      </maly-if>
+	      </maly-if>
+	    <tr>
+	      <td align=left>
+	        <input type=submit value="Close" onClick="closePopup();">
+	      </td>
+	    </tr>
+	    </table>
+</form>
+
+</td>
+</tr>
+</maly-set>
+
+#include popup_main

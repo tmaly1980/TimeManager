@@ -1,0 +1,190 @@
+*  { font-family: Verdana, Arial, sans-serif; font-size: 10px; }
+pre { font-family: monospace; }
+body,td,p { background-color: #EDEDED }
+*.largetext { font-size: 24px; font-weight: bold; }
+*.mediumtext { font-size: 14px; font-weight: normal; }
+
+*.top_banner,*.left_banner { background-color: #0066dd }
+
+*.left_banner
+{
+  vertical-align: top;
+}
+*.bottom_banner { text-align: center; }
+
+*.content
+{
+  vertical-align: top;
+  text-align: left;
+}
+
+A {
+  color: #002266;
+  text-decoration: none;
+}
+
+A:hover {
+  color: #AA2233;
+  text-decoration: underline;
+}
+
+*.top_banner A
+{
+  color: #000000;
+}
+
+*.top_banner A:hover {
+  color: #AACCDD;
+  text-decoration: underline;
+}
+
+th.left_nav_title, *.header, *.account_header, *.cart_banner, *.footer
+{
+  background-color: #BBBBFF;
+}
+
+th.left_nav_bigtitle
+{
+  background-color: #9999cc;
+}
+
+th.left_nav_bigtitle a, th.left_nav_bigtitle
+{
+  font-size: 16px;
+  text-align: left;
+}
+
+*.cost
+{
+  font-weight: bold;
+  font-size: 16px;
+}
+
+th.product_header { font-size: 20px; font-weight: bold; }
+
+td.description, *.feature, *.link
+{ 
+  padding-left: 20px; 
+}
+
+A.buy
+{
+  font-weight: bold;
+  font-size: 24px;
+
+}
+
+td.release_date
+{
+  font-weight: bold;
+  font-size: 24px;
+}
+
+th.who_for_header, th.sys_req_header
+{
+  font-size: 16px;
+}
+
+th.products_header, *.feature_header, *.links_header, *.cart_header
+{
+  font-size: 16px;
+}
+
+td, th
+{
+  vertical-align: top;
+
+}
+
+th.products_name
+{
+  font-size: 14px;
+}
+
+td.products_summary
+{
+
+}
+
+span.no_image_text
+{
+  font-size: 14px;
+  font-weight: bold;
+  vertical-align: middle;
+  text-align: center;
+}
+
+*.thumbnail
+{
+  height: 80px;
+  width: 100px;
+}
+
+*.thumbnail_small
+{
+ height: 60px;
+ width: 75px;
+}
+
+*.thumbnail_large
+{
+  height: 120px;
+  width: 150px;
+}
+
+*.input
+{
+  background-color: #FFFFFF;
+  color: #000000;
+}
+
+th.account_header
+{
+  font-size: 16px;
+}
+
+th.account_field_col
+{
+  width: 120px;
+  background-color: #FFFFFF;
+}
+
+*.required
+{
+  color: #FF0000;
+}
+
+hr
+{
+  border-style: solid none solid none;
+  border-color: #000000;
+}
+
+*.data1
+{
+  background-color: #C0C0C0;
+}
+
+*.data2
+{
+  background-color: #A0A0A0;
+}
+
+*.box
+{
+  border-style: solid;
+  border-width: 1px 1px 1px 1px;
+  border-color: #EDEDED;
+}
+
+*.main_product_buy
+{
+  font-size: 14px;
+  font-weight: bold;
+}
+
+*.browse_summary
+{
+  padding-left: 20px;
+
+}

@@ -1,0 +1,140 @@
+<widget-listpage TABLE="PRODUCT_INSTALLATION_STEP">
+
+
+  
+    <maly-set var="CUSTOM_ONLOAD">
+      <maly-loop sort="STEP_NUM" var="PRODUCT_INSTALLATION_STEP">
+      set_select('PRODUCT_INSTALLATION_STEP[#MALYITER#]{STEP_NUM}', '#STEP_NUM#', '#MALYITERNUM#');
+    </maly-loop></maly-set>
+
+  
+
+<maly-set var='CONTENT'>
+  
+    
+      <form method=POST action='#PATHINFO_URL#'>
+    
+    
+      <input name="VER_ID" type="hidden" value="#FORM{VER_ID}#">
+    
+  
+  <widget-list>
+<table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="2">
+    Product Installation Step List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="right" colspan="2">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_INSTALLATION_STEP/Add?VER_ID=#FORM{VER_ID}#&apos;, &apos;add_PRODUCT_INSTALLATION_STEP_#FORM{VER_ID}#&apos;, 450, 550);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Summary
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_INSTALLATION_STEP' name='PRODUCT_INSTALLATION_STEP_ITEM' sort='STEP_NUM' loopvar='MITER'>
+  
+  
+    <maly-set eval=1 value="'#MITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+
+  <tr class="#BGCLASS#">
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <input name="PRODUCT_INSTALLATION_STEP[#MITER#]{CUSTSTEP_ID}" type="hidden" value="#PRODUCT_INSTALLATION_STEP_ITEM{CUSTSTEP_ID}#">
+	  <widget-editfield PREFIX="" PREFIXITER="\\#MITER\\#" TABLE="PRODUCT_INSTALLATION_STEP">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="PRODUCT_INSTALLATION_STEP[\#MITER\#]{STEP_NUM}" NAME="PRODUCT_INSTALLATION_STEP[\#MITER\#]{STEP_NUM}" PLUS="\#PLUS\#" TO="\#SCALAR:PRODUCT_INSTALLATION_STEP\#" VALUE="\#PRODUCT_INSTALLATION_STEP_ITEM{STEP_NUM}\#" VAR="PRODUCT_INSTALLATION_STEP[\#MITER\#]{STEP_NUM}">
+<select id="PRODUCT_INSTALLATION_STEP[#MITER#]{STEP_NUM}" name="PRODUCT_INSTALLATION_STEP[#MITER#]{STEP_NUM}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:PRODUCT_INSTALLATION_STEP#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+	
+      </td>
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_INSTALLATION_STEP/Edit?CUSTSTEP_ID=#PRODUCT_INSTALLATION_STEP_ITEM{CUSTSTEP_ID}#&apos;, &apos;edit_PRODUCT_INSTALLATION_STEP_#PRODUCT_INSTALLATION_STEP_ITEM{CUSTSTEP_ID}#&apos;);">
+	    <widget-viewfield>
+        
+	  #PRODUCT_INSTALLATION_STEP_ITEM{SUMMARY}#
+	
+
+</widget-viewfield>
+	  </a>
+	
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+
+  </table>
+
+</widget-list>
+  <div style="width: 100%">
+    
+      <div style="float: left">
+        <input name="action" type="submit" value="Update">
+      </div>
+    
+
+    <div style="float: right">
+      <input onclick="closePopup()" type="submit" value="Close">
+    </div>
+  </div>
+
+  
+    
+      </form>
+    
+
+  
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-listpage>

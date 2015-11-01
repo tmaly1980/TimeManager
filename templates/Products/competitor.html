@@ -1,0 +1,302 @@
+<maly-set var="CUSTOM_ONLOAD">
+  if ('#MODE#' == 'Edit')
+  {
+    window.name = "editCompetitor_#COMP{COMP_ID}#";
+  }
+
+  set_select('prod_ver_id', '#COMP{PROD_ID}#:#COMP{VER_ID}#');
+  set_select('priority', '#COMP{PRIORITY}#', '3');
+  set_select('level', '#COMP{LEVEL}#', '5');
+  set_select('uid', '#COMP{UID}#', '#SESSION{UID}#');
+
+
+  set_select('looknfeel', '#COMP{LOOKNFEEL}#', '0');
+  set_select('usability', '#COMP{USABILITY}#', '0');
+  set_select('integration', '#COMP{INTEGRATION}#', '0');
+  set_select('documentation', '#COMP{DOCUMENTATION}#', '0');
+  set_select('customerservice', '#COMP{CUSTOMERSERVICE}#', '0');
+  set_select('compatibility', '#COMP{COMPATIBILITY}#', '0');
+  set_select('roadmap', '#COMP{ROADMAP}#', '0');
+  set_select('features', '#COMP{FEATURES}#', '0');
+  set_select('architecture', '#COMP{ARCHITECTURE}#', '0');
+  set_select('targetmarket', '#COMP{TARGETMARKET}#', '0');
+  set_select('pricing', '#COMP{PRICING}#', '0');
+
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="#PATHINFO_URL#" onSubmit="return formSubmit(this);" name="featureRequestForm">
+<maly-if var="MODE" eq="Add">
+<input type=hidden name="PROD_ID" value="#FORM{PROD_ID}#">
+</maly-if>
+<input type=hidden name="COMP_ID" value="#COMP{COMP_ID}#">
+
+<div align=left>
+	  <maly-if var="MODE" eq="Add">
+	    <a href="#PATHINFO_URL#?prod_id=#FORM{PROD_ID}#">
+	    Add Competitor:
+	    </a>
+	  <maly-else/>
+	    <a href="#PATHINFO_URL#?comp_id=#COMP{COMP_ID}#">
+	    Edit Competitor:
+	    </a>
+	  </maly-if>
+</div>
+
+<table border=0 cellspacing=0 cellpadding=5 width="750">
+<tr>
+  <th align=left class="header" colspan=4>General Information:</th>
+</tr>
+<tr>
+  <th align=left>Name</th>
+  <th align=left>Priority</th>
+  <th align=left>Level</th>
+  <th align=left>URL</th>
+</tr>
+
+<tr>
+  <td valign=top>
+	  <input type=text size=20 name="name" value="#COMP{NAME}#">
+  </td>
+  <td valign=top>
+	  <select name="priority" id=priority>
+	    <maly-loop hash=1 var="CONF{PRIORITYMAP}" sort="KEY" reverse=1>
+	      <option value="#KEY#">#VALUE#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+
+  <td valign=top>
+	  <select name="level" id=level>
+	    <maly-loop var="CONF{COMPLEVELMAP}" hash=1 sort="KEY">
+	      <option value="#KEY#">#VALUE#</option>
+	    </maly-loop>
+	  </select>
+
+  </td>
+
+  <td valign=top>
+	  <input type=text size=30 name="url" value="#COMP{URL}#">
+	  <a href="Javascript:void(0)" onClick="window.open(url.value)">Go</a>
+  </td>
+</tr>
+
+
+<tr>
+  <th colspan=2 align=left>Description</th>
+  <th colspan=2 align=left>Pricing</th>
+</tr>
+
+<tr>
+  <td align=left valign=top colspan=2>
+    <textarea style="width: 250px; height: 75px" name="description">#COMP{DESCRIPTION}#</textarea>
+  </td>
+  <td align=left valign=top colspan=2>
+    <textarea style="width: 250px; height: 75px" name="pricing_description">#COMP{PRICING_DESCRIPTION}#</textarea>
+  </td>
+</tr>
+
+<tr>
+  <th align=left valign=top>Company</th>
+  <th align=left valign=top>Employees</th>
+  <th align=left valign=top>Location</th>
+</tr>
+
+<tr>
+
+
+  <td align=left valign=top>
+	  <input type=text size=20 name="company" value="#COMP{COMPANY}#">
+  </td>
+  <td align=left valign=top>
+	  <input type=text size=10 name="employees" value="#COMP{EMPLOYEES}#">
+  </td>
+  <td align=left valign=top>
+	  <input type=text size=20 name="location" value="#COMP{LOCATION}#">
+  </td>
+
+</tr>
+
+<tr>
+  <th align=left colspan=2>Equivalent Product</th>
+  <th align=left>Manager</th>
+</tr>
+<tr>
+  <td colspan=2>
+	      <select name=prod_ver_id id='prod_ver_id'>
+	        <option value="">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	      </select>
+  </td>
+  <td>
+		<select name="uid" id='uid'>
+		  <maly-loop var="ALL_USERS">
+		      <option value="#UID#">#FULLNAME#</option>
+		  </maly-loop>
+		</select>
+  </td>
+
+
+</tr>
+
+
+</table>
+
+<table border=0 width="750">
+
+<tr>
+  <th colspan=6 align=left class="header">Product Ranking:</th>
+</tr>
+
+<tr>
+  <th>Look and Feel</th>
+  <th>Usability</th>
+  <th>Integration</th>
+  <th>Documentation</th>
+  <th>Customer Service</th>
+  <th>Compatibility /<br> Platform Support</th>
+</tr>
+
+<tr>
+  <td align=center>
+	  <select name="looknfeel" id=looknfeel>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+  <td align=center>
+	  <select name="usability" id=usability>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+  <td align=center>
+	  <select name="integration" id=integration>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+  <td align=center>
+	  <select name="documentation" id=documentation>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+  <td align=center>
+	  <select name="customerservice" id=customerservice>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+  <td align=center>
+	  <select name="compatibility" id=compatibility>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+
+</tr>
+
+<tr>
+  <th>Road Map</th>
+  <th>Features</th>
+  <th>Architecture</th>
+  <th>Target Market</th>
+  <th>Pricing</th>
+</tr>
+<tr>
+  <td align=center>
+	  <select name="roadmap" id=roadmap>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+  <td align=center>
+	  <select name="features" id=features>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+  </td>
+	<td align=center>
+	  <select name="architecture" id=architecture>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+	</td>
+	<td align=center>
+	  <select name="targetmarket" id=targetmarket>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+	</td>
+	<td align=center>
+	  <select name="pricing" id=pricing>
+	    <maly-loop from="-3" to="3" name="ITER">
+	      <option value="#ITER#">#SIGNED:ITER#</option>
+	    </maly-loop>
+	  </select>
+	</td>
+</tr>
+
+</table>
+
+<table border=0 width="750">
+<tr>
+  <th align=left class="header">Competitive Advantages (Features we do not have in our equivalent product):</th>
+  <th align=right class="header">
+    <a href="Javascript:void(0)" onClick="addCompetitorFeaturePopup('#COMP{COMP_ID}#');">Add</a>
+  </th>
+</tr>
+
+<maly-loop var="COMP{FEATURES}" name="COMPFEAT">
+<tr>
+
+</tr>
+</maly-loop>
+
+</table>
+
+<table border=0 width="750">
+
+<tr class="input">
+	<td align=left colspan=2>
+		<input type=submit name=action value="Update">
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

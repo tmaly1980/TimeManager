@@ -1,0 +1,136 @@
+<maly-cutws>
+  <maly-set var="COLSPAN" eval=1 value="'#SCALAR:TABLE_META{MULTIEDIT}#'+1"/>
+  <maly-set var="FIELDS" from="TABLE_META{MULTIEDIT}"/>
+  <maly-set var="CGI" from="TABLE_META{CGI}"/>
+  <maly-set default=1 var="CGI" value="\\#URL\\#"/>
+  <maly-set default=1 var="LOOPNAME" from="TABLE_META{LOOPNAME}"/>
+  <maly-set default=1 var="LOOPNAME" value="#TABLE#_ITEM"/>
+  <maly-set default=1 var="FIELDS" from="TABLE_META{EDIT}"/>
+  <maly-set var="POSTFIX" value="_\\##LOOPNAME#{#TABLE_META{KEY}#}\\#" if="'#TABLE_META{KEY_POSTFIX}#'"/>
+
+</maly-cutws>
+
+<maly-print text="
+  <maly-set var='CUSTOM_ONLOAD'>
+"/><maly-cutws>
+  <maly-loop var="FIELDS" name="COL">
+    <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+    <maly-if var="FIELD{TYPE}" eq="select">
+      <maly-print>
+	  <maly-loop var="#TABLE#" plus=1 sort="#TABLE_META{SORTBY}#">
+            set_select('#TABLE#[\#MALYITER\#]{#COL#}', '\##COL#\#', '\#MALYITERNUM\#');
+	  </maly-loop>
+      </maly-print>
+    <maly-elsif var="FIELD{TYPE}" eq="checkbox"/>
+      <maly-print>
+	  <maly-loop var="#TABLE#" sort="#TABLE_META{SORTBY}#">
+            set_checkbox('#TABLE#[\#MALYITER\#]{#COL#}', '\##COL#\#');
+	  </maly-loop>
+      </maly-print>
+    <maly-elsif var="FIELD{TYPE}" eq="radio"/>
+      <maly-print>
+	  <maly-loop var="#TABLE#" sort="#TABLE_META{SORTBY}#">
+            set_radio('#TABLE#[\#MALYITER\#]{#COL#}', '\##COL#\#');
+	  </maly-loop>
+      </maly-print>
+    </maly-if>
+
+  </maly-loop>
+
+</maly-cutws><maly-print text="
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+"/><maly-cutws>
+      <maly-loop var="FIELDS" name="COL">
+        <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+        <maly-if var="FIELD{TYPE}" eq="multilist">
+	<maly-print>
+	  <maly-loop from=1 to="\#SCALAR:#TABLE#\#" plus=1>
+            selectSubmit('#TABLE#[\#MALYITER\#]{#COL#}');
+	  </maly-loop>
+	</maly-print>
+	</maly-if>
+
+      </maly-loop>
+</maly-cutws><maly-print text="
+
+      return true;
+    }
+  </maly-set>
+
+"/>
+
+<maly-print text="<maly-set var='CONTENT'>"/>
+<form method="POST" action="#CGI#/#TABLE#/Multiedit" onSubmit="return formSubmit(this);">
+      <maly-if var="PARENT_META">
+        <input type="hidden" name="#PARENT_META{KEY}#" value="\#FORM{#PARENT_META{KEY}#}\#">
+      </maly-if>
+
+
+  <table border=0 width="100%">
+  <tr>
+    <th align=left colspan="#COLSPAN#">
+      <a href="\#PATHINFO_URL\#?#PARENT_META{KEY}#=\#FORM{#PARENT_META{KEY}#}\#">
+    Edit #TABLE_META{DESCRIPTION}# List:
+      </a>
+    </th>
+  </tr>
+
+  <tr>
+    <th align=center>
+      Remove
+    </th>
+    <maly-loop var="FIELDS" name="COL">
+    <th align=center>
+      #TABLE_META{FIELDS}{#COL#}{NAME}#
+    </th>
+    </maly-loop>
+  </tr>
+
+  <maly-print text="
+    <maly-loop var='#TABLE#' name='#LOOPNAME#' plus=1 sort='#TABLE_META{SORTBY}#' loopvar='MITER'>
+  "/>
+
+  <tr>
+    <td align=center valign=top>
+      <maly-if var="PARENT_META">
+        <input type="hidden" name="#TABLE#[\#MITER\#]{#PARENT_META{KEY}#}" value="\#FORM{#PARENT_META{KEY}#}\#">
+      </maly-if>
+      <input type=hidden name="#TABLE#[\#MITER\#]{#TABLE_META{KEY}#}" value="\##LOOPNAME#{#TABLE_META{KEY}#}\#">
+      <widget-checkbox name="#TABLE#[\#MITER\#]{_delete}" value="\##LOOPNAME#{#TABLE_META{KEY}#}\#"/>
+    </td>
+    <maly-loop var="FIELDS" name="COL">
+      <maly-set var="FIELD" from="TABLE_META{FIELDS}{#COL#}"/>
+      <td align=center valign=top>
+        <widget-editfield prefixiter="\\#MITER\\#"/>
+      </td>
+    </maly-loop>
+  </tr>
+
+  <maly-print text="
+    </maly-loop>
+  "/>
+
+  <tr>
+    <td align=center valign=top colspan="#COLSPAN#">
+      <div align=left style="float: left">
+        <input type=submit name=action value="Update">
+      </div>
+
+      <div align=right style="float: right">
+        <input type=submit value="Close" onClick="closePopup()">
+      </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+<maly-print text="
+</maly-set>
+
+#include popup_main
+"/>

@@ -1,0 +1,38 @@
+<html>
+<head>
+  <title>TimeManager</title>
+  <base href="#COMPLETE_HTML_BASE_PATH#/">
+  <link rel="stylesheet" type="text/css" href="style.css"/>
+  <script langauge="JavaScript" src="core.js"></script>
+  <script langauge="JavaScript" src="TimeManager.js"></script>
+  <script>
+    #CUSTOM_SCRIPT#
+
+    function helpPopup()
+    {
+      var keyword = arguments[0];
+      var site = '#DOC_SITE#';
+      var keypage = keyword ? keyword + ".html" : "";
+      windowOpen(site+'docs/TimeManager/'+keypage, 'help_'+keyword, 600, 400, 1);
+    }
+
+    function loadPage()
+    {
+      #CUSTOM_ONLOAD#
+    }
+  </script>
+</head>
+<body onLoad="loadPage();">
+
+<maly-if var="ABSOLUTE_WIDTH">
+<table border=0 cellspacing=0 cellpadding=0>
+#CONTENT#
+</table>
+<maly-else/>
+<table border=0 cellspacing=0 cellpadding=0 width="100%">
+#CONTENT#
+</table>
+</maly-if>
+
+</body>
+</html>

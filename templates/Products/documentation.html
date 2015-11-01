@@ -1,0 +1,143 @@
+<maly-set var="CUSTOM_ONLOAD">
+
+  <maly-loop var="VERSION{COMPONENTS}" name="COMPONENT" loopvar="COMPITER" sort="DOC_NUM,NAME">
+    <maly-set default=1 var="COMPONENT{DOC_NUM}" value="#COMPITER#+1" eval=1/>
+    set_select(document.docForm.COMPONENT_#COMPONENT{COMPONENT_ID}#, '#COMPONENT{DOC_NUM}#');
+    <maly-loop var="COMPONENT{FEATURES}" name="CFEATURE" loopvar="CFEATITER" sort="FEATURE_NUM,NAME">
+      <maly-set default=1 var="CFEATURE{FEATURE_NUM}" value="#CFEATITER#+1" eval=1/>
+      set_select(document.docForm.CFEATURE_#CFEATURE{CFEATURE_ID}#, '#CFEATURE{FEATURE_NUM}#');
+      <maly-loop var="CFEATURE{ITEMS}" name="FITEM" loopvar="FITEMITER" sort="DOC_NUM,NAME">
+        <maly-set default=1 var="FITEM{DOC_NUM}" value="#FITEMITER#+1" eval=1/>
+        set_select(document.docForm.FITEM_#FITEM{FITEM_ID}#, '#FITEM{DOC_NUM}#');
+      </maly-loop>
+    </maly-loop>
+  </maly-loop>
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.versions);
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="#PATHINFO_URL#" onSubmit="return formSubmit(this);" name="docForm">
+<input type=hidden name="VER_ID" value="#VERSION{VER_ID}#">
+<table border=0 cellspacing=0 cellpadding=5 width="100%">
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <a href="#PATHINFO_URL#?prod_id=#FORM{PROD_ID}#&ver_id=#FORM{VER_ID}#">
+	    Edit Documentation Layout:
+	  </maly-if>
+	  </a>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if eval="'#SESSION{SITEADMIN}#' and '#FORM{PROD_ID}#' ne ''">
+	    <a href="#PATHINFO_URL#?prod_id=#PRODUCT{PROD_ID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Name: </th>
+	<td align=left colspan=2>
+		#PRODUCT{NAME}# #VERSION{VER_NAME}#
+	</td>
+</tr>
+
+<tr>
+  <td colspan=2>
+    Components:
+  </td>
+</tr>
+<maly-loop var="VERSION{COMPONENTS}" name="COMPONENT" sort="DOC_NUM,NAME">
+
+<tr>
+  <td colspan=2 align=left>
+    <select name="COMPONENT_#COMPONENT{COMPONENT_ID}#">
+      <maly-loop from=1 to="#SCALAR:VERSION{COMPONENTS}#" name="NUM">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+    #COMPONENT{NAME}#
+  </td>
+</tr>
+
+<maly-if var="COMPONENT{FEATURES}">
+<tr>
+  <td colspan=2 align=left>
+    <div style="width: 50px; float: left">&nbsp;</div>
+    Features:
+  </td>
+</tr>
+
+  <maly-loop var="COMPONENT{FEATURES}" name="CFEATURE" sort="FEATURE_NUM,NAME">
+<tr>
+  <td colspan=2 align=left>
+    <div style="width: 50px; float: left">&nbsp;</div>
+    <select name="CFEATURE_#CFEATURE{CFEATURE_ID}#">
+      <maly-loop from=1 to="#SCALAR:COMPONENT{FEATURES}#" name="NUM">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+    #CFEATURE{NAME}#
+  </td>
+</tr>
+
+  <maly-if var="CFEATURE{ITEMS}">
+<tr>
+  <td colspan=2 align=left>
+    <div style="width: 100px; float: left">&nbsp;</div>
+    Items:
+  </td>
+</tr>
+
+    <maly-loop var="CFEATURE{ITEMS}" name="FITEM" sort="DOC_NUM,NAME">
+<tr>
+  <td colspan=2 align=left>
+    <div style="width: 100px; float: left">&nbsp;</div>
+    <select name="FITEM_#FITEM{FITEM_ID}#">
+      <maly-loop from=1 to="#SCALAR:COMPONENT{FEATURES}#" name="NUM">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+    #FITEM{NAME}#
+  </td>
+</tr>
+
+    </maly-loop>
+    </maly-if>
+
+
+  </maly-loop>
+  </maly-if>
+
+
+
+</maly-loop>
+
+<tr class="input">
+	<td align=left colspan=2>
+		<input type=submit name=action value="Update">
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

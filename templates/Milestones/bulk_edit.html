@@ -1,0 +1,103 @@
+<hr>
+
+<table border=0 cellspacing=0 cellpadding=5 align=center>
+  <tr>
+    <th class="header" colspan=6>Bulk Change Task Groups/Milestones
+    (<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_bulkchangetgroup');">HELP</a>)
+    
+    </th>
+  </tr>
+  <tr class="input">
+    <td valign=top>
+      <table border=0 cellspacing=0 cellpadding=2 align=center class="input">
+        <tr>
+          <th align=left>Project:</th>
+	  <td colspan=3>
+	    <select name=bulk_pid>
+              <option value=""> </option>
+	      <maly-loop name=PROJECT sort=PID var=ALL_PROJECTS>
+	        <option value="#PROJECT{PID}#"> #PROJECT{TITLE}# </option>
+	      </maly-loop>
+            </select>
+          </td>
+	</tr>
+	<tr>
+
+	  <th align=left>Priority:</th>
+	  <td>
+	    <select name=bulk_priority>
+	      <option value=""> </option>
+	      <maly-loop hash=1 sort=1 var="PRIORITYMAP">
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+	    </select>
+	  </td>
+
+		  <th align=left>Owner:</th>
+		  <td>
+		    <select name=bulk_uid>
+		      <option value=""> </option>
+		      <option value="-1">Unassigned</option>
+		      <maly-loop name=O var="AVAILABLE_OWNERS" sort=FULLNAME>
+		      <maly-if not=1 var="SEARCH_IN_LIST_R{#O{UID}#}">
+			<maly-set var="SEARCH_IN_LIST_R{#O{UID}#}" value=1/>
+			<option value="#O{UID}#">#O{FULLNAME}#</option>
+		      </maly-if>
+		      </maly-loop>
+		    </select>
+		  </td>
+		</tr>
+		<tr>
+		  <th align=left valign=top>Start Date: </th>
+		  <td>
+		    <input type=text name="bulk_STARTDATE" id="STARTDATE_CHANGE" size=12>
+		    <br>YYYY-MM-DD
+		    <br>
+		      (<a href="Javascript:void(0)" onClick="return setDatePopup('STARTDATE_CHANGE', document.bulkChangeForm.bulk_STARTDATE.value);">Calendar</a>)
+		  </td>
+		  <th align=left valign=top>Due Date: </th>
+		  <td>
+		    <input type=text name="bulk_ENDDATE" id="ENDDATE_CHANGE" size=12> 
+		    <br>
+		    YYYY-MM-DD
+		    <br>
+		      (<a href="Javascript:void(0)" onClick="return setDatePopup('ENDDATE_CHANGE', document.bulkChangeForm.bulk_ENDDATE.value);">Calendar</a>)
+		  </td>
+	</tr>
+		<tr>
+		  <th align=right valign=top>Relative Start Date: </th>
+		  <td align=left>
+		    <input type=text name="bulk_REL_STARTDATE" id="REL_STARTDATE_CHANGE" size=4>
+		    <br>
+		    <select name="bulk_REL_STARTDATE_UNIT">
+		      <option value="1">Days Forward</option>
+		      <option value="7">Weeks Forward</option>
+		      <option value="-1">Days Back</option>
+		      <option value="-7">Weeks Back</option>
+		    </select>
+		  </td>
+
+		  <th align=right valign=top>Relative Due Date: </th>
+		  <td align=left>
+		    <input type=text name="bulk_REL_ENDDATE" id="REL_ENDDATE_CHANGE" size=4> 
+		    <br>
+		    <select name="bulk_REL_ENDDATE_UNIT">
+		      <option value="1">Days Forward</option>
+		      <option value="7">Weeks Forward</option>
+		      <option value="-1">Days Back</option>
+		      <option value="-7">Weeks Back</option>
+		    </select>
+		  </td>
+	</tr>
+
+      </table>
+    </td>
+  </tr>
+
+  <tr class="input">
+    <td align=right>
+      <input type=hidden name=search_url value="#FULL_URL#">
+      <input type=submit name=action value="Change Task Groups">
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,141 @@
+<maly-set var="CUSTOM_ONLOAD">
+  set_select(document.productForm.manager_uid, "#PRODUCT{MANAGER_UID}#");
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.versions);
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<div align=right>
+<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_products');">HELP</a>
+</div>
+<form method=POST action="cgi-bin/Admin.pl/product" onSubmit="return formSubmit(this);" name="productForm">
+<input type=hidden name="PROD_ID" value="#FORM{PROD_ID}#">
+<table border=0 cellspacing=0 cellpadding=5 width=300>
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <maly-if var="FORM{ADD}">
+	    Add Product:
+	  <maly-else/>
+	    Edit Product:
+	  </maly-if>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if eval="'#SESSION{SITEADMIN}#' and '#FORM{PROD_ID}#' ne ''">
+	    <a href="#PATHINFO_URL#?prod_id=#PRODUCT{PROD_ID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Name: </th>
+	<td align=left colspan=2>
+	<maly-if var="READONLY">
+		#PRODUCT{NAME}#
+	<maly-else/>
+		<input type="text" name="name" size=30 value="#PRODUCT{NAME}#">
+	</maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Manager: </th>
+	<td align=left colspan=2>
+	<maly-if var="READONLY">
+	  <maly-if var="PRODUCT{MANAGER}{EMAIL}">
+	        <a href="mailto:#PRODUCT{MANAGER}{EMAIL}#">
+		#PRODUCT{MANAGER}{FULLNAME}#
+		</a>
+	  <maly-else/>
+		#PRODUCT{MANAGER}{FULLNAME}#
+	  </maly-if>
+	<maly-else/>
+		<select name="manager_uid">
+		  <maly-loop var="ALL_USERS">
+		      <option value="#UID#">#FULLNAME#</option>
+		  </maly-loop>
+		</select>
+	</maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Versions: </th>
+	<td align=left colspan=2>
+	<maly-if not=1 var="READONLY">
+	<table border=0>
+	  <tr>
+	    <td>
+	      <select name=versions multiple size=5 id="versions"
+	        onclick="return multiList_edit('versions', new Array('version_id', 'version_name', 'version_alias'))" >
+	        <maly-loop var="PRODUCT{VERSIONS}" sort="VER_NAME" name="VERSION">
+	            <option value="#VERSION{VER_ID}#:#VERSION{VER_NAME}#:#VERSION{VER_ALIAS}#">#VERSION{VER_NAME}#
+		    <maly-if var="VERSION{VER_ALIAS}">
+		      (#VERSION{VER_ALIAS}#)
+		    </maly-if>
+		    </option>
+	        </maly-loop>
+	      </select>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	     <a onclick="return multiList_add('versions', new Array('version_id', 'version_name', 'version_alias'), '%1% (%2%)' )" href="Javascript:void(0)">Add</a>
+	     | <a onclick="return multiList_replace('versions', new Array('version_id', 'version_name', 'version_alias'), '%1% (%2%)')" href="Javascript:void(0)">Replace</a>
+             | <a onclick="return multiList_remove('versions', new Array('version_id', 'version_name', 'version_alias'), '%1% (%2%)')" href="Javascript:void(0)">Remove</a>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	    <input type=hidden name="version_id" id="version_id">
+	      <table border=0 cellpadding=1 cellspacing=1>
+	        <tr>
+	      <td>Number:</td> <td><input type=text name="version_name" id="version_alias" size=15></td>
+		</tr>
+		<tr>
+	      <td>Name:</td> <td><input type=text name="version_alias" id="version_alias" size=15></td>
+		</tr>
+
+	      </table>
+	    </td>
+	  </tr>
+	</table>
+
+	<maly-else/>
+	  <maly-loop var="PRODUCT{TASK_CATEGORIES}">
+	    #NAME#<br>
+	  </maly-loop>
+	</maly-if>
+
+	</td>
+</tr>
+<tr class="input">
+	<td align=left colspan=2>
+	  <maly-if var="FORM{ADD}">
+		<input type=submit name=action value="Add">
+	  <maly-else/>
+		<input type=submit name=action value="Update">
+	  </maly-if>
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

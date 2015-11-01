@@ -1,0 +1,270 @@
+  <maly-set var='CUSTOM_ONLOAD'>
+      <maly-loop var="CFEATURE{ITEMS}" name="ITEM" sort="item_num">
+        set_select("item_num_#ITEM{FITEM_ID}#", '#ITEM{ITEM_NUM}#', '#MALYITERNUM#');
+      </maly-loop>
+
+      <maly-loop var="CFEATURE{HOWTO}" name="HOWTO" sort="howto_num">
+        set_select("howto_num_#HOWTO{FEATURE_HOWTO_ID}#", '#HOWTO{HOWTO_NUM}#', '#MALYITERNUM#');
+      </maly-loop>
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+      return true;
+    }
+  </maly-set>
+
+
+<maly-set var='CONTENT'>
+<form action="#PATHINFO_URL#" method="POST" onsubmit="return formSubmit(this);">
+
+  <maly-if var="FORM{CFEATURE_ID}">
+  <div align="right">
+    <a href="#PATHINFO_URL#?CFEATURE_ID=#FORM{CFEATURE_ID}#&amp;action=Delete">Delete</a>
+  </div>
+  </maly-if>
+
+
+  
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="5">
+      <a href="#PATHINFO_URL#?CFEATURE_ID=#FORM{CFEATURE_ID}#">
+    Edit Component Feature Entry:
+      </a>
+    </th>
+  </tr>
+
+      
+        
+	  <maly-if eq="Add" var="MODE">
+        <input name="COMPONENT_ID" type="hidden" value="#FORM{COMPONENT_ID}#">
+	  </maly-if>
+
+	
+      
+      <input name="CFEATURE_ID" type="hidden" value="#FORM{CFEATURE_ID}#">
+
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Name:
+      </th>
+      <td align="left" class="input" valign="top">
+<input id="NAME" maxlength="255" name="NAME" size="30" type="text" value="#CFEATURE{NAME}#">
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Abbreviation:
+      </th>
+      <td align="left" class="input" valign="top">
+<input id="ABBREV" maxlength="255" name="ABBREV" size="30" type="text" value="#CFEATURE{ABBREV}#">
+      </td>
+    </tr>
+
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Descriptive Name (Marketing Feature List):
+      </th>
+      <td align="left" class="input" valign="top">
+<input id="NAME" maxlength="255" name="DESCRIPTIVE_NAME" size="30" type="text" value="#CFEATURE{DESCRIPTIVE_NAME}#">
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Summary:
+      </th>
+      <td align="left" class="input" valign="top">
+<input id="SUMMARY" maxlength="255" name="SUMMARY" size="30" type="text" value="#CFEATURE{SUMMARY}#">
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Description:
+      </th>
+      <td align="left" class="input" valign="top">
+<textarea name="DESCRIPTION" style="width: 100%; height: 100px">#CFEATURE{DESCRIPTION}#</textarea>
+      </td>
+    </tr>
+
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Images:
+      </th>
+      <td align="left" class="input" valign="top">
+        <a href="Javascript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/product_feature_overview/Multiedit?CFEATURE_ID=#CFEATURE{CFEATURE_ID}#', 'featureOverview_#CFEATURE{CFEATURE_ID}#', '550', '300')">
+	Edit</a>
+      </td>
+    </tr>
+
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Howto's:
+      </th>
+      <td align="left" class="input" valign="top">
+        <widget-list TABLE="PRODUCT_FEATURE_HOWTO">
+<table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="">
+    Feature Howto List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="right" colspan="2">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_FEATURE_HOWTO/Add?CFEATURE_ID=#FORM{CFEATURE_ID}#&apos;, &apos;add_PRODUCT_FEATURE_HOWTO_#FORM{CFEATURE_ID}#&apos;, 450, 550);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='CFEATURE{HOWTO}' name='HOWTO' sort='HOWTO_NUM' loopvar='MITER'>
+  
+  
+    <maly-set eval=1 value="'#MITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+
+  <tr class="#BGCLASS#">
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <input name="FEATURE_HOWTO_ID" type="hidden" value="#HOWTO{FEATURE_HOWTO_ID}#">
+            <select id="howto_num_#HOWTO{FEATURE_HOWTO_ID}#" name="HOWTO_NUM">
+      <maly-loop from=1 name="NUM" to="#SCALAR:CFEATURE{HOWTO}#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+</select>
+      </td>
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        <a href="Javascript:void(0)" onClick="widgetPopup('#URL#/PRODUCT_FEATURE_HOWTO/Edit?FEATURE_HOWTO_ID=#HOWTO{FEATURE_HOWTO_ID}#');">
+	  #HOWTO{TITLE}#
+	  </a>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+
+  </table>
+
+</widget-list>
+      </td>
+    </tr>
+
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Feature Items:
+      </th>
+      <td align="left" class="input" valign="top">
+<table border="0" width="100%">
+  <tr>
+    <th align="right" colspan="5">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/feature_item/Add?CFEATURE_ID=#FORM{CFEATURE_ID}#&apos;, &apos;add_FEATURE_ITEMS_#FORM{COMPONENT_ID}#&apos;, 650, 400);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Name
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='CFEATURE{ITEMS}' name='ITEM' sort='ITEM_NUM'>
+  
+  
+    <maly-set eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+
+  <tr class="#BGCLASS#">
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <input name="FITEM_ID" type="hidden" value="#ITEM{FITEM_ID}#">
+<select id="item_num_#ITEM{FITEM_ID}#" name="ITEM_NUM">
+      <maly-loop from=1 to="#SCALAR:CFEATURE{ITEMS}#" name=NUM>
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+</select>
+      </td>
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        <a href="Javascript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/feature_item/Edit?fitem_id=#ITEM{FITEM_ID}#');">
+	  #ITEM{NAME}#
+	</a>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+
+  </table>
+
+      </td>
+    </tr>
+  
+
+  <tr>
+    <td align="right" colspan="5">
+    <div style="float: left">
+      <input name="action" type="submit" value="Update">
+    </div>
+    <div style="float: right">
+      <input onclick="closePopup()" type="submit" value="Close">
+    </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-editpage>

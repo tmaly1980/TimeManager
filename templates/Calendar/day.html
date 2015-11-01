@@ -1,0 +1,129 @@
+#include top
+
+<tr>
+<td align=center>
+
+<table border=0 cellspacing=0 cellpadding=5>
+  <tr>
+    <th colspan=2 align=center>
+      <a href="#URL#/#SCOPE#/#PREV_YEAR#">&lt;&lt;&lt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#PREV_MONTH#">&lt;&lt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#PREV_DAY#">&lt;</a>
+      &nbsp;
+      #DAYNAME#, <a href="#URL#/month/#YEAR##MONTH#">#MONTHNAME#</a> #DAY#, #YEAR#
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_DAY#">&gt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_MONTH#">&gt;&gt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_YEAR#">&gt;&gt;&gt;</a>
+    </th>
+  </tr>
+</table>
+<table border=0 cellspacing=0 cellpadding=5 width="95%">
+  <tr>
+    <th>&nbsp;</th>
+    <th> 
+    Tasks |
+      <a href="Javascript:void(0)" onClick="addTaskPopup()">Add</a>
+    </th>
+    <th> 
+    Events |
+      <a href="Javascript:void(0)" onClick="addEventPopup()">Add</a>
+    </th>
+    <th> 
+    Reminders |
+      <a href="Javascript:void(0)" onClick="addReminderPopup()">Add</a>
+    </th>
+  </tr>
+  <maly-loop name=HOUR var=HOURS>
+  <tr>
+    <th rowspan=2 class="hournum" align=right valign=top>#HOUR#</th>
+
+    <!-- TASKS, FIRST HALF HOUR -->
+    <td class="hourcontent largeday #HOUR_COLOR[#MALYITER#]#">
+      <maly-loop var="TASKS{#HOUR#}">
+        <maly-if var="MALYITER">
+	  <br>
+	</maly-if>
+	<a href="Javascript:void(0)" onClick="editTaskPopup(#TID#)"> #TITLE# </a>
+      </maly-loop>
+      &nbsp;
+    </td>
+    <!-- END TASKS, FIRST HALF HOUR -->
+
+    <!-- EVENTS, FIRST HALF HOUR -->
+    <td class="hourcontent largeday #HOUR_COLOR[#MALYITER#]#">
+      <maly-loop var="EVENTS{#HOUR#}">
+        <maly-if var="MALYITER">
+	  <br>
+	</maly-if>
+	<a href="Javascript:void(0)" onClick="editEventPopup(#TID#)"> #TITLE# </a>
+      </maly-loop>
+      &nbsp;
+    </td>
+    <!-- END EVENTS, FIRST HALF HOUR -->
+
+    <!-- REMINDERS, FIRST HALF HOUR -->
+    <td class="hourcontent largeday #HOUR_COLOR[#MALYITER#]#">
+      <maly-loop var="REMINDERS{#HOUR#}">
+        <maly-if var="MALYITER">
+	  <br>
+	</maly-if>
+	<a href="Javascript:void(0)" onClick="editReminderPopup(#TID#)"> #TITLE# </a>
+      </maly-loop>
+      &nbsp;
+    </td>
+    <!-- END REMINDERS, FIRST HALF HOUR -->
+
+  </tr>
+
+  <tr>
+
+    <!-- TASKS, SECOND HALF HOUR -->
+    <td class="hourcontent largeday #HOUR_COLOR[#MALYITER#]#">
+      <maly-loop var="TASKS{#HOUR#.5}">
+        <maly-if var="MALYITER">
+	  <br>
+	</maly-if>
+	<a href="Javascript:void(0)" onClick="editTaskPopup(#TID#)"> #TITLE# </a>
+      </maly-loop>
+      &nbsp;
+    </td>
+    <!-- END TASKS, SECOND HALF HOUR -->
+    
+    <!-- EVENTS, SECOND HALF HOUR -->
+    <td class="hourcontent largeday #HOUR_COLOR[#MALYITER#]#">
+      <maly-loop var="EVENTS{#HOUR#.5}">
+        <maly-if var="MALYITER">
+	  <br>
+	</maly-if>
+	<a href="Javascript:void(0)" onClick="editEventPopup(#TID#)"> #TITLE# </a>
+      </maly-loop>
+      &nbsp;
+    </td>
+    <!-- END EVENTS, SECOND HALF HOUR -->
+
+    <!-- REMINDERS, SECOND HALF HOUR -->
+    <td class="hourcontent largeday #HOUR_COLOR[#MALYITER#]#">
+      <maly-loop var="REMINDERS{#HOUR#.5}">
+        <maly-if var="MALYITER">
+	  <br>
+	</maly-if>
+	<a href="Javascript:void(0)" onClick="editReminderPopup(#TID#)"> #TITLE# </a>
+      </maly-loop>
+      &nbsp;
+    </td>
+    <!-- END REMINDERS, SECOND HALF HOUR -->
+    
+  </tr>
+  </maly-loop>
+
+</table>
+
+</td>
+</tr>
+
+#include bottom

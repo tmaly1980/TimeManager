@@ -1,0 +1,145 @@
+<form method=GET name="searchForm" action="cgi-bin/TaskGroups.pl/Search">
+<input type=hidden name="LINK_FIELD" value="#FORM{LINK_FIELD}#">
+<input type=hidden name="POPUP" value="#FORM{POPUP}#">
+
+<table border=0 cellspacing=0 cellpadding=1 align=center>
+  <tr>
+    <th class="header" colspan=6>Search Task Groups/Milestones
+    (<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_searchtgroup');">HELP</a>)
+    </th>
+  </tr>
+
+        <tr>
+          <th align=left width="75"> Project: </th>
+	  <td colspan=4>
+	    <select name="pid">
+	      <option value="-2"> </option>
+	      <option value="-1">None</option>
+	      <maly-loop var="ALL_PROJECTS" name="P" sort="TITLE">
+	        <option value="#P{PID}#">#P{TITLE}#</option>
+	      </maly-loop>
+	    </select>
+          </td>
+	</tr>
+	<tr>
+	  <th align=left width="75">Product: </th>
+	  <td colspan=4>
+	    <select name="prod_id">
+	        <option value=""></option>
+	        <option value="-1">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th align=left>Owner:</th>
+	  <td>
+            <select name=uid>
+              <option value=""> </option>
+              <option value="-1">Unassigned</option>
+	      <maly-loop name=O var="AVAILABLE_OWNERS" sort=FULLNAME>
+	      <maly-if not=1 var="SEARCH_IN_LIST{#O{UID}#}">
+	        <maly-set var="SEARCH_IN_LIST{#O{UID}#}" value=1/>
+	        <option value="#O{UID}#">#O{FULLNAME}#</option>
+	      </maly-if>
+	      </maly-loop>
+            </select>
+          </td>
+          <th align=left>Priority:</th>
+	  <td align=left>
+            <select name=priority>
+              <option value=""></option>
+	      <maly-loop hash=1 sort=1 var="PRIORITYMAP" reverse=1>
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+            </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th align=left>Text:</th>
+	  <td>
+	    <input type=text name=text size=20 value="#FORM{TEXT}#">
+	  </td>
+          <th align=left>Status:</th>
+	  <td align=left>
+            <select name=status>
+              <option value=""></option>
+              <option value="-1">Active</option>
+	      <maly-loop hash=1 sort=1 var="STATUSMAP">
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+            </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th align=left valign=bottom>Task Group ID:</th>
+	  <td valign=bottom>
+	    <input type=text name=MID value="#FORM{MID}#" size=6>
+	  </td>
+	</tr>
+
+	<tr>
+	  <th align=left valign=center>
+	    Date:<br>
+	    <select name="date_vector">
+	        <option value="started">Started</option>
+	        <option value="due">Due</option>
+	        <option value="during">Worked on</option>
+	    </select>
+	  </th>
+	  <td colspan=3>
+	    <select name="date1span">
+	      <option value="day">Day Of</option>
+	      <option value="week">Week Of</option>
+	    </select>
+	      <input type=text name=date1 id=date1 size="10" maxlength="10" value="#FORM{DATE1}#">
+	      YYYY-MM-DD
+	      (<a href="Javascript:void(0)" onClick="return setDatePopup('date1', document.searchForm.date1.value);">Set</a>)<br>
+
+	      TO<br>
+
+	    <select name="date2span">
+	      <option value="day">Day Of</option>
+	      <option value="week">Week Of</option>
+	    </select>
+	      <input type=text name=date2 id=date2 size="10" maxlength="10" value="#FORM{DATE2}#">
+	      YYYY-MM-DD
+	      (<a href="Javascript:void(0)" onClick="return setDatePopup('date2', document.searchForm.date2.value);">Set</a>)
+	  </td>
+	</tr>
+  <tr class="input">
+    <th align=left colspan=2>
+      Group by:
+      <select name=group_by>
+        <option value=""></option>
+        <option value="uid">Owner</option>
+        <option value="pid">Project</option>
+        <option value="prod_id">Product</option>
+        <option value="priority">Priority</option>
+        <option value="status">Status</option>
+        <option value="enddate">End Date</option>
+        <option value="endweek">End Week</option>
+      </select>
+    </th>
+    <td align=right colspan=2>
+	<input type=checkbox name=show_tasks value=1> Show Tasks
+      <input type=submit name=action value="Search">
+      <maly-if var="FORM{POPUP}">
+      <input type=submit value="Close" onClick="closePopup(1)">
+      </maly-if>
+    </td>
+  </tr>
+</table>
+
+
+
+</form>

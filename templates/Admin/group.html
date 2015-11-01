@@ -1,0 +1,218 @@
+<maly-set var="CUSTOM_ONLOAD">
+  set_select(document.groupForm.manager_uid, "#GROUP{MANAGER_UID}#");
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.members);
+  selectSubmit(f.task_categories);
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<div align=right>
+<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_groups');">HELP</a>
+</div>
+<form method=POST action="cgi-bin/Admin.pl/group" onSubmit="return formSubmit(this);" name="groupForm">
+<input type=hidden name="GID" value="#FORM{GID}#">
+<table border=0 cellspacing=0 cellpadding=5 width=300>
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <a href="#FULL_URL#">
+	  <maly-if var="FORM{ADD}">
+	    Add Group:
+	  <maly-else/>
+	    Edit Group # #GROUP{GID}#:
+	  </maly-if>
+	  </a>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if eval="'#SESSION{SITEADMIN}#' and '#FORM{GID}#' ne ''">
+	    <a href="#PATHINFO_URL#?gid=#GROUP{GID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Group Name: </th>
+	<td align=left colspan=2>
+	<maly-if var="READONLY">
+		#GROUP{NAME}#
+	<maly-else/>
+		<input type="text" name="name" size=30 value="#GROUP{NAME}#">
+	</maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Manager: </th>
+	<td align=left colspan=2>
+	<maly-if var="READONLY">
+	  <maly-if var="GROUP{MANAGER}{EMAIL}">
+	        <a href="mailto:#GROUP{MANAGER}{EMAIL}#">
+		#GROUP{MANAGER}{FULLNAME}#
+		</a>
+	  <maly-else/>
+		#GROUP{MANAGER}{FULLNAME}#
+	  </maly-if>
+	<maly-else/>
+		<select name="manager_uid">
+		  <maly-loop var="ALL_USERS">
+		      <option value="#UID#">#FULLNAME#</option>
+		  </maly-loop>
+		</select>
+	</maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Task Categories: </th>
+	<td align=left colspan=2>
+	<maly-if not=1 var="READONLY">
+	<table border=0 style="width: 400px">
+	  <tr>
+	    <th>Category:</th>
+	    <td>&nbsp;</td>
+	    <th>Stages (Optional):</th>
+	  </tr>
+	  <tr>
+	    <td>
+	      <select name=task_categories id=task_categories multiple size=5 style="width: 150px"
+	        onclick="return multiList_edit('task_categories', new Array('task_categories_TEXT', 'task_categories_HIDDEN', 'task_category_stage'))" >
+		<maly-set var="GTC" from="GROUP{TASK_CATEGORIES}"/>
+	        <maly-loop var="GTC" sort="NAME">
+		  <maly-set var="TCSTAGESLIST" value=""/>
+		  <maly-loop var="STAGES" name="STAGE" sort="IX">
+		    <maly-set var="TCSTAGESLIST" value="#TCSTAGESLIST#:#STAGE{NAME}#"/>
+		  </maly-loop>
+	          <option value="#NAME#:#TCID##TCSTAGESLIST#">#NAME#</option>
+	        </maly-loop>
+	      </select>
+	    </td>
+
+	    <td>
+	      <a onclick="return multiList_replace('task_categories', new Array('task_categories_TEXT', 'task_categories_HIDDEN', 'task_category_stage'))" href="Javascript:void(0)">&lt;&lt; Save</a>
+	    </td>
+
+	    <td>
+	      <select name="task_category_stage" multiple=multiple size=5 style="width: 150px" id="task_category_stage"
+	        onclick="return multiList_edit('task_category_stage', new Array('task_category_stage_TEXT'))" >
+	        <!-- Via JS -->
+	      </select>
+	    </td>
+	    <td valign=center>
+	      <a href="Javascript:void(0)" onClick="multiList_up('task_category_stage');">Up</a>
+	      <br>
+	      <a href="Javascript:void(0)" onClick="multiList_down('task_category_stage');">Down</a>
+	      
+
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	     <a onclick="return multiList_add('task_categories', new Array('task_categories_TEXT', 'task_categories_HIDDEN', 'task_category_stage') )" href="Javascript:void(0)">Add</a>
+	     | <a onclick="return multiList_replace('task_categories', new Array('task_categories_TEXT', 'task_categories_HIDDEN', 'task_category_stage'))" href="Javascript:void(0)">Replace</a>
+             | <a onclick="return multiList_remove(task_categories, new Array('task_categories_TEXT', 'task_categories_HIDDEN', 'task_category_stage'))" href="Javascript:void(0)">Remove</a>
+	    </td>
+	    <td>&nbsp;</td>
+	    <td>
+	     <a onclick="return multiList_add('task_category_stage', new Array('task_category_stage_TEXT') )" href="Javascript:void(0)">Add</a>
+	     | <a onclick="return multiList_replace('task_category_stage', new Array('task_category_stage_TEXT'))" href="Javascript:void(0)">Replace</a>
+             | <a onclick="return multiList_remove('task_category_stage', new Array('task_category_stage_TEXT'))" href="Javascript:void(0)">Remove</a>
+	    </td>
+	  </tr>
+	  <tr>
+	    <td>
+	      <input type=text name="task_categories_TEXT" id="task_categories_TEXT">
+	      <input type=hidden name="task_categories_HIDDEN" id="task_categories_HIDDEN">
+	    </td>
+	    <td>&nbsp;</td>
+	    <td>
+	      <input type=text name="task_category_stage_TEXT" maxlength="30" id="task_category_stage_TEXT">
+	    </td>
+	    <td>&nbsp;</td>
+	  </tr>
+	</table>
+
+	<maly-else/>
+	  <maly-loop var="GROUP{TASK_CATEGORIES}">
+	    #NAME#<br>
+	  </maly-loop>
+	</maly-if>
+
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Members: </th>
+	<td align=left colspan=2>
+	<table border=0 style="width:350px" align=center>
+	  <tr>
+	    <maly-if not=1 var="READONLY">
+	    <td style="width: 150px">Available:</td>
+	    <td>&nbsp;</td>
+	    </maly-if>
+	    <td style="width: 150px">Currently Set:</td>
+	  </tr>
+
+	  <tr>
+	    <maly-if not=1 var="READONLY">
+	    <td>
+	
+	  <select name=members_all multiple size=5 style="width: 150px" id="members_all">
+	    <maly-loop var="ALL_USERS">
+	      <maly-if not=1 eval="'#GROUP{MEMBER_UIDS}{UID=#UID#}#'">
+	        <option value="#UID#">#FULLNAME#</option>
+	      </maly-if>
+	    </maly-loop>
+	  </select>
+
+	    </td>
+
+	    <td align=center>
+	      <a href="Javascript:void(0)" onClick="return moveDualList('members', 'members_all');">&lt;--</a>
+	      <br>
+	      <a href="Javascript:void(0)" onClick="return moveDualList('members_all', 'members');">--&gt;</a>
+	    </td>
+
+	    </maly-if>
+
+	    <td>
+	      <select name=members multiple size=5 style="width: 150px" id=members>
+	      <maly-loop var="GROUP{MEMBER_UIDS}">
+	        <maly-set var="MEMBER" from="GROUP{MEMBERS}{UID=#UID#}"/>
+	          <option value="#UID#:#MEMBERSHIP_ID#">#MEMBER{FULLNAME}#</option>
+	      </maly-loop>
+	  </select>
+	    </td>
+	  </tr>
+	</table>
+	</td>
+
+</tr>
+<tr class="input">
+	<td align=left colspan=2>
+	  <maly-if var="FORM{ADD}">
+		<input type=submit name=action value="Add">
+	  <maly-else/>
+		<input type=submit name=action value="Update">
+	  </maly-if>
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

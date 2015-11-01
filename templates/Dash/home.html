@@ -1,0 +1,158 @@
+<maly-set var="CONTENT">
+
+<tr>
+  <td style="padding: 20px">
+
+<table border=0 align=left width="100%">
+
+<tr>
+  <td width="40%" valign=top align=left>
+    <table border=0>
+
+      <tr>
+        <th colspan=3 align=left style="font-size: 18px">I would like to:</th>
+      </tr>
+
+      <tr>
+        <th align=left width="33%">Tasks</th>
+        <th align=left width="33%">Projects</th>
+        <th align=left width="34%">Documentation</th>
+      </tr>
+
+      <tr>
+        <td valign=top>
+  <ul>
+    <li> <a href="cgi-bin/Tasks.pl/Browse">See my entire task queue</a> </li>
+    <li> <a href="Javascript:void(0)" onClick="addTaskPopup()">Add a task</a> </li>
+    <li> <a href="cgi-bin/Tasks.pl/Browse?BY_UID=-1">See my workers' entire task queue</a> </li>
+    <li> <a href="cgi-bin/Tasks.pl/Search">Search for tasks</a> </li>
+  </ul>
+        </td>
+	<td valign=top>
+  <ul>
+    <li> <a href="cgi-bin/Projects.pl/Browse">See my entire project queue</a> </li>
+    <li> <a href="cgi-bin/Projects.pl/Browse?BY_UID=-1">See my workers' entire project queue</a> </li>
+    <li> <a href="Javascript:void(0)" onClick="addProjectPopup()">Add a project</a> </li>
+    <li> <a href="cgi-bin/Projects.pl/Search">Search for projects</a> </li>
+  </ul>
+        </td>
+	<td valign=top>
+  <ul>
+    <li> <a href="#DOC_SITE#docs/TimeManager/" target="_new">Learn more about using Time Manager</a> </li>
+  </ul>
+        </td>
+      </tr>
+  </table>
+
+  </td>
+</tr>
+</tr>
+  <td valign=top align=center>
+
+    <table border=1 style="border-style: solid" cellpadding=1 cellspacing=0 width="90%">
+      <tr>
+        <th class="header">
+	  My tasks due this week (#SCALAR:MY_TASK_QUEUE_THIS_WEEK#):
+	</th>
+	<th class="header">
+	  My tasks due next week (#SCALAR:MY_TASK_QUEUE_NEXT_WEEK#):
+	</th>
+      </tr>
+
+      <tr>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="MY_TASK_QUEUE_THIS_WEEK"/>
+	<maly-set var="ALL" value=0/>
+#include Dash/taskdash
+	</td>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="MY_TASK_QUEUE_NEXT_WEEK"/>
+	<maly-set var="ALL" value=0/>
+#include Dash/taskdash
+	</td>
+      </tr>
+
+      <tr>
+        <th class="header">
+	  My workers' tasks due this week (#SCALAR:ALL_TASK_QUEUE_THIS_WEEK#):
+	</th>
+	<th class="header">
+	  My workers' tasks due next week (#SCALAR:ALL_TASK_QUEUE_NEXT_WEEK#):
+	</th>
+      </tr>
+
+      <tr>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="ALL_TASK_QUEUE_THIS_WEEK"/>
+	<maly-set var="ALL"/>
+#include Dash/taskdash
+	</td>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="ALL_TASK_QUEUE_NEXT_WEEK"/>
+	<maly-set var="ALL"/>
+#include Dash/taskdash
+	</td>
+      </tr>
+
+      <tr>
+        <td colspan=2>
+	  &nbsp;
+	</td>
+
+      </tr>
+
+      <tr>
+        <th class="header">
+	  My projects due this week (#SCALAR:MY_PROJECT_QUEUE_THIS_WEEK#):
+	</th>
+	<th class="header">
+	  My projects due next week (#SCALAR:MY_PROJECT_QUEUE_NEXT_WEEK#):
+	</th>
+      </tr>
+
+      <tr>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="MY_PROJECT_QUEUE_THIS_WEEK"/>
+	<maly-set var="ALL" value=0/>
+#include Dash/projectdash
+	</td>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="MY_PROJECT_QUEUE_NEXT_WEEK"/>
+	<maly-set var="ALL" value=0/>
+#include Dash/projectdash
+	</td>
+      </tr>
+
+      <tr>
+        <th class="header">
+	  My workers' projects due this week (#SCALAR:ALL_PROJECT_QUEUE_THIS_WEEK#):
+	</th>
+	<th class="header">
+	  My workers' projects due next week (#SCALAR:ALL_PROJECT_QUEUE_NEXT_WEEK#):
+	</th>
+      </tr>
+
+      <tr>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="ALL_PROJECT_QUEUE_THIS_WEEK"/>
+	<maly-set var="ALL"/>
+#include Dash/projectdash
+	</td>
+        <td align=center valign=top>
+	<maly-set var="QUEUE" from="ALL_PROJECT_QUEUE_NEXT_WEEK"/>
+	<maly-set var="ALL"/>
+#include Dash/projectdash
+	</td>
+      </tr>
+
+    </table>
+  </td>
+</tr>
+</table>
+
+  </td>
+</tr>
+
+</maly-set>
+
+#include main

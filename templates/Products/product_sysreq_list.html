@@ -1,0 +1,85 @@
+<widget-listform table="PRODUCT_SYSREQ">
+
+<maly-set var='CONTENT'>
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="2">
+    View System Requirements (External System Dependencies) List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="right" colspan="2">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_SYSREQ/Add?&apos;, &apos;add_PRODUCT_SYSREQ&apos;, 450, 550);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    
+    <th align="center">
+      Name
+    </th>
+    
+    <th align="center">
+      Prerequisite?
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_SYSREQ' name='PRODUCT_SYSREQ_ITEM' sort='' loopvar='MITER'>
+  
+  
+    <maly-set eval=1 value="'#MITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+
+  <tr class="#BGCLASS#">
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_SYSREQ/Edit?SYSREQ_ID=#PRODUCT_SYSREQ_ITEM{SYSREQ_ID}#&apos;, &apos;edit_PRODUCT_SYSREQ_#PRODUCT_SYSREQ_ITEM{SYSREQ_ID}#&apos;);">
+	    <widget-viewfield>
+        
+	  #PRODUCT_SYSREQ_ITEM{NAME}#
+	
+
+</widget-viewfield>
+	  </a>
+	
+      </td>
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+          <widget-viewfield>
+        
+	  #PRODUCT_SYSREQ_ITEM{PREREQ}#
+	
+
+</widget-viewfield>
+	
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+  <tr>
+    <td align="right" colspan="2">
+      <input onclick="closePopup()" type="submit" value="Close"></input>
+    </td>
+  </tr>
+
+  </table>
+
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-listform>

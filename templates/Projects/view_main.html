@@ -1,0 +1,271 @@
+<maly-set var="CUSTOM_SCRIPT">
+</maly-set>
+
+<maly-set var="PROJECT" eval=1 value="'#PID#' ne ''"/>
+<maly-set var="ADDING_PROJECT" eval=1 value="'#PATH_INFO{MODE}#' eq 'Add'"/>
+<maly-set var="WRITEABLE" eval=1 value="'#PMUID#' eq '#SESSION{UID}#'"/>
+
+<maly-set var="CUSTOM_ONLOAD">
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td>
+<table border=0 cellspacing=0 cellpadding=2 width="100%">
+  <tr>
+    <td align=right>
+  <maly-if not=1 var="FORM{POPUP}">
+#include Projects/nav
+  <maly-else/>
+    <input type=submit value="Close" onClick="closePopup(1);">
+  </maly-if>
+    </td>
+  </tr>
+
+  <tr>
+  <td align=center>
+
+<table border=0 cellspacing=0 cellpadding=2 width="95%">
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  <maly-if var="PID" defined=1>
+  <tr>
+    <th colspan=3 align=left>
+      <a style="font-weight: bold; font-size: 20px" href="cgi-bin/Projects.pl/View?pid=#PID#">
+      #TITLE# (Project # #PID#):
+      </a>
+    </th>
+  </tr>
+  </maly-if>
+  <tr>
+    <th colspan=2 align=left class="header milestone_text">Project Overview:</th>
+    <th align=right class="header">
+      <maly-if var="WRITEABLE">
+        <a href="Javascript:void(0)" onClick="editProjectPopup(#PID#);">Edit</a> |
+      <maly-else/>
+        &nbsp;
+      </maly-if>
+      <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_editproject');">HELP</a>
+    </th>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Product:</th>
+    <td align=left colspan=2>
+    #PRODUCT_NAME#
+    </td>
+  </tr>
+
+
+
+  <tr>
+    <th class="project_left_header">Project Manager:</th>
+    <td align=left colspan=2>
+        <maly-if not=1 var="MANAGER">
+          <maly-if var="SESSION{EMAIL}">
+            <a href="mailto:#SESSION{EMAIL}#">
+            #SESSION{FULLNAME}#
+	    </a>
+	  <maly-else/>
+            #SESSION{FULLNAME}#
+	  </maly-if>
+        <maly-else/>
+          <maly-if var="MANAGER{EMAIL}">
+            <a href="mailto:#MANAGER{EMAIL}#">
+              #MANAGER{FULLNAME}#
+	    </a>
+	  <maly-else/>
+            #MANAGER{FULLNAME}#
+	  </maly-if>
+        </maly-if>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_objective')">Objective:</a></th>
+    <td align=left colspan=2>
+        #HTML:OBJECTIVE#
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header">Start Date:</th>
+    <td align=left colspan=2>
+        #STARTDATE#
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header">End Date:</th>
+    <td align=left colspan=2>
+      <maly-if var="ENDDATE">
+        <span class="#OVERDUE#">
+        #ENDDATE#
+	</span>
+      </maly-if>
+      &nbsp;
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Priority:</th>
+    <td align=left colspan=2>
+      <table border=0 cellspacing=0 cellpadding=2>
+      <tr>
+        <td style="font-size: 20px; " class="box #PRIORITYCLASSMAP{#PRIORITY#}#" align=center>
+          #PRIORITYMAP{#PRIORITY#}#
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Status:</th>
+    <td align=left colspan=2>
+      <table border=0 cellspacing=0 cellpadding=2>
+      <tr>
+        <td style="font-size: 20px; " class="box #STATUSCLASSMAP{#STATUS#}#" align=center>
+          #STATUSMAP{#STATUS#}#
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Percent:</th>
+    <td align=left colspan=2 style="font-size: 20px;">
+      #PERCENT#%
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Hours:</th>
+    <td align=left colspan=2>
+      #NUM:HOURS#/#NUM:ESTHOURS# (So Far / Estimated)
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Budget:</th>
+    <td align=left colspan=2>
+        <maly-if var="BUDGET" eq="">
+	  NONE
+	<maly-else/>
+          $#BUDGET#
+	</maly-if>
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Cost:</th>
+    <td align=left colspan=2>
+      <table border=0 cellspacing=0 cellpadding=2>
+      <tr>
+        <maly-if eval="'#BUDGET#' ne ''">
+          <maly-if eval="('#BUDGET#'||0) * .8 >= ('#COST#'||0)">
+            <maly-set var="COSTCLASS" value="under_budget"/>
+          <maly-elsif eval="('#BUDGET#'||0) >= ('#COST#'||0)"/>
+            <maly-set var="COSTCLASS" value="near_budget"/>
+	  <maly-else/>
+            <maly-set var="COSTCLASS" value="over_budget"/>
+	  </maly-if>
+	</maly-if>
+        <td class="box #COSTCLASS#" align=center>
+	  $#NUM:COST#
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Estimated Cost:</th>
+    <td align=left colspan=2>
+      <table border=0 cellspacing=0 cellpadding=2>
+      <tr>
+        <maly-if eval="'#BUDGET#' ne ''">
+          <maly-if eval="('#BUDGET#'||0) * .8 >= ('#ESTCOST#'||0)">
+            <maly-set var="COSTCLASS" value="under_budget"/>
+          <maly-elsif eval="('#BUDGET#'||0) >= ('#ESTCOST#'||0)"/>
+            <maly-set var="COSTCLASS" value="near_budget"/>
+	  <maly-else/>
+            <maly-set var="COSTCLASS" value="over_budget"/>
+	  </maly-if>
+	</maly-if>
+        <td class="box #COSTCLASS#" align=center>
+	  $#NUM:ESTCOST#
+        </td>
+      </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header" valign=top>Participants:</th>
+    <td align=left colspan=2>
+        <maly-loop name="PUSER" var="PARTICIPANTS" sort="FULLNAME">
+	  #PUSER{FULLNAME}#<br>
+	</maly-loop>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_resources')">Resources:</a></th>
+    <td align=left colspan=2>
+      <maly-loop var="RESOURCES" name=RES>
+        #RES{NAME}#<br>
+      </maly-loop>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_contingency')">Contingency Plan:</a></th>
+    <td align=left colspan=2>
+        #HTML:CONTINGENCY#
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_challenges')">Challenges / Issues:</a></th>
+    <td align=left colspan=2>
+        #HTML:CHALLENGES#
+    </td>
+  </tr>
+
+  <tr><td colspan=3 align=center><hr></td></tr>
+</table>
+
+<maly-if var="PID" defined=1>
+  <table border=0 cellspacing=0 cellpadding=2 width=95%>
+  <tr>
+    <th align=left class="milestone_text"><a class="milestone_text" href="Javascript:void(0)" onClick="helpPopup('project_milestone')">Milestones:</a></th>
+    <th align=right>
+      <maly-if var="WRITEABLE">
+        <!-- <a href="cgi-bin/Projects.pl/Edit?pid=#PID#&add_milestone=1#MID_">Add Milestone</a> -->
+        <a href="javascript:void(0)" onClick="addMilestonePopup('#PID#');">Add New</a> |
+        <a href="javascript:void(0)" onClick="searchMilestonePopup('#PID#');">Add Existing</a> |
+        <a href="javascript:void(0)" onClick="searchTaskPopup('pidmid=#PID#&status=-1');">View Active Tasks</a> |
+        <a href="Javascript:void(0)" onClick="viewGanttPopup('PID', '#PID#');">Gantt</a>
+      </maly-if>
+    </th>
+  </tr>
+  </table>
+
+<table border=0 cellspacing=0 cellpadding=2 width=95%>
+#include Milestones/browse_pm_header
+
+<maly-loop name=MILESTONE var=MILESTONES sort="STARTDATE,PRIORITY,DUEDATE">
+  <maly-set var="MANCHOR" value="MID_#MILESTONE{MID}#"/>
+  <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Milestones/browse_pm_milestone
+</maly-loop>
+</table>
+
+
+</maly-if>
+
+</table>
+
+</td></tr>
+</table>
+</td></tr>
+
+</maly-set>

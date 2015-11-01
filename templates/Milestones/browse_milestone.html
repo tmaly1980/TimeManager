@@ -1,0 +1,54 @@
+    <tr>
+	  <maly-if var="FORM{LINK_FIELD}">
+	  <td align=center>
+	    <maly-if eval="'#FORM{LINK_FIELD}#' =~ /^\d+$/">
+	      <form method="POST" action="cgi-bin/TaskGroups.pl/Edit" target="TM_main">
+	        <input type=hidden name="mid" value="#MILESTONE{MID}#">
+	        <input type=hidden name="pid" value="#FORM{LINK_FIELD}#">
+	        <input type=submit name=action value="Link">
+	      </form>
+	    <maly-else/>
+	      <maly-set var="MSUMMARY" eval=1 value=" ('#MILESTONE{PID}#' ? '#NOQUOT:MILESTONE{PROJECT}{TITLE}#: ' : '') . '#NOQUOT:MILESTONE{SUMMARY}#'"/>
+	    <input type=submit value="Link" onClick="linkField('#FORM{LINK_FIELD}#', ':#MILESTONE{MID}#', '#MSUMMARY#', 'prod_id', '#MILESTONE{PROJECT}{PROD_ID}#', 'startdate', '#MILESTONE{STARTDATE}#', 'duedate', '#MILESTONE{ENDDATE}#'); return false;">
+	    </maly-if>
+	  </td>
+	  <maly-elsif var="MODE" eq="Search"/>
+	  <td align=center>
+	    <input type=checkbox name="bulk_mid" value="#MILESTONE{MID}#">
+	  </td>
+	  </maly-if>
+      <td class="#CLASS#" align=center style="width: 25px">
+          <a href="javascript:void(0)" onClick="editMilestonePopup(#MILESTONE{MID}#);">
+	  #MILESTONE{MID}#
+	  </a>
+      </td>
+      <td class="box #PRIORITYCLASSMAP{#NUM:MILESTONE{PRIORITY}#}#" align=center style="width: 75px">
+          #PRIORITYMAP{#NUM:MILESTONE{PRIORITY}#}#
+      </td>
+      <td class="#CLASS#" align=left>
+          <a href="javascript:void(0)" onClick="editMilestonePopup(#MILESTONE{MID}#);">
+	  <maly-if var="MILESTONE{PID}" defined=1>
+	    #MILESTONE{PROJECT}{TITLE}#:<br>
+	  </maly-if>
+	  #MILESTONE{SUMMARY}#
+	  </a>
+      </td>
+      <td class="#CLASS#" align=center>
+          <a href="Javascript:void(0)" onClick="editUserPopup(#MILESTONE{UID}#);">#MILESTONE{OWNER}{FULLNAME}#</a>
+      </td>
+      <td class="#CLASS#" align=center style="width: 100px">
+          #MILESTONE{STARTDATE}#
+      </td>
+      <td class="#CLASS#" align=center style="width: 100px">
+          #MILESTONE{ENDDATE}#
+      </td>
+      <td class="box #STATUSCLASSMAP{#MILESTONE{STATUS}#}#" align=center style="width: 75px">
+        #STATUSMAP{#MILESTONE{STATUS}#}#
+      </td>
+      <td class="#CLASS#" align=center style="width: 20px">
+        #MILESTONE{PERCENT}#
+      </td>
+      <td class="#CLASS#" align=center style="width: 20px">
+        #NUM:MILESTONE{HOURS}#/#NUM:MILESTONE{ESTHOURS}#
+      </td>
+    </tr>

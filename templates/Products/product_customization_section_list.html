@@ -1,0 +1,131 @@
+<widget-listpage TABLE="PRODUCT_CUSTOMIZATION_SECTION">
+
+<maly-set var='CONTENT'>
+  
+    
+      <form method=POST action='#PATHINFO_URL#'>
+    
+    
+      <input name="VER_ID" type="hidden" value="#FORM{VER_ID}#"></input>
+    
+  
+  <widget-list>
+<table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="2">
+    Customization Section List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="right" colspan="2">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_CUSTOMIZATION_SECTION/Add?VER_ID=#FORM{VER_ID}#&apos;, &apos;add_PRODUCT_CUSTOMIZATION_SECTION_#FORM{VER_ID}#&apos;, 450, 550);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_CUSTOMIZATION_SECTION' name='PRODUCT_CUSTOMIZATION_SECTION_ITEM' sort='ORDER_NUM' loopvar='MITER'>
+  
+  
+    <maly-set eval=1 value="'#MITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+
+  <tr class="#BGCLASS#">
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <input name="PRODUCT_CUSTOMIZATION_SECTION[#MITER#]{SECTION_ID}" type="hidden" value="#PRODUCT_CUSTOMIZATION_SECTION_ITEM{SECTION_ID}#"></input>
+	  <widget-editfield PREFIX="" PREFIXITER="\\#MITER\\#" TABLE="PRODUCT_CUSTOMIZATION_SECTION">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="PRODUCT_CUSTOMIZATION_SECTION[\#MITER\#]{ORDER_NUM}" NAME="PRODUCT_CUSTOMIZATION_SECTION[\#MITER\#]{ORDER_NUM}" PLUS="\#PLUS\#" TO="\#SCALAR:PRODUCT_CUSTOMIZATION_SECTION\#" VALUE="\#PRODUCT_CUSTOMIZATION_SECTION_ITEM{ORDER_NUM}\#" VAR="PRODUCT_CUSTOMIZATION_SECTION[\#MITER\#]{ORDER_NUM}">
+<select id="PRODUCT_CUSTOMIZATION_SECTION[#MITER#]{ORDER_NUM}" name="PRODUCT_CUSTOMIZATION_SECTION[#MITER#]{ORDER_NUM}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:PRODUCT_CUSTOMIZATION_SECTION#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+	
+      </td>
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_CUSTOMIZATION_SECTION/Edit?SECTION_ID=#PRODUCT_CUSTOMIZATION_SECTION_ITEM{SECTION_ID}#&apos;, &apos;edit_PRODUCT_CUSTOMIZATION_SECTION_#PRODUCT_CUSTOMIZATION_SECTION_ITEM{SECTION_ID}#&apos;);">
+	    <widget-viewfield>
+        
+	  #PRODUCT_CUSTOMIZATION_SECTION_ITEM{TITLE}#
+	
+
+</widget-viewfield>
+	  </a>
+	
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+
+  </table>
+
+</widget-list>
+  <div style="width: 100%">
+    
+      <div style="float: left">
+        <input name="action" type="submit" value="Update"></input>
+      </div>
+    
+
+    <div style="float: right">
+      <input onclick="closePopup()" type="submit" value="Close"></input>
+    </div>
+  </div>
+
+  
+    
+      </form>
+    
+
+  
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-listpage>

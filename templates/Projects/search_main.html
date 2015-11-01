@@ -1,0 +1,123 @@
+<maly-set var="CUSTOM_ONLOAD">
+  if (document.searchForm)
+  {
+    set_select(document.searchForm.uid, "#UID#");
+    set_popup(document.searchForm.gid, '#FORM{GID}#');
+    set_popup(document.searchForm.status, '#FORM{STATUS}#');
+    set_popup(document.searchForm.uid, '#FORM{UID}#');
+    set_popup(document.searchForm.prod_id, '#FORM{PROD_ID}#');
+    set_popup(document.searchForm.group_by, '#FORM{GROUP_BY}#');
+
+    set_popup(document.searchForm.date_vector, '#FORM{DATE_VECTOR}#');
+    set_popup(document.searchForm.priority, '#FORM{PRIORITY}#');
+    set_popup(document.searchForm.pid, '#FORM{PID}#');
+    set_checkbox(document.searchForm.show_mile, '#FORM{SHOW_MILE}#');
+  }
+  if (document.browseByUidForm)
+  {
+    set_select(document.browseByUidForm.BY_UID, "#FORM{BY_UID}#");
+  }
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td>
+  <table border=0 cellspacing=0 cellpadding=2 width="100%">
+    <tr>
+      <td align=right>
+#include Projects/nav
+      </td>
+    </tr>
+  </table>
+
+  <table border=0 cellspacing=0 cellpadding=1 width=95% align=center>
+    <maly-if var="MODE" eq="Search">
+    <tr>
+     <td align=center valign=middle>
+#include Projects/search_form
+      </td>
+    </tr>
+    </maly-if>
+    <tr>
+      <th align=left valign=middle>
+        <maly-if eval="'#MODE#' ne 'Search' or '#SUBMITTED#' eq '1'">
+        #COUNT# Projects Found
+        </maly-if>
+      </th>
+    </tr>
+  </table>
+
+<maly-if var="FORM{SORT}">
+  <maly-set var="SORT" value="#FORM{SORT}#"/>
+<maly-else/>
+  <maly-set var="SORT" value="ENDDATE"/>
+</maly-if>
+
+<maly-set var="DESC" map="#SORT#=1"></maly-set>
+
+<maly-if var="COUNT">
+  <table border=0 cellspacing=0 cellpadding=2 width=95% align=center>
+
+    <maly-if var="PROJECT_GROUPS">
+      <maly-loop var="PROJECT_GROUPS" name="PG">
+        <maly-set var="GROUPITER" from="MALYITER"/>
+        <tr>
+          <th colspan=9 style="font-size: 14px; text-align: left">
+	    <maly-if var="PG{NAME}">
+	      <maly-if var="PG{ONCLICK}">
+	        <a href="Javascript:void(0)" onClick="#PG{ONCLICK}#" style="font-size: 14px;">
+		  #PG{NAME}#:
+		</a>
+	      <maly-else/>
+	        #PG{NAME}#:
+	      </maly-if>
+	    <maly-else/>
+	    Other/None:
+	    </maly-if>
+	  </th>
+        </tr>
+#include Projects/browse_header
+  <maly-loop name=PROJECT var=PG{LIST} sort="#SORT#" reverse="#FORM{DESC}#">
+    <maly-if eval="'#PROJECT{STATUS}#' < 10">
+	<maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Projects/browse_project
+    <maly-if eval="'#FORM{SHOW_MILE}#' and '#SCALAR:PROJECT{MILESTONES}#' > 0">
+    <tr>
+      <td colspan=7>
+        <table border=0 width="95%" align="right">
+#include Milestones/browse_pm_header
+      <maly-loop var="PROJECT{MILESTONES}" name="MILESTONE">
+	<maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data2" : "data1" </maly-set>
+#include Milestones/browse_pm_milestone
+      </maly-loop>
+        </table>
+      </td>
+    </tr>
+    </maly-if>
+  </maly-loop>
+
+      </maly-loop>
+    <maly-elsif var="PROJECTS"/>
+#include Projects/browse_header
+  <maly-loop name=PROJECT var=PROJECTS sort="#SORT#" reverse="#FORM{DESC}#">
+    <maly-if eval="'#PROJECT{STATUS}#' < 10">
+	<maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Projects/browse_project
+    <maly-if eval="'#FORM{SHOW_MILE}#' and '#SCALAR:PROJECT{MILESTONES}#' > 0">
+    <tr>
+      <td colspan=7>
+        <table border=0 width="95%" align="right">
+#include Milestones/browse_pm_header
+      <maly-loop var="PROJECT{MILESTONES}" name="MILESTONE">
+	<maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data2" : "data1" </maly-set>
+#include Milestones/browse_pm_milestone
+      </maly-loop>
+        </table>
+      </td>
+    </tr>
+    </maly-if>
+  </maly-loop>
+  </table>
+</maly-if>
+
+</td></tr>
+</maly-set>

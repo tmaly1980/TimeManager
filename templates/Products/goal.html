@@ -1,0 +1,137 @@
+<maly-set var="CUSTOM_ONLOAD">
+  set_checkbox(document.goalForm.marketing, "#GOAL{MARKETING}#");
+  set_select(document.goalForm.priority, "#GOAL{PRIORITY}#", '3');
+  set_select(document.goalForm.status, "#GOAL{STATUS}#");
+  set_select(document.goalForm.component_id, "#GOAL{COMPONENT_ID}#", "#FORM{COMPONENT_ID}#");
+  set_select(document.goalForm.percent, "#GOAL{PERCENT}#");
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.versions);
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="#PATHINFO_URL#" onSubmit="return formSubmit(this);" name="goalForm">
+<input type=hidden name="GOAL_ID" value="#GOAL{GOAL_ID}#">
+<maly-if var="MODE" eq="Add">
+  <input type=hidden name="PROD_VER_ID" value="#FORM{PROD_VER_ID}#">
+</maly-if>
+<table border=0 cellspacing=0 cellpadding=5 width=600>
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <maly-if var="MODE" eq="Add">
+	    Add Goal:
+	  <maly-else/>
+	    Edit Goal:
+	  </maly-if>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if var="GOAL{GOAL_ID}">
+	    <a href="#PATHINFO_URL#?goal_id=#GOAL{GOAL_ID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Summary: </th>
+	<td align=left colspan=2>
+		<input type="text" name="summary" size=50 maxlength=255 value="#GOAL{SUMMARY}#">
+	</td>
+</tr>
+
+<!--
+<tr>
+	<th class="left_header" valign=top align=right>Product: </th>
+	<td align=left colspan=2>
+	      <select name=prod_ver_id id='prod_ver_id'>
+	        <option value="">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	      </select>
+	</td>
+</tr>
+-->
+
+<tr>
+	<th class="left_header" valign=top align=right>Implementing Component:</th>
+	<td align=left colspan=2>
+	  <select name="component_id">
+	    <option value=""></option>
+	    <maly-loop var="VERSION{COMPONENTS}" name="COMPONENT">
+	      <option value="#COMPONENT{COMPONENT_ID}#">#COMPONENT{NAME}#</option>
+	    </maly-loop>
+	  </select>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Priority:</th>
+	<td align=left colspan=2>
+#include Tasks/priority_select
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>General Marketing:</th>
+	<td align=left colspan=2>
+	  <input type=checkbox id='marketing' name="marketing" value=1>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Status:</th>
+	<td align=left colspan=2>
+#include Tasks/status_select
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Percent:</th>
+	<td align=left colspan=2>
+#include Tasks/percent_select
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Description:</th>
+	<td align=left colspan=2>
+	  <textarea name="description" style="width: 400px; height: 200px">#GOAL{DESCRIPTION}#</textarea>
+	</td>
+</tr>
+
+
+<tr class="input">
+	<td align=left colspan=2>
+		<input type=submit name=action value="Update">
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

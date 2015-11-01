@@ -1,0 +1,7 @@
+  	    <select name=status onChange="updatePercent(this, document.getElementById('percent_#TASK{TID}#'), actcomdate, '#MALYDATE{year-month-day}#');" id="status_#TASK{TID}#">
+  	      <maly-loop var=STATUSMAP hash=1 sort="1">
+	      <maly-if eval="'#VALUE#' !~ /^Dependency/ or '#TASK{PID}#' ne ''"> 
+  	        <option value="#KEY#" >#VALUE#</option>
+	      </maly-if>
+  	      </maly-loop>
+  	    </select>

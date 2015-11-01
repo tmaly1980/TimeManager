@@ -1,0 +1,186 @@
+<widget-editpage TABLE="PRODUCT_CUSTOMIZATION_STEP">
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+selectSubmit('PRODUCT_CUSTOMIZATION_STEP_IMAGE');
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#PATHINFO_URL#" method="POST" onsubmit="return formSubmit(this);">
+
+  <maly-if var="FORM{CUSTSTEP_ID}">
+  <div align="right">
+    <a href="#PATHINFO_URL#?CUSTSTEP_ID=#FORM{CUSTSTEP_ID}#&amp;action=Delete">Delete</a>
+  </div>
+  </maly-if>
+
+
+  
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="4">
+    Edit Customization Step Entry:
+    </th>
+  </tr>
+
+      
+        
+	  <maly-if eq="Add" var="MODE">
+        <input name="SECTION_ID" type="hidden" value="#FORM{SECTION_ID}#">
+	  </maly-if>
+
+	
+      
+      <input name="CUSTSTEP_ID" type="hidden" value="#FORM{CUSTSTEP_ID}#"></input>
+
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Summary:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-text ID="SUMMARY" NAME="SUMMARY" SIZE="" VALUE="\#PRODUCT_CUSTOMIZATION_STEP{SUMMARY}\#">
+<input id="SUMMARY" maxlength="255" name="SUMMARY" size="30" type="text" value="#PRODUCT_CUSTOMIZATION_STEP{SUMMARY}#"></input>
+
+</widget-text>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Text:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-textarea HEIGHT="" ID="TEXT" NAME="TEXT" VALUE="\#PRODUCT_CUSTOMIZATION_STEP{TEXT}\#" WIDTH="">
+<textarea name="TEXT" style="width: 100%; height: 100px">#PRODUCT_CUSTOMIZATION_STEP{TEXT}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Code:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-textarea HEIGHT="" ID="CODE" NAME="CODE" VALUE="\#PRODUCT_CUSTOMIZATION_STEP{CODE}\#" WIDTH="">
+<textarea name="CODE" style="width: 100%; height: 100px">#PRODUCT_CUSTOMIZATION_STEP{CODE}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Images:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-multilist ID="PRODUCT_CUSTOMIZATION_STEP_IMAGE" LOOPNAME="" NAME="PRODUCT_CUSTOMIZATION_STEP_IMAGE" OPTTEXT="\#SRC\#" OPTVAL="\#STEP_IMAGE_ID\#:\#SRC\#" PKEYNAME="PRODUCT_CUSTOMIZATION_STEP_IMAGE[\#MALYITER\#]{CUSTSTEP_ID}" PKEYVALUE="\#PRODUCT_CUSTOMIZATION_STEP{CUSTSTEP_ID}\#" REORDER="1" REORDER_HILIGHT="1" SORTBY="" VAR="PRODUCT_CUSTOMIZATION_STEP{PRODUCT_CUSTOMIZATION_STEP_IMAGE}">
+<table border="0">
+<tr>
+  <td>
+    <select id="PRODUCT_CUSTOMIZATION_STEP_IMAGE" multiple="multiple" name="PRODUCT_CUSTOMIZATION_STEP_IMAGE" onchange="return multiList_edit(this, new Array(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden&apos;, &apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_text&apos;));" size="5" style="width: 100%">
+      <maly-loop sort="" var="PRODUCT_CUSTOMIZATION_STEP{PRODUCT_CUSTOMIZATION_STEP_IMAGE}">
+        <option value="#STEP_IMAGE_ID#:#SRC#">#SRC#</option>
+      </maly-loop>
+
+    </select>
+  </td>
+  
+    <td align="left" valign="middle">
+      <a href="Javascript:void(0)" onclick="multiList_up(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE&apos;, new Array(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden&apos;, &apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_text&apos;), &apos;1&apos;);">Up</a><br></br>
+      <a href="Javascript:void(0)" onclick="multiList_down(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE&apos;, new Array(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden&apos;, &apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_text&apos;), &apos;1&apos;);">Down</a>
+    </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <a href="Javascript:void(0)" onclick="multiList_add(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE&apos;, new Array(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden&apos;, &apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_text&apos;), &apos;%1%&apos;);">Add</a> |
+    <a href="Javascript:void(0)" onclick="multiList_replace(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE&apos;, new Array(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden&apos;, &apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_text&apos;), &apos;%1%&apos;);">Replace</a> |
+    <a href="Javascript:void(0)" onclick="multiList_remove(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE&apos;, new Array(&apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden&apos;, &apos;PRODUCT_CUSTOMIZATION_STEP_IMAGE_text&apos;), &apos;%1%&apos;);">Remove</a>
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align="left">
+    <input id="PRODUCT_CUSTOMIZATION_STEP_IMAGE_text" name="PRODUCT_CUSTOMIZATION_STEP_IMAGE_text" style="width: 100%" type="text"></input>
+    
+    <input id="PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden" name="PRODUCT_CUSTOMIZATION_STEP_IMAGE_hidden" type="hidden"></input>
+    
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+</table>
+
+</widget-multilist>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+
+  <tr>
+    <td align="right" colspan="4">
+    <div style="float: left">
+      <input name="action" type="submit" value="Update"></input>
+    </div>
+    <div style="float: right">
+      <input onclick="closePopup()" type="submit" value="Close"></input>
+    </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-editpage>

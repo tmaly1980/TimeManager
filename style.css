@@ -1,0 +1,365 @@
+body,p,div,td,a,th { font-family: Arial, Helvetica, sans-serif; font-size: 12px; }
+
+*.help
+{
+  color: #FF0000;
+}
+
+*.vertical_header, *.project_left_header, *.left_header {
+  width: 75px;
+}
+
+*.project_left_header, *.left_header {
+  background-color: #c0c0c0;
+  text-align: right;
+}
+
+*.vertical_header, *.title_header
+{
+  background-color: #8888cc;
+}
+
+*.title_header_2
+{
+  background-color: #9999dd;
+}
+
+*.vertical_header
+{
+  border-style: solid;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  border-width: 1px;
+  border-collapse: collapse;
+  border-color: #FFFFFF;
+}
+
+*.header 
+{
+  background-color: #8888cc;
+  font-weight: bold;
+}
+
+*.input
+{
+  background-color: #FFFFFF;
+}
+
+*.largetext, *.largetext a { font-size: 20px; }
+
+*.bigtext, *.bigtext a { font-size: 16px; }
+
+
+*.bold { font-weight: bold; }
+
+body, *.transparent, *.background { background-color: #90a0c0; }
+form { margin: 0px 0px 0px 0px }
+
+td.selectedtab, table { background-color: #FFFFFF; }
+
+/* STATUS */
+*.notstarted { background-color: white; }
+*.canceled { background-color: red; }
+*.inprogress { background-color: green; }
+*.stalled { background-color: yellow; }
+*.needspecs { background-color: yellow; }
+*.needapproval { background-color: yellow; }
+*.inconsideration { background-color: yellow; }
+*.completed { color: white; background-color: blue; }
+
+/* PRIORITY */
+*.backburner { background-color: white; }
+*.low { background-color: #dddddd; }
+*.normal { background-color: #FFFFAA; }
+*.medium { background-color: orange; }
+*.high { background-color: #FF6666; }
+*.emergency { background-color: red; }
+
+/* ENHANCEMENT SCOPE */
+*.productgoal { background-color: red; }
+*.productcomponent { background-color: #0066FF; }
+*.componentgoal { background-color: yellow; }
+*.componentfeature { background-color: #E0E0E0; }
+*.featureitem { background-color: white; }
+
+
+/* ENHANCEMENT STATUS */
+*.requested { background-color: white; }
+*.inreview { background-color: #C0C0C0; }
+*.gatheringspecs { background-color: white; }
+*.planned { background-color: yellow; }
+*.delayed { background-color: orange; }
+*.indesignsketch { background-color: #CC6666; }
+/* inprogress is already defined above! */
+*.testingchecking { background-color: #FFCCCC; }
+*.notplanned { background-color: red; }
+*.denied { background-color: red; }
+*.implemented { background-color: #0066FF; }
+
+
+
+                                                                                                                 
+a:link,A:active,A:visited { text-decoration: none; font-weight: bold }
+a:hover { text-decoration: underline }
+a { color: #000000; }
+
+/* Put a ';' in front of the line immediately below to disable the strike-through of completed/canceled tasks. */
+a.done, *.done { text-decoration: line-through; }
+
+td, th { border-collapse: separate; }
+
+/* 
+th { vertical-align: top; } 
+*/
+
+*.today, *.overdue_data2, *.overdue_ { background-color: #ff0000 }
+*.overdue_data1 { background-color: #ff7777 }
+
+*.completed_data2 { background-color: #0077ff }
+*.completed_data1 { background-color: #33bbff }
+
+*.largeday
+{
+  width: 700px;
+
+}
+
+td.today { background-color: #e0e0e0 }
+td.givendate { background-color: #00FF00 }
+
+td.unselectedtab, *.data1 { background-color: #c0c0c0 }
+*.data2 { background-color: #a0a0a0 }
+/* DISABLE COLLAPSING OF CELLS!!! */
+
+
+*.em, *.error, *.requiredfield, *.delete { color: red; font-weight: bold }
+
+td.monthday
+{
+	width: 100px;
+	height: 100px;
+	text-align: left;
+	vertical-align: top;
+}
+
+*.box, *.grid {
+	border-color: #666666;
+	border-style: solid;
+	border-width: 1px;
+	border-padding: 1px;
+	border-collapse: collapse;
+	text-align: center;
+	vertical-align: middle;
+}
+
+*.box { padding: 0px 0px 0px 0px }
+*.grid { padding: 5px 5px 5px 5px }
+
+*.hourcontent, *.hournum
+{
+  padding: 0px;
+  border-color: #000000;
+  border-style: solid;
+  border-width: 1px;
+}
+
+table
+{
+  border-collapse: collapse;
+}
+
+td.selectedtab, td.unselectedtab {
+	border-color: #666666; 
+	border-style: solid; 
+	border-bottom: none;
+	border-width: 1px ; 
+	border-padding: 1px;
+	border-collapse: collapse;
+	padding-top: 0px; padding-bottom: 0px;
+	padding-left: 2px;
+	padding-right: 2px;
+	width: 75px;
+}
+
+*.bottomborder {
+	border-color: #666666;
+	border-style: solid;
+	border-top: none;
+	border-left: none;
+	border-right: none;
+	border-width: 1px;
+	border-padding: 1px;
+	border-collapse: collapse;
+	padding-top: 0px; padding-bottom: 0px;
+	padding-left: 2px; padding-right: 2px;
+}
+
+
+*.vertical_header a, *.header a, *.project_left_header a, *.largetext a
+{
+  text-decoration: underline;
+}
+
+
+/*EVENTS*/
+input.summary { width: 200px; }
+input.contact { width: 200px; }
+textarea.description { width: 200px; height: 75px;}
+
+/*ATTENDEES*/
+
+input.email { width: 200px; }
+input.cn { width: 150px; }
+
+table.changeAttendeeStatus { background-color: #b5b5b5; }
+
+/*GENERAL*/
+*.spacing
+{
+  padding-left: 25px;
+  padding-right: 25px;
+
+}
+
+*.delete
+{
+  font-weight: bold;
+  color: #FF0000;
+}
+
+*.milestone
+{
+  height: 20px;
+
+}
+
+*.milestone_text, *.milestone_text a
+{
+  font-size: 16px;
+}
+
+*.project_item_description
+{
+  font-style: italic;
+}
+
+*.over_budget
+{
+  font-size: 24px;
+  background-color: #FF0000;
+}
+
+*.near_budget
+{
+  font-size: 24px;
+  background-color: orange;
+}
+
+
+*.under_budget
+{
+  font-size: 16px;
+  background-color: #00FF00;
+}
+
+*.gantt_ptask_text
+{
+  font-size: 14px;
+  font-style: italic;
+}
+
+*.gantt_milestone_text
+{
+  font-size: 14px;
+  font-style: italic;
+}
+
+*.gantt_project_text
+{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+
+*.gantt_milestone
+{
+  border-style: solid;
+  border-width: 1px;
+  border-bottom: none;
+  border-left: none;
+  border-right: none;
+  border-collapse: collapse;
+  border-color: #000000;
+  vertical-align: top;
+}
+
+*.gantt_milestone_completed
+{
+  border-style: solid;
+  border-width: 2px;
+  border-bottom: none;
+  border-collapse: collapse;
+  border-color: #000000;
+}
+
+*.gantt_task_completed
+{
+
+}
+
+*.gantt_project_completed
+{
+  border-style: solid;
+  border-width: 5px;
+  border-bottom: none;
+  border-collapse: collapse;
+  border-color: #000000;
+}
+
+;*.gantt_timeline
+{
+  border-style: solid;
+  border-left: none;
+  border-right: none;
+  border-width: 1px;
+  border-collapse: collapse;
+  border-color: #000000;
+}
+
+*.gantt_task_completed
+{
+  background-color: #FFFFFF;
+  border-style: solid;
+  border-color: #000000;
+  border-width: 1px;
+}
+
+td.ruler, tr.ruler td
+{
+  border-style: solid;
+  border-bottom: none;
+  border-width: 1px;
+  border-collapse: collapse;
+  border-color: #000000;
+}
+
+*.smalltext a, *.smalltext { font-size: 10px; }
+
+*.gantt_axis
+{
+  font-size: 8px;
+  border-style: solid;
+  border-bottom: none;
+  border-width: 1px;
+  border-collapse: collapse;
+  border-color: #000000;
+  display: table-cell;
+}
+
+span.dependency
+{
+  border-width: 1px;
+  border-style: solid;
+}
+

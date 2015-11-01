@@ -1,0 +1,37 @@
+#include top
+
+<tr><td>
+
+<form method=POST>
+<table border=0 cellspacing=0 cellpadding=5>
+<tr>
+<th align=left>Skills:</th>
+</tr>
+
+<tr>
+  <td>Group:</td>
+  <td>Name</td>
+  <td>Rank</td>
+</tr>
+
+<maly-loop var="SKILLS">
+<tr>
+  <td>#GROUPMAP{#GID#}#</td>
+  <td>#NAME#</td>
+  <td>
+    <select name="#SID#_rank">
+      <maly-loop name="NUM" to="10">
+        <maly-set var="SELECTED" eval=1>#MYSKILLS{#GID#} == #NUM# ? 'selected':''</maly-set>
+        <option #SELECTED#>#NUM#</option>
+      </maly-loop>
+    </select>
+  </td>
+</tr>
+</maly-loop>
+
+</table>
+</form>
+
+</td></tr>
+
+#include bottom

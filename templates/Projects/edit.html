@@ -1,0 +1,286 @@
+<maly-set var="CUSTOM_SCRIPT">
+  function formSubmit(f)
+  {
+    <maly-if var="MODE" eq="Add">
+    setTimeout("window.close()", 1000);
+    </maly-if>
+    selectSubmit(f.participant_ids);
+    selectSubmit(f.resources);
+    return true;
+  }
+  function verifyCancel()
+  {
+    var ok=confirm("Are you sure you want to cancel this project? If you wish to cancel any tasks and/or milestones, it is recommended to first do so by clicking on the 'View Active Tasks' link from the project view page. Otherwise, all milestones and tasks will still be available in their respective console.");
+    if (ok)
+    {
+      setTimeout("window.close()", 1000);
+      document.projectEditForm.target = 'TM_main';
+      return true;
+    }
+    return false;
+  }
+
+</maly-set>
+
+<maly-set var="PROJECT" eval=1 value="'#PID#' ne ''"/>
+<maly-set var="ADDING_PROJECT" eval=1 value="'#PATH_INFO{MODE}#' eq 'Add'"/>
+<maly-set var="BLAHAVAILABLE_OWNERS" as="ARRAY" from="SESSION,PARTICIPANTS,SESSION{MANAGED_GROUPS}{MEMBERS},SESSION{MANAGED}"/>
+
+
+<maly-set var="CUSTOM_ONLOAD">
+  <maly-if eval="'#FORM{MID}#' ne ''">
+    <maly-set var="ETM" from="MILESTONES{MID=#FORM{MID}#}"/>
+    <maly-if eval="'#FORM{EDIT_PROJECT_TASK}#' ne ''">
+      <maly-loop name="T" var="ETM{TASKS}" sort="MTID">
+        <!-- <maly-if var="T{TID}" eq="#FORM{EDIT_PROJECT_TASK}#"> -->
+        <maly-if eval="'#T{TID}#' == '#FORM{EDIT_PROJECT_TASK}#'">
+	  <maly-set var="EDITING_TASK" from="T"/>
+	  <maly-set var="EDITING_TASK_INDEX" eval=1 value="'#MALYITER#'+1"/>
+	</maly-if>
+      </maly-loop>
+      <!-- <maly-set var="EDITING_TASK" from="ETM{TASKS}{TID=#FORM{EDIT_PROJECT_TASK}#}"/> -->
+    </maly-if>
+  </maly-if>
+
+  if (document.projectEditForm)
+  {
+    set_select(document.projectEditForm.pmuid, "#PMUID#", "#SESSION{UID}#");
+    set_select(document.projectEditForm.prod_id, "#PROD_ID#");
+    set_select(document.projectEditForm.priority, "#PRIORITY#", '3');
+  }
+
+  if (document.searchForm)
+  {
+    set_select(document.searchForm.uid, "#UID#");
+  }
+  if (document.browseByUidForm)
+  {
+    set_select(document.browseByUidForm.BY_UID, "#FORM{BY_UID}#");
+  }
+
+  if ('#FORM{ADD_TASK}#' != '')
+  {
+    <maly-set var="MTID_VALUE" eval=1 value="1 + '#SCALAR:MILESTONES{MID=#FORM{MID}#}{TASKS}#'"/>
+    set_select(document.getElementById("pmid_"), "#FORM{MID}#");
+    set_select(document.getElementById("mtid_"), "#MTID_VALUE#");
+  }
+  if ('#FORM{ADD_MILESTONE}#' != '')
+  {
+    <maly-set var="PMID_VALUE" eval=1 value="1 + '#SCALAR:MILESTONES#'"/>
+    set_select(document.getElementById("pmid_"), "#PMID_VALUE#");
+  }
+
+  if ('#FORM{EDIT_MILESTONE}#' != '')
+  {
+    set_select(document.getElementById("pmid_#FORM{EDIT_MILESTONE}#"), "#MILESTONES{MID=#FORM{EDIT_MILESTONE}#}{PMID}#");
+  }
+
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center>
+
+<maly-if var="MODE" eq="Add">
+  <maly-set var="ACTION_MODE" value="View"/>
+  <maly-set var="TARGET" value="TM_main"/>
+<maly-else/>
+  <maly-set var="ACTION_MODE" value="Edit"/>
+  <maly-set var="TARGET" value="_self"/>
+</maly-if>
+<form target="#TARGET#" action="cgi-bin/Projects.pl/#ACTION_MODE#" method=POST onSubmit="return formSubmit(this);" name="projectEditForm">
+<input type=hidden name=PID value="#PID#">
+<table border=0 cellspacing=0 cellpadding=2 width="95%">
+  <tr>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td width="50%" align=right>
+      <maly-if var="MODE" eq="Add">
+      <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_addproject');">HELP</a>
+      <maly-else/>
+      <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_editproject');">HELP</a>
+      </maly-if>
+    </td>
+  </tr>
+  <tr>
+    <th colspan=3 align=left class="header milestone_text">
+      <a href="#PATHINFO_URL#?pid=#PID#">
+        Project #MODE# (# #PID#):
+      </a>
+      </a>
+    </th>
+  </tr>
+  <tr>
+    <th class="project_left_header">Title:</th>
+    <td align=left colspan=2>
+        <input type=text size=40 maxlength=70 name=title value="#TITLE#">
+    </td>
+  </tr>
+  	<tr>
+  	  <th class="project_left_header" align=right>Product:</th>
+  	  <td class="input" align="left" width=100% colspan=2>
+	      <select name=prod_id> 
+	        <option value="">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	      </select>
+  	    </maly-if>
+  	  </td>
+  	</tr>
+  <tr>
+    <th class="project_left_header">Project Manager:</th>
+    <td align=left colspan=2>
+        <select name="pmuid">
+	  <maly-loop name="PM" var="AVAILABLE_OWNERS">
+	    <option value="#PM{UID}#">#PM{FULLNAME}#</option>
+	  </maly-loop>
+        </select>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_objective')">Objective:</a></th>
+    <td align=left colspan=2>
+        <textarea name=OBJECTIVE rows="5" cols="40">#OBJECTIVE#</textarea>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header">Start Date:</th>
+    <td align=left colspan=2>
+        <input type=text size=10 maxlength=10 name=startdate id="startdate" value="#STARTDATE#" onChange="return checkDateFormat(this);"> YYYY-MM-DD (<a href="Javascript:void(0)" onClick="setDatePopup('startdate', document.projectEditForm.startdate.value);">Set</a>)
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header">End Date:</th>
+    <td align=left colspan=2>
+        <input type=text size=10 maxlength=10 name=enddate id="enddate" value="#ENDDATE#" onChange="return checkDateFormat(this);"> YYYY-MM-DD (<a href="Javascript:void(0)" onClick="setDatePopup('enddate', document.projectEditForm.enddate.value);">Set</a>)
+
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Priority:</th>
+    <td align=left colspan=2>
+#include Tasks/priority_select
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header">Budget:</th>
+    <td align=left colspan=2>
+        $<input type=text size=5 name=BUDGET value="#BUDGET#"> (Leave blank for none)
+    </td>
+  </tr>
+
+  <tr>
+    <th class="project_left_header" valign=top>Participants:</th>
+    <td align=left colspan=2>
+  	<table border=0 class="input">
+  	  <tr>
+  	    <td>Available:</td>
+  	    <td>&nbsp;</td>
+  	    <td>Currently Set:</td>
+  	  </tr>
+  
+  	  <tr>
+  	    <td>
+
+  	  <select name=participants_all multiple size=5>
+  	    <maly-loop sort="FULLNAME" name="AUSER" var="ALL_USERS">
+  	      <maly-if not=1 var="AUSER{UID}" in="PARTICIPANT_UIDS{UID}">
+	        <maly-if eval="'#SCALAR:PARTICIPANTS#' ne '0' or ('#AUSER{UID}#' ne '#SESSION{UID}#' and '#AUSER{UID}#' ne '#PMUID#')">
+  	          <option value="#AUSER{UID}#">#AUSER{FULLNAME}#</option>
+		</maly-if>
+  	      </maly-if>
+  	    </maly-loop>
+	    <maly-comment>
+	    <!--
+	    <maly-if not=1 var="SESSION{MANAGED}{UID=#SESSION{UID}#}">
+  	        <option value="#SESSION{UID}#">#SESSION{FULLNAME}#</option>
+	    </maly-if>
+	    -->
+	    </maly-comment>
+  	  </select>
+  
+  	    </td>
+  
+  	    <td>
+  	      <a href="Javascript:void(0)" onClick="return moveDualList(participant_ids, participants_all, null, 1);">&lt;--</a>
+  	      <br>
+  	      <a href="Javascript:void(0)" onClick="return moveDualList(participants_all, participant_ids, null, 1);">--&gt;</a>
+  	    </td>
+  
+  	    <td>
+  	      <select name=participant_ids multiple size=5>
+  	      <maly-loop sort="FULLNAME" name="PUSER" var="PARTICIPANTS">
+  	          <option value="#PUSER{UID}#">#PUSER{FULLNAME}#</option>
+  	      </maly-loop>
+  	  </select>
+  	    </td>
+  	  </tr>
+  	</table>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_resources')">Resources:</a></th>
+    <td align=left colspan=2>
+      <select name=resources id="RESOURCES" size=3 style="width: 100%" multiple=multiple onClick="multiList_edit(resources, new Array(resources_text, resources_hidden_id))">
+        <maly-loop name="RES" var="RESOURCES">
+          <option value="#RES{NAME}#:#RES{RES_ID}#">
+  	  #RES{NAME}#
+  	</option>
+        </maly-loop>
+      </select>
+      <br>
+  
+      <a href="Javascript:void(0)" onClick="multiList_add(resources, new Array(resources_text, resources_hidden_id))">Add</a> |
+      <a href="Javascript:void(0)" onClick="multiList_replace(resources, new Array(resources_text, resources_hidden_id))">Replace</a> |
+      <a href="Javascript:void(0)" onClick="multiList_remove(resources, new Array(resources_text, resources_hidden_id)">Remove</a>
+      <br>
+      <input type=text style="width: 100%" name=resources_text>
+      <input type=hidden name=resources_hidden_id>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_contingency')">Contingency Plan:</a></th>
+    <td align=left colspan=2>
+        <textarea name=CONTINGENCY rows=5 cols=40>#CONTINGENCY#</textarea>
+    </td>
+  </tr>
+  <tr>
+    <th class="project_left_header" valign=top><a href="Javascript:void(0)" onClick="helpPopup('project_challenges')">Challenges / Barriers:</a></th>
+    <td align=left colspan=2>
+        <textarea name=CHALLENGES rows=5 cols=40>#CHALLENGES#</textarea>
+    </td>
+  </tr>
+
+  <tr>
+    <td colspan=2 align=left>
+      <maly-if var="MODE" eq="Add">
+      <input type=submit name=action value="Add">
+      <maly-else/>
+      <input type=submit name=action value="Update">
+      </maly-if>
+      <input type=submit value="Close" onClick="closePopup();">
+    </td>
+    <td align=right colspan=1>
+      <maly-if var="MODE" eq="Edit">
+      <input type=submit class="delete" name=action value="CANCEL THIS PROJECT" onClick="return verifyCancel();">
+      <maly-else/>
+      &nbsp;
+      </maly-if>
+    </td>
+  </tr>
+</table>
+
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

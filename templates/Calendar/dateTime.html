@@ -1,0 +1,73 @@
+#include popup_top
+
+
+#include Calendar/smallmonth_main
+
+<tr><td align=left class="transparent">
+
+<form name=dateTimeForm>
+<table border=0 cellspacing=0 cellpadding=5 class="transparent">
+
+<tr>
+  <td align=left align=center>
+    <select name=hour>
+      <option>0</option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+      <option>11</option>
+      <option>12</option>
+      <option>13</option>
+      <option>14</option>
+      <option>15</option>
+      <option>16</option>
+      <option>17</option>
+      <option>18</option>
+      <option>19</option>
+      <option>20</option>
+      <option>21</option>
+      <option>22</option>
+      <option>23</option>
+    </select>
+    <span class="bold largetext"> : </span>
+    <select name=minute>
+      <option>00</option>
+      <option>15</option>
+      <option>30</option>
+      <option>45</option>
+    </select>
+
+  </td>
+  <td>
+    <a href="Javascript:void(0)" onClick="timeSet(document.dateTimeForm.hour, document.dateTimeForm.minute, window.opener.document.editForm.#TIMEFIELD#)">Set</a>
+  </td>
+</tr>
+
+<tr>
+  <td>
+    <a href="Javascript:void(0)" onClick="window.close()">Close</a>
+  </td>
+</tr>
+
+</table>
+
+</form>
+</td></tr>
+
+<script>
+
+var currentTime = '17:00';
+var timeParts = currentTime.split(':');
+set_select(document.dateTimeForm.hour, timeParts[0]);
+set_select(document.dateTimeForm.minute, timeParts[1]);
+
+</script>
+
+#include popup_bottom

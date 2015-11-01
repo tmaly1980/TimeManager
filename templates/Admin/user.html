@@ -1,0 +1,300 @@
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.manager);
+  selectSubmit(f.task_categories_removed);
+  return true;
+}
+
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td class="transparent">
+
+<div align=right>
+<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_users');">HELP</a>
+</div>
+
+<form method=POST action="cgi-bin/Admin.pl/user" onSubmit="return formSubmit(this);" name="userEditForm">
+<input type=hidden name=UID value="#USER{UID}#">
+  <table border=0 cellspacing=0 cellpadding=5 align=center>
+  <tr class="transparent">
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td width="20%">&nbsp;</td>
+  </tr>
+  <tr>
+  	<th align=left class="header">
+	<maly-if var="READONLY">
+	    <a href="#PATHINFO_URL#?uid=#USER{UID}#">
+	  View User
+	    </a>
+	<maly-else/>
+  	  <maly-if eval="'#USER{UID}#' ne ''">
+	    <a href="#PATHINFO_URL#?uid=#USER{UID}#">
+	      Edit User
+	    </a>
+	  <maly-else/>
+	    Add User
+	  </maly-if>
+	</maly-if>
+	</th>
+  	<td align=right class="header" colspan=2>
+	<maly-if eval="'#SESSION{SITEADMIN}#' and '#USER{UID}#' ne ''">
+	<a class="delete" href="#PATHINFO_URL?uid=#USER{UID}#&amp;amp;action=Delete">Delete</a> |
+	<a href="Javascript:void(0)" onClick="workloadPopup('#USER{UID}#');">Workload</a>
+	</maly-if>
+	<!--
+  	  <a href="cgi-bin/Admin.pl/userskills/#UID#">Skills</a> |
+  	  <a href="cgi-bin/Shortcuts.pl/Browse">Shortcuts</a>
+	  -->
+  	</td>
+  </tr>
+  <maly-if eval="'#USER{UID}#' ne ''">
+  <tr>
+  	<th class="left_header" valign=top align=right>User ID: </th>
+  	<td align=left class="input" colspan=2>
+  	#USER{UID}#
+  	</td>
+  </tr>
+  </maly-if>
+  <tr>
+  	<th class="requiredfield left_header" valign=top align=right>Username: </th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+  		#USER{USERNAME}#
+  	<maly-else/>
+  		<input type="text" name="username" size=14 value="#USER{USERNAME}#" maxlength=10>
+  	</maly-if>
+  	</td>
+  </tr>
+  <tr>
+  	<th class="left_header" valign=top align=right>Full Name: </th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+  		#USER{FULLNAME}#
+  	<maly-else/>
+  		<input type="text" name="fullname" size=40 value="#USER{FULLNAME}#">
+  	</maly-if>
+  	</td>
+  </tr>
+  <tr>
+  	<th class="left_header" valign=top align=right>Title: </th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+  		#USER{TITLE}#
+  	<maly-else/>
+  		<input type="text" name="title" value="#USER{TITLE}#" size=40>
+  	</maly-if>
+  	</td>
+  </tr>
+  <tr>
+  	<th class="requiredfield left_header" valign=top align=right>Email: </th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+	  <maly-if var="USER{EMAIL}">
+	    <a href="mailto:#USER{EMAIL}#">
+  		#USER{EMAIL}#
+            </a>
+          </maly-if>
+  	<maly-else/>
+  		<input type="text" name="email" size=40 value="#USER{EMAIL}#">
+  	</maly-if>
+  	</td>
+  </tr>
+  <tr>
+  	<th class="left_header" valign=top align=right>Hours/Week Available: </th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+	  <maly-if var="USER{HOURSPERWEEK}">
+  		#USER{HOURSPERWEEK}#
+	  <maly-else/>
+	    40 (default)
+	  </maly-if>
+  	<maly-else/>
+  		<input type="text" name="hoursperweek" size=4 value="#USER{HOURSPERWEEK}#"> Defaults to 40 hours/week if not set
+  	</maly-if>
+  	</td>
+  </tr>
+  <Maly-if defined=1 var="USER{UID}">
+  <tr>
+  	<th class="left_header" valign=top align=right>
+	  <a href="Javascript:void(0)" onClick="helpPopup('task_categories');">Task Categories:</a>
+	</th>
+  	<td align=left class="input" colspan=2>
+
+	<maly-if var="READONLY">
+	  <maly-loop sort="NAME" name="TCAT" var="USER{TASK_CATEGORIES}">
+		  <maly-if not=1 var="USER{TASK_CATEGORIES_REMOVED}{TCID=#TCAT{TCID}#}">
+		    #TCAT{NAME}#<br>
+		  </maly-if>
+	  </maly-loop>
+
+	<maly-else/>
+  	<table border=0 class="input" width="100%">
+  	  <tr>
+  	    <td>CANNOT Be Assigned:</td>
+  	    <td>&nbsp;</td>
+  	    <td>CAN Be Assigned:</td>
+  	  </tr>
+  
+  	  <tr>
+  	    <td>
+  	
+  	  <select name=task_categories_removed multiple=multiple id="task_categories_removed"  size=5 style="width: 100%">
+		<maly-loop sort="NAME" name="TCAT" var="USER{TASK_CATEGORIES}">
+		  <maly-if var="USER{TASK_CATEGORIES_REMOVED}{TCID=#TCAT{TCID}#}">
+	            <option value="#TCAT{TCID}#">#TCAT{NAME}#</option>
+		  </maly-if>
+		</maly-loop>
+  	    </maly-loop>
+  	  </select>
+  
+  	    </td>
+  
+  	    <td>
+  	      <a href="Javascript:void(0)" onClick="return moveDualList('task_categories_all', 'task_categories_removed', null, 1);">&lt;--</a>
+  	      <br>
+  	      <a href="Javascript:void(0)" onClick="return moveDualList('task_categories_removed', 'task_categories_all', null, 1);">--&gt;</a>
+  	    </td>
+  
+  	    <td>
+  	      <select name=task_categories_all multiple size=5 style="width: 100%" id="task_categories_all">
+		<maly-loop sort="NAME" name="TCAT" var="USER{TASK_CATEGORIES}">
+		  <maly-if not=1 var="USER{TASK_CATEGORIES_REMOVED}{TCID=#TCAT{TCID}#}">
+	            <option value="#TCAT{TCID}#">#TCAT{NAME}#</option>
+		  </maly-if>
+		</maly-loop>
+  	  </select>
+  	    </td>
+  	  </tr>
+  	</table>
+	</maly-if>
+  	</td>
+  
+  </tr>
+  </maly-if>
+
+  <maly-if var="SESSION{SITEADMIN}">
+  <tr>
+  	<th class="left_header" valign=top align=right>Assignment By / Explicit Managers: </th>
+  	<td align=left class="input" colspan=2>
+  	<table border=0 class="input" width="100%">
+  	  <tr>
+  	    <td>Available:</td>
+  	    <td>&nbsp;</td>
+  	    <td>Currently Set:</td>
+  	  </tr>
+  
+  	  <tr>
+  	    <td>
+  	
+  	  <select name=manager_all multiple size=5 style="width: 100%" id="manager_all">
+  	    <maly-loop sort="FULLNAME" name="AUSER" var="ALL_USERS">
+  	      <maly-if not=1 var="USER{MANAGER}{MANAGER_UID=#AUSER{UID}#}">
+  	        <option value="#AUSER{UID}#">#AUSER{FULLNAME}#</option>
+  	      </maly-if>
+  	    </maly-loop>
+  	  </select>
+  
+  	    </td>
+  
+  	    <td>
+  	      <a href="Javascript:void(0)" onClick="return moveDualList('manager', 'manager_all', null, 1);">&lt;--</a>
+  	      <br>
+  	      <a href="Javascript:void(0)" onClick="return moveDualList('manager_all', 'manager', null, 1);">--&gt;</a>
+  	    </td>
+  
+  	    <td>
+	      <!-- IMPLEMENT SKIPPING HERE AND ABOVE -->
+  	      <select name=manager multiple size=5 style="width: 100%" id="manager">
+  	      <maly-loop sort="FULLNAME" name="MUSER" var="USER{MANAGER}">
+	        <option value="#MUSER{UID}#">#MUSER{FULLNAME}#</option>
+  	      </maly-loop>
+  	  </select>
+  	    </td>
+  	  </tr>
+  	</table>
+  	</td>
+  
+  </tr>
+  <tr>
+  	<th class="left_header" valign=top align=right>Admin? </th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+  		<maly-if eval="#USER{SITEADMIN}#">
+  		Yes
+  		</maly-if>
+  	<maly-else/>
+  		<maly-if eval="#USER{SITEADMIN}#">
+  		  <input type="checkbox" name="siteadmin" value="1" checked>
+  		<maly-else/>
+  		  <input type="checkbox" name="siteadmin" value="1">
+  		</maly-if>
+  	</maly-if>
+  	</td>
+  </tr>
+  </maly-if>
+
+  <tr>
+  	<th class="left_header" valign=top align=right>Power User</th>
+  	<td align=left class="input" colspan=2>
+  	<maly-if var="READONLY">
+  		<maly-if eval="#USER{POWER_USER}#">
+  		Yes
+		<maly-else/>
+		No
+  		</maly-if>
+  	<maly-else/>
+  		<maly-if eval="#USER{POWER_USER}#">
+  		  <input type="checkbox" name="power_user" value="1" checked>
+  		<maly-else/>
+  		  <input type="checkbox" name="power_user" value="1">
+  		</maly-if>
+  	</maly-if>
+  	</td>
+  </tr>
+
+
+  <maly-if var="READONLY" not=1>
+  <tr>
+  	<th class="left_header" valign=top align=right>Password: </th>
+  	<td align=left class="input" colspan=2>
+  	  <table border=0 class="input">
+  	    <tr>
+  	      <td align=right>Password:</td>
+  	      <td align=left> <input type=password name=password1 maxlength=16> </td>
+  	    </tr>
+  	    <tr>
+  	      <td align=right>Again:</td>
+  	      <td align=left> <input type=password name=password2 maxlength=16> </td>
+  	    </tr>
+  	</td>
+  </tr>
+  
+  </maly-if>
+  <tr>
+  	<td align=left colspan=2>
+	<maly-if var="READONLY" not=1>
+	  <maly-if eval="'#USER{UID}#' ne ''">
+  		<input type=submit name=action value="Update">
+	  <maly-else/>
+  		<input type=submit name=action value="Add">
+	  </maly-if>
+	</maly-if>
+        </td>
+	<td align=right>
+  		<input type=submit value="Close" onClick="closePopup()">
+  	</td>
+  </tr>
+  
+  </table>
+
+</form>
+
+</td></tr>
+</maly-set>
+
+#include popup_main
+
+

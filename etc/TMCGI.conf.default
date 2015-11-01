@@ -1,0 +1,153 @@
+# Here we define the database connection
+
+
+# This is the Perl-compatible connection string for DBI.
+my $DBD = "DBI:mysql:database=TimeManagerB;hostname=localhost"; 
+
+# This is the database username.
+my $USERNAME = "TimeManagerB";
+
+# This is the database password. It should be changed.
+my $PASSWORD = "TimeManagerB";
+
+# Here we define what fields to log when they're changed.
+
+our $TASK_LOG_FIELDS = 
+{
+  Owner=>["UID","OWNER{FULLNAME}"],
+  Title=>["TITLE"],
+  "Due Date"=>["DUEDATE"],
+  "Estimated Completion Date"=>["ESTCOMDATE"],
+  Status=>["STATUS", "STATUSNAME"],
+  Priority=>["PRIORITY", "PRIORITYNAME"],
+  Percent=>["PERCENT"],
+  Requestor=>["REQUESTOR_UID", "REQUESTOR{FULLNAME}"],
+  "Task Category"=>["TCID", "TASK_CATEGORY{NAME}"],
+  "Stage"=>["STAGE", "TASK_CATEGORY_STAGE{NAME}"],
+  "Estimated Hours"=>["ESTHOURS"],
+  "Actual Hours"=>["HOURS"],
+};
+
+our $TASK_GROUP_LOG_FIELDS = {};
+our $PROJECT_LOG_FIELDS = {};
+
+# Here we define what fields to notify the requestor/owner upon change
+our $NOTIFY_FIELDS = [qw(
+  UID GID TITLE DUEDATE STATUS COST PRIORITY PERCENT
+  )],
+
+# Here we define what fields the owner of a task is able to edit. A complete reference of field names is available by viewing the source code of the task edit page (i.e., templates/Tasks/edit.html)
+
+# Fields only the requestor can edit. The owner cannot edit these fields.
+our $REQUESTOR_EDITABLE_FIELDS = [qw(
+  TITLE
+  DESCRIPTION
+  PROD_ID
+  PRIORITY
+  STARTDATE
+  DUEDATE
+  ESTHOURS
+  UID
+  REQUESTOR_UID
+  TGROUPS
+)];
+
+#############################################
+# CHANGES BELOW ARE UNSUPPORTED!!!
+#############################################
+
+
+{
+  DB_PARAMS=>[$DBD, $USERNAME, $PASSWORD],
+  TITLE=>"TimeManager",
+  COMPLEVELMAP=>
+  {
+    0=>"Planning",
+    1=>"Prototype",
+    2=>"Alpha",
+    3=>"Beta",
+    4=>"Early Production",
+    5=>"Mature Production",
+    10=>"Phasing Out",
+    20=>"Discontinued",
+  },
+
+  SCOPEMAP=>
+  {
+    0 => "Product Goal", 
+    1 => "Product Component", 
+    2 => "Component Goal", 
+    3 => "Component Feature", 
+    4 => "Feature Item"
+  },
+  
+  FRSTATUSMAP=>
+  {
+    0=>"Requested",
+    1=>"In Review",
+    2=>"Gathering Specs",
+    3=>"Planned",
+    4=>"Delayed",
+    5=>"In Design / Sketch",
+    6=>"In Progress",
+    7=>"Testing / Checking",
+
+    10=>"Not Planned",
+    11=>"Denied",
+
+    20=>"Implemented",
+
+  # Requested, Planned, Delayed, In Progress, In Design, In Development, In Testing, Not Planned, Implemented
+
+
+  },
+
+  PRIORITYMAP=>
+  {
+    0=>"Emergency",
+    1=>"High",
+    2=>"Medium",
+    3=>"Normal",
+    4=>"Low",
+    5=>"Back Burner",
+  },
+  STATUSMAP=>
+  {
+    0=>"Not Started",
+    1=>"In Progress",
+    2=>"Stalled",
+    3=>"Stage Completed",
+
+    5=>"Need Specs",
+    6=>"Need Approval",
+    7=>"In Consideration",
+
+    # Skips #'s for addition.
+    10=>"Canceled",
+    11=>"Cannot Complete",
+    12=>"Obsolete",
+    13=>"Duplicate",
+
+    20=>"Completed",
+  },
+  # Any/all of:
+  # UID PID GID TITLE STATUS PRIORITY PERCENT
+  LOG_FIELDS=>
+  {
+    Task=>$TASK_LOG_FIELDS,
+    Milestones=>$TASK_GROUP_LOG_FIELDS,
+    Project=>$PROJECT_LOG_FIELDS,
+  },
+  
+  NOTIFY_FIELDS=>$NOTIFY_FIELDS,
+  #REQUIRE_FIELDS=>[qw(title duedate estcomdate cost)], 
+  # Fields required ON ALL SUBMITS! Done via javascript. MUST MATCH CASE WITH FIELDS IN FORM!
+  # These fields may SOMETIMES be omitted from the form (i.e., not editable!). Skip those.
+
+  NOTIFY_TASK_EXCEED_PROJECT=>1, # If due date/est com date goes past milestone's or project's,
+  # Go ahead and email project manager.
+
+  # What the owner can change. (Versus what is entirely up to the manager)
+  # ENDDATE STARTDATE GROUP 
+  REQUESTOR_EDITABLE_FIELDS=>$REQUESTOR_EDITABLE_FIELDS,
+};

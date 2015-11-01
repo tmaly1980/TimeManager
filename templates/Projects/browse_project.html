@@ -1,0 +1,37 @@
+	<tr>
+	  <maly-if var="FORM{LINK_FIELD}">
+	  <td align=center>
+	    <input type=submit value="Link" onClick="linkField('#FORM{LINK_FIELD}#', ':#PROJECT{PID}#', '#NOQUOT:PROJECT{TITLE}#')">
+	  </td>
+	  </maly-if>
+	  <td class="#PROJECT{OVERDUE}##CLASS#" align=left>
+	    <a href="cgi-bin/Projects.pl/View?pid=#PROJECT{PID}#">#PROJECT{TITLE}#</a>
+	  </td>
+	  <td class="#PROJECT{OVERDUE}##CLASS#" align=left>
+	    <maly-if var="PROJECT{MANAGER}{EMAIL}">
+	      <a href="mailto:#PROJECT{MANAGER}{EMAIL}#">
+	        #PROJECT{MANAGER}{FULLNAME}#
+	      </a>
+	    <maly-else/>
+	      #PROJECT{MANAGER}{FULLNAME}#
+	    </maly-if>
+	  </td>
+	  <td class="box #PRIORITYCLASSMAP{#PROJECT{PRIORITY}#}#" align=center>
+	    #PRIORITYMAP{#PROJECT{PRIORITY}#}#
+	  </td>
+	  <td class="#PROJECT{OVERDUE}##CLASS#" align=center>
+	    #PROJECT{STARTDATE}#
+	  </td>
+	  <td class="#PROJECT{OVERDUE}##CLASS#" align=center>
+	    #PROJECT{ENDDATE}#
+	  </td>
+	  <td class="box #STATUSCLASSMAP{#PROJECT{STATUS}#}#" align=center>
+	    #STATUSMAP{#PROJECT{STATUS}#}#
+	  </td>
+	  <td class="#PROJECT{OVERDUE}##CLASS#" align=center>
+	    #PROJECT{PERCENT}#
+	  </td>
+	  <td class="#PROJECT{OVERDUE}##CLASS#" align=center>
+	    #NUM:PROJECT{HOURS}# / #NUM:PROJECT{ESTHOURS}#
+	  </td>
+	</tr>

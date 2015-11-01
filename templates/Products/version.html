@@ -1,0 +1,490 @@
+<maly-set var="CUSTOM_ONLOAD">
+  set_select(document.versionForm.manager_uid, "#PRODUCT{MANAGER_UID}#");
+  <maly-loop var="VERSION{COMPONENTS}" name="COMPONENT" sort="COMPONENT_NUM">
+    set_select('component_num_#COMPONENT{COMPONENT_ID}#', '#COMPONENT{COMPONENT_NUM}#', '#MALYITERNUM#');
+  </maly-loop>
+  <maly-loop var="VERSION{GOALS}" where="MARKETING" name="GOAL" sort="GOAL_NUM">
+    set_select('goal_num_#GOAL{GOAL_ID}#', '#GOAL{GOAL_NUM}#', '#MALYITERNUM#');
+  </maly-loop>
+  <maly-loop var="VERSION{PRODUCT_APPLICATIONS}" name="APP" sort="APP_NUM">
+    set_select('app_num_#APP{APPLICATION_ID}#', '#APP{APP_NUM}#', '#MALYITERNUM#');
+  </maly-loop>
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.audience);
+  selectSubmit(f.sysreq);
+  selectSubmit(f.sysreq_modules);
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="#PATHINFO_URL#" onSubmit="return formSubmit(this);" name="versionForm">
+<input type=hidden name="VER_ID" value="#VERSION{VER_ID}#">
+SCREWY ADD W/O PID
+<input type=hidden name="PROD_ID" value="#FORM{PROD_ID}#">
+<table border=0 cellspacing=0 cellpadding=5 width="100%">
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <a href="#PATHINFO_URL#?prod_id=#FORM{PROD_ID}#&ver_id=#FORM{VER_ID}#">
+	  <maly-if var="FORM{ADD}">
+	    Add Product Version:
+	  <maly-else/>
+	    Edit Product Version
+	    |
+	    <a href="Javascript:void(0)" onClick="editDocumentationPopup('#VERSION{VER_ID}#');">Documentation</a>
+	  </maly-if>
+	  </a>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if eval="'#SESSION{SITEADMIN}#' and '#FORM{PROD_ID}#' ne ''">
+	    <a href="#PATHINFO_URL#?prod_id=#PRODUCT{PROD_ID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Name: </th>
+	<td align=left colspan=2>
+		#PRODUCT{NAME}# #VERSION{VER_NAME}#
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Projects: </th>
+	<td align=left colspan=2>
+	  <a href="Javascript:void(0)" onCLick="searchProjectPopup(null, 'prod_id=#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#');">Search</a>
+	</td>
+
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Manager: </th>
+	<td align=left colspan=2>
+	<maly-if var="READONLY">
+	  <maly-if var="PRODUCT{MANAGER}{EMAIL}">
+	        <a href="mailto:#PRODUCT{MANAGER}{EMAIL}#">
+		#PRODUCT{MANAGER}{FULLNAME}#
+		</a>
+	  <maly-else/>
+		#PRODUCT{MANAGER}{FULLNAME}#
+	  </maly-if>
+	<maly-else/>
+		<select name="manager_uid">
+		  <maly-loop var="ALL_USERS">
+		      <option value="#UID#">#FULLNAME#</option>
+		  </maly-loop>
+		</select>
+	</maly-if>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>(Estimated) Release Date:</th>
+	<td align=left colspan=2>
+	  (LATER ADD ACTUAL!)
+	  <input type=text size=30 name="release_date" value="#VERSION{RELEASE_DATE}#">
+	</td>
+</tr>
+
+<!--
+<tr>
+	<th class="left_header" valign=top align=right>Image Metainfo:</th>
+	<td align=left colspan=2>
+	  <a href="Javascript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/IMAGE_META/Multiedit?VER_ID=#VERSION{VER_ID}#', 'editImageMeta_#VERSION{VER_ID}#', 600, 300)">Edit</a>
+	</td>
+</tr>
+-->
+
+<tr>
+	<th class="left_header" valign=top align=right>Marketing Introduction: </th>
+	<td align=left colspan=2>
+	  <textarea style="width: 400px; height: 200px;" name="market_introduction">#VERSION{MARKET_INTRODUCTION}#</textarea>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Screenshots: </th>
+	<td align=left colspan=2>
+	  Main Index Image: <input type=text name="main_image" value="#VERSION{MAIN_IMAGE}#"><br>
+	  <a href="Javascript:void(0)" onClick="widgetPopup('cgi-bin/Products.pl/PRODUCT_SCREENSHOTS/Multiedit?VER_ID=#VERSION{VER_ID}#', 'editScreenshots_#VERSION{VER_ID}#', 725, 300);">Edit Screenshots</a>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Audience: </th>
+	<td align=left colspan=2>
+	  <table border=0>
+	  <tr>
+	    <td>
+	      <select name="audience" multiple=multiple style="width: 300px; height: 100px" onChange="multiList_edit(audience, new Array(audience_hidden, audience_text);">
+	        <maly-loop var="VERSION{AUDIENCE}" name="AUDIENCE" sort="ORDER_ID,AUDIENCE_ID">
+	          <option value="#AUDIENCE{AUDIENCE_ID}#:#AUDIENCE{DESCRIPTION}#">#AUDIENCE{DESCRIPTION}#</option>
+	        </maly-loop>
+	      </select>
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="multiList_up(audience);">Up</a><br>
+	      <a href="Javascript:void(0)" onClick="multiList_down(audience);">Down</a>
+	    </td>
+	  </tr>
+	  <tr><td>
+	  <a href="Javascript:void(0)" onClick="multiList_add(audience, new Array(audience_hidden, audience_text), '%1%');">Add</a> |
+	  <a href="Javascript:void(0)" onClick="multiList_replace(audience, new Array(audience_hidden, audience_text), '%1%');">Replace</a> |
+	  <a href="Javascript:void(0)" onClick="multiList_remove(audience, new Array(audience_hidden, audience_text));">Remove</a>
+	  <br>
+	  <input type=text name=audience_text style="width: 300px">
+	  <input type=hidden name=audience_hidden>
+	  </td>
+	  </tr>
+	  </table>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>System Requirements: </th>
+	<td align=left colspan=2>
+	  <a href="Javascript:void(0)" onClick="widgetPopup('#URL#/product_sysreq/List', 'list_product_sysreq', 450, 550)">Edit</a>
+	  <table border=0>
+	  <tr>
+	    <td>
+	      <select name="all_sysreq" multiple=multiple style="width: 200px; height: 100px">
+	        <maly-loop var="all_sysreq" name="SYSREQ">
+		  <maly-if not=1 var="VERSION{SYSREQ}{SYSREQ_ID=#SYSREQ{SYSREQ_ID}#}">
+	            <option value="#SYSREQ{SYSREQ_ID}#">#SYSREQ{NAME}#</option>
+		  </maly-if>
+	        </maly-loop>
+
+	      </select>
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="moveDualList(sysreq, all_sysreq);">&lt;</a><br>
+	      <a href="Javascript:void(0)" onClick="moveDualList(all_sysreq, sysreq);">&gt;</a>
+	    </td>
+	    <td>
+	      <select name="sysreq" multiple=multiple style="width: 200px; height: 100px">
+	        <maly-loop var="VERSION{SYSREQ_ID}" name="SRLINK" sort="ORDER_ID">
+		  <maly-set var="SYSREQ" from="VERSION{SYSREQ}{SYSREQ_ID=#SRLINK{SYSREQ_ID}#}"/>
+	          <option value="#SYSREQ{SYSREQ_ID}#:#SRLINK{SYSREQ_LINK_ID}#">#SYSREQ{NAME}#</option>
+	        </maly-loop>
+	      </select>
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="multiList_up(sysreq);">Up</a><br>
+	      <a href="Javascript:void(0)" onClick="multiList_down(sysreq);">Down</a>
+	    </td>
+	  </tr>
+	  </table>
+	  <br>
+	  Modules:
+
+	  <widget-multilist HIDDEN="1" NAME="sysreq_modules" OPTTEXT="\#DESCRIPTION\#" OPTVAL="\#MODULE_ID\#:\#DESCRIPTION\#" VAR="VERSION{SYSREQ_MODULES}">
+<table border="0">
+<tr>
+  <td>
+    <select id="sysreq_modules" multiple="multiple" name="sysreq_modules" onchange="return multiList_edit(this, new Array(&apos;sysreq_modules_hidden&apos;, &apos;sysreq_modules_text&apos;));" size="5" style="width: 100%">
+      <maly-loop sort="" var="VERSION{SYSREQ_MODULES}">
+        <option value="#MODULE_ID#:#DESCRIPTION#">#DESCRIPTION#</option>
+      </maly-loop>
+
+    </select>
+  </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <a href="Javascript:void(0)" onclick="multiList_add(&apos;sysreq_modules&apos;, new Array(&apos;sysreq_modules_hidden&apos;, &apos;sysreq_modules_text&apos;), &apos;%1%&apos;);">Add</a> |
+    <a href="Javascript:void(0)" onclick="multiList_replace(&apos;sysreq_modules&apos;, new Array(&apos;sysreq_modules_hidden&apos;, &apos;sysreq_modules_text&apos;), &apos;%1%&apos;);">Replace</a> |
+    <a href="Javascript:void(0)" onclick="multiList_remove(&apos;sysreq_modules&apos;, new Array(&apos;sysreq_modules_hidden&apos;, &apos;sysreq_modules_text&apos;), &apos;%1%&apos;);">Remove</a>
+  </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <input id="sysreq_modules_text" name="sysreq_modules_text" style="width: 100%" type="text">
+    
+    <input id="sysreq_modules_hidden" name="sysreq_modules_hidden" type="hidden">
+    
+  </td>
+  
+</tr>
+
+</table>
+
+</widget-multilist>
+
+
+	</td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Architecture:</th>
+  <td align=left colspan=2>
+        <a href="Javascript:void(0)" onclick="widgetPopup('#URL#/product_architecture/Multiedit?VER_ID=#VERSION{VER_ID}#', 'multiedit_product_architecture_#VERSION{VER_ID}#', 650, 400)">Edit</a>
+    
+  </td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Product Installation Intro: </th>
+	<td align=left colspan=2>
+	  <textarea style="width: 400px; height: 100px;" name="install_intro">#VERSION{INSTALL_INTRO}#</textarea>
+	  <br>
+	<a href="Javascript:void(0)" onClick="widgetPopup('#URL#/PRODUCT_INSTALLATION_STEP/List?VER_ID=#VERSION{VER_ID}#');">Edit Steps</a>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Product Post Installation: </th>
+	<td align=left colspan=2>
+	  <textarea style="width: 400px; height: 100px;" name="install_post">#VERSION{INSTALL_POST}#</textarea>
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Customization: </th>
+	Intro:
+	<td align=left colspan=2>
+	  <textarea style="width: 400px; height: 200px;" name="customization_intro">#VERSION{CUSTOMIZATION_INTRO}#</textarea>
+	  <br>
+	<a href="Javascript:void(0)" onClick="widgetPopup('#URL#/PRODUCT_CUSTOMIZATION_SECTION/List?VER_ID=#VERSION{VER_ID}#');">Edit Customization</a>
+	</td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Tutorials:</th>
+  <td align=left colspan=2>
+        <a href="Javascript:void(0)" onclick="widgetPopup('#URL#/PRODUCT_TUTORIAL/List?VER_ID=#VERSION{VER_ID}#', 'list_product_tutorial_#VERSION{VER_ID}#', 450, 550)">Edit</a>
+    
+  </td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Terminology:</th>
+  <td align=left colspan=2>
+	  <widget-dbolist col_names="Term" cols="name" key="TERM_ID" link="name" loopname="TERM" parent="VERSION" pkey="VER_ID" pkeyvalue="\#VERSION{VER_ID}\#" sortby="name" table="product_terminology">
+
+<table border="0" width="100%">
+  <tr>
+    <td align="right" class="input" colspan="1">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/product_terminology/Add?VER_ID=#VERSION{VER_ID}#&apos;, &apos;add_product_terminology_#VERSION{VER_ID}#&apos;, &apos;450&apos;, &apos;550&apos;)">Add</a>
+    </td>
+  </tr>
+  <tr class="header">
+    
+    <th align="left">
+      Term
+    </th>
+    
+  </tr>
+
+   <maly-loop var='VERSION{product_terminology}' name='TERM' sort='name'> 
+  
+    <maly-set eval="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+  <tr>
+    
+    <td align="left" class="#BGCLASS#">
+      
+        <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/product_terminology/Edit?TERM_ID=#TERM{TERM_ID}#&apos;, &apos;edit_product_terminology_#TERM{TERM_ID}#&apos;, &apos;450&apos;, &apos;550&apos;)">
+          #TERM{name}#
+	</a>
+      
+    </td>
+
+    
+  </tr>
+  </maly-loop>
+  
+</table>
+
+
+</widget-dbolist>
+
+  </td>
+</tr>
+
+<tr>
+ 	<th class="left_header" valign=top align=right>Applications: </th>
+	<td align=left colspan=2>
+	  <widget-dbolist col_names="#,Name" cols="application_order,name" key="APPLICATION_ID" link="name" loopname="APP" parent="VERSION" pkey="VER_ID" pkeyvalue="\#VERSION{VER_ID}\#" table="product_applications" sort="APP_NUM">
+
+<table border="0" width="100%">
+  <tr>
+    <td align="right" class="input" colspan="2">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/product_applications/Add?VER_ID=#VERSION{VER_ID}#&apos;, &apos;add_product_applications_#VERSION{VER_ID}#&apos;, &apos;450&apos;, &apos;550&apos;)">Add</a>
+    </td>
+  </tr>
+  <tr class="header">
+    
+    <th align="left">
+      #
+    </th>
+    
+    <th align="left">
+      Name
+    </th>
+    
+  </tr>
+
+   <maly-loop var='VERSION{product_applications}' name='APP' sort="APP_NUM"> 
+  
+    <maly-set eval="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+  <tr>
+    
+    <td align="left" class="#BGCLASS#">
+
+    <input type=hidden name="application_id" value="#APP{APPLICATION_ID}#">
+    <select name="app_num" id="app_num_#APP{APPLICATION_ID}#">
+      <maly-loop name="NUM" from=1 to="#SCALAR:VERSION{PRODUCT_APPLICATIONS}#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+      
+        <!-- #APP{application_order}# -->
+      
+    </td>
+
+    
+    <td align="left" class="#BGCLASS#">
+      
+        <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/product_applications/Edit?APPLICATION_ID=#APP{APPLICATION_ID}#&apos;, &apos;edit_product_applications_#APP{APPLICATION_ID}#&apos;, &apos;450&apos;, &apos;550&apos;)">
+          #APP{name}#
+	</a>
+      
+    </td>
+
+    
+  </tr>
+  </maly-loop>
+  
+</table>
+
+
+</widget-dbolist>
+
+	</td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Goals: </th>
+	<td align=left colspan=2>
+	<table border=0 cellspacing=1 cellpadding=2>
+	  <tr>
+	    <td align=left colspan=4>
+	      What problems does this product solve? How does it make things easier for the customers? What do the customers get out of the product? MAKE SURE MORE BROAD IN CONCEPT THAN COMPONENT GOAL. This product helps customers ... :
+	    </td>
+	  </tr>
+	  <tr>
+	    <th colspan=4 align=right>
+	      <a href="Javascript:void(0)" onClick="addGoalPopup('#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#');">Add</a>
+	    </th>
+	  </tr>
+	  <tr>
+	    <th width="10%">#</th>
+	    <th align=center>Priority</th>
+	    <th>Summary</th>
+	    <th align=center width="100">Status</th>
+	  </tr>
+	  <maly-loop var="VERSION{GOALS}" where="MARKETING" name=GOAL sort="GOAL_NUM">
+	  <maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+	  <tr class="#BGCLASS#">
+	    <td align=center width="10%">
+    <input type=hidden name="goal_id" value="#GOAL{GOAL_ID}#">
+    <select name="goal_num" id="goal_num_#GOAL{GOAL_ID}#">
+      <maly-loop name="NUM" from=1 to="#SCALAR:VERSION{GOALS}{MARKETING+=1}#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+            </td>
+      
+	    <td align=center class="box #CLASSMAP:CONF{PRIORITYMAP}{#GOAL{PRIORITY}#}#">
+	      #CONF{PRIORITYMAP}{#GOAL{PRIORITY}#}#
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="editGoalPopup('#GOAL{GOAL_ID}#');">
+	        #GOAL{SUMMARY}#
+	      </a>
+	    </td>
+	    <td align=center class="box #CLASSMAP:CONF{STATUSMAP}{#GOAL{STATUS}#}#" width="100">
+	      #CONF{STATUSMAP}{#GOAL{STATUS}#}#
+	    </td>
+	  </tr>
+	  </maly-loop>
+	</table>
+
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Components: </th>
+	<td align=left colspan=2>
+	<table border=0>
+	  <tr>
+	    <td align=left colspan=2>
+	      What individual components together make up the whole product? What are the largest parts of the product? How can features be grouped together? What major features are worth mentioning on a first glance?
+	    </td>
+	  </tr>
+	  <tr>
+	    <th align=right colspan=2>
+	      <a href="Javascript:void(0)" onClick="addComponentPopup('#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#')">Add</a>
+	    </th>
+	  </tr>
+	  <tr>
+	    <th align=left width="10%">#</th>
+	    <th align=left>Name</th>
+	  </tr>
+	  <maly-loop var="VERSION{COMPONENTS}" name=COMPONENT sort="COMPONENT_NUM">
+	  <maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+	  <tr class="#BGCLASS#">
+	    <td width="10%">
+    <input type=hidden name="component_id" value="#COMPONENT{COMPONENT_ID}#">
+    <select name="component_num" id="component_num_#COMPONENT{COMPONENT_ID}#">
+      <maly-loop name="NUM" from=1 to="#SCALAR:VERSION{COMPONENTS}#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+    </select>
+            </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="editComponentPopup('#COMPONENT{COMPONENT_ID}#');">
+	        #COMPONENT{NAME}#
+	      </a>
+	    </td>
+	  </tr>
+	  </maly-loop>
+	</table>
+
+	</td>
+</tr>
+<tr class="input">
+	<td align=left colspan=2>
+	  <maly-if var="FORM{ADD}">
+		<input type=submit name=action value="Add">
+	  <maly-else/>
+		<input type=submit name=action value="Update">
+	  </maly-if>
+	</td>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

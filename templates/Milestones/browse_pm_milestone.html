@@ -1,0 +1,40 @@
+    <tr>
+	  <maly-if var="FORM{LINK_FIELD}">
+	  <td align=center>
+	    <input type=submit value="Link" onClick="linkField('#FORM{LINK_FIELD}#', ':#MILESTONE{MID}#', '#NOQUOT:MILESTONE{SUMMARY}#')">
+	  </td>
+	  </maly-if>
+      <td class="#CLASS#" align=center style="width: 25px">
+          <a href="javascript:void(0)" onClick="editMilestonePopup(#MILESTONE{MID}#);">
+	  #MILESTONE{MID}#
+	  </a>
+      </td>
+      <td class="box #PRIORITYCLASSMAP{#NUM:MILESTONE{PRIORITY}#}#" align=center style="width: 75px">
+          #PRIORITYMAP{#NUM:MILESTONE{PRIORITY}#}#
+      </td>
+      <td class="#CLASS#" align=left>
+          <maly-if var="MILESTONE{STATUS}" ge="10">
+            <a class="done" href="javascript:void(0)" onClick="editMilestonePopup(#MILESTONE{MID}#);"> #MILESTONE{SUMMARY}# </a>
+	  <maly-else/>
+            <a href="javascript:void(0)" onClick="editMilestonePopup(#MILESTONE{MID}#);"> #MILESTONE{SUMMARY}# </a>
+	  </maly-if>
+      </td>
+      <td class="#CLASS#" align=center>
+          <a href="Javascript:void(0)" onClick="editUserPopup(#MILESTONE{UID}#);">#MILESTONE{OWNER}{FULLNAME}#</a>
+      </td>
+      <td class="#CLASS#" align=center style="width: 100px">
+          #MILESTONE{STARTDATE}#
+      </td>
+      <td class="#CLASS#" align=center style="width: 100px">
+          #MILESTONE{ENDDATE}#
+      </td>
+      <td class="box #STATUSCLASSMAP{#MILESTONE{STATUS}#}#" align=center style="width: 75px">
+        #STATUSMAP{#MILESTONE{STATUS}#}#
+      </td>
+      <td class="#CLASS#" align=center style="width: 20px">
+        #MILESTONE{PERCENT}#
+      </td>
+      <td class="#CLASS#" align=center style="width: 20px">
+        #NUM:MILESTONE{HOURS}#/#NUM:MILESTONE{ESTHOURS}#
+      </td>
+    </tr>

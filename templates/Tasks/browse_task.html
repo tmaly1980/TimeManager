@@ -1,0 +1,56 @@
+	<tr>
+	  <maly-if var="FORM{LINK_FIELD}">
+	    <td width="30">
+	      <maly-if eval="'#FORM{LINK_FIELD}#' =~ /^\d+$/">
+	        <form method="GET" action="cgi-bin/TaskGroups.pl/Edit" target="editMilestone_#FORM{LINK_FIELD}#">
+		  <input type=hidden name="MID" value="#FORM{LINK_FIELD}#">
+		  <input type=hidden name="TID" value="#TASK{TID}#">
+		  <input type=submit name="action" value="Link">
+		</form>
+	      <maly-else/>
+	        <input type=submit value="Link" onClick="linkField('#FORM{LINK_FIELD}#', ':#TASK{TID}#', '#NOQUOT:TASK{TITLE}#'); return false;">
+	      </maly-if>
+	    </td>
+	  <maly-elsif eval="('#SESSION{SITEADMIN}#' or '#SESSION{UID}#' == '#TASK{REQUESTOR_UID}#') and '#MODE#' eq 'Search'"/>
+	    <th class="header" align="center">
+	      <input type=checkbox name="bulk_tid" id="bulk_tid_#GROUPITER#_#TASKITER#" value="#TASK{TID}#">
+	    </th>
+	  </maly-if>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width="35">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TID}#</a>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width=15>
+	    <maly-if var="TASK{SUBTASK_IDS}">
+	      <a href="Javascript:void(0)" onClick="searchTaskPopup('ptid=#TASK{TID}#');">*</a>
+	    </maly-if>
+	  </td>
+	  <td class="box #PRIORITYCLASSMAP{#TASK{PRIORITY}#}#" align="center" width="80">#PRIORITYMAP{#TASK{PRIORITY}#}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left">
+	    <maly-if var="TASK{STATUS}" ge="10">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')" class="done">#TASK{TITLE}#</a>
+	    <maly-else/>
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TITLE}#</a>
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left" width="75">
+	    <maly-if var="TASK{OWNER}{EMAIL}">
+	    <a href="mailto:#TASK{OWNER}{EMAIL}#">
+	      #TASK{OWNER}{FULLNAME}#
+	    </a>
+	    <maly-else/>
+	      #TASK{OWNER}{FULLNAME}#
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align=center width="75">
+	      #TASK{DUEDATE}#
+	  </td>
+	  <td class="box #STATUSCLASSMAP{#TASK{STATUS}#}#"  width="75" align="center">#STATUSMAP{#TASK{STATUS}#}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width="75">#TASK{UPDATED}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width="20">
+	    #TASK{PERCENT}#
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width="25">
+	    #NUM:TASK{HOURS}#/#NUM:TASK{ESTHOURS}#
+	  </td>
+	</tr>
+

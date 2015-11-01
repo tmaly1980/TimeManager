@@ -1,0 +1,44 @@
+	<tr>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width=20>
+	      <input type=hidden name="TID" value="#TASK{TID}#">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TID}#</a>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width=20>
+	    <maly-if var="TASK{SUBTASK_IDS}">
+	      <a href="Javascript:void(0)" onClick="searchTaskPopup('ptid=#TASK{TID}#');">*</a>
+	    </maly-if>
+	    <maly-loop var="TASK{PARENT_IDS}" name="PLINK">
+	      #PLINK{PTID}#<br>
+	    </maly-loop>
+	  </td>
+	  <td class="box #PRIORITYCLASSMAP{#TASK{PRIORITY}#}#" align="center">#PRIORITYMAP{#TASK{PRIORITY}#}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" style="width: 250px" align="left">
+	    <maly-if var="TASK{STATUS}" ge=10>
+	      <a class="done" href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TITLE}#</a>
+	    <maly-else/>
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#TASK{TID}#')">#TASK{TITLE}#</a>
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="left">
+	    <maly-if var="TASK{OWNER}{EMAIL}">
+	    <a href="mailto:#TASK{OWNER}{EMAIL}#">
+	      #TASK{OWNER}{FULLNAME}#
+	    </a>
+	    <maly-else/>
+	      #TASK{OWNER}{FULLNAME}#
+	    </maly-if>
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align=center>
+	      #TASK{STARTDATE}#
+	  </td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align=center>
+	      #TASK{DUEDATE}#
+	  </td>
+	  <td class="box #STATUSCLASSMAP{#TASK{STATUS}#}#" align="center">#STATUSMAP{#TASK{STATUS}#}#</td>
+	  <td class="#TASK{OVERDUE}##CLASS#" align="center" width="25">
+	    #TASK{PERCENT}#
+	  </td>
+	  <td width="25" class="#TASK{OVERDUE}##CLASS#" align="center">
+	    #NUM:TASK{HOURS}#/#NUM:TASK{ESTHOURS}#
+	  </td>
+	</tr>

@@ -1,0 +1,93 @@
+<maly-cutws>
+  <maly-set default=1 var="PAGE" value="popup_main"/>
+  <maly-set default=1 var="URL" value="\#PATHINFO_URL\#"/>
+
+</maly-cutws>
+<maly-print text="
+
+
+<maly-set var='CONTENT'>
+"/>
+
+  <form action="#URL#" method="POST" onSubmit="return formSubmit(this);">
+  <input type=hidden name="#KEY#" value="\#FORM{#KEY#}\#">
+  <maly-if var="PARENTKEY">
+  <maly-print>
+    <maly-if var="MODE" eq="Add">
+      <input type=hidden name="#PARENTKEY#" value="\#FORM{#PARENTKEY#}\#">
+    </maly-if>
+  </maly-print>
+  </maly-if>
+
+  <table border=0 width="100%">
+    <tr class="header">
+      <th>
+        <maly-print>
+        <maly-if var="FORM{#KEY#}">
+	  Edit
+	<maly-else/>
+	  Add
+	</maly-if>
+	</maly-print>#TITLE# Entry:
+      </th>
+      <td>
+        <maly-print>
+	  <maly-if var="FORM{#KEY#}">
+	    <a href="#URL#?#KEY#=\#FORM{#KEY#}\#&action=Delete">Delete</a>
+	  </maly-if>
+	</maly-print>
+      </td>
+    </tr>
+  </table>
+
+  <table border=0 width="100%">
+  <maly-loop var="FIELDS" name="FIELD">
+    <maly-if var="ENTRYVAR">
+      <maly-set var="FIELDVAR" value="#ENTRYVAR#{#FIELD{ID}#}"/>
+    <maly-else/>
+      <maly-set var="FIELDVAR" value="#FIELD{ID}#"/>
+    </maly-if>
+    <tr>
+      <td align=right class="vertical_header">
+        #FIELD{NAME}#:
+      </td>
+      <td align=left class="input">
+	<maly-if var="FIELD{TYPE}" eq="textarea">
+	  <widget-textarea name="#FIELD{ID}#" value="#FIELDVAR#"/>
+	<maly-elsif var="FIELD{TYPE}" eq="checkbox"/>
+	<maly-elsif var="FIELD{TYPE}" eq="multicheckbox"/>
+	<maly-elsif var="FIELD{TYPE}" eq="radio"/>
+	<maly-elsif var="FIELD{TYPE}" eq="select"/>
+	<maly-elsif var="FIELD{TYPE}" eq="multiselect"/>
+	<maly-elsif var="FIELD{TYPE}" eq="multiList"/>
+	  <widget-multilist name="#FIELD{ID}#"/>
+	<maly-elsif var="FIELD{TYPE}" eq="dualList"/>
+	<maly-else/>
+	  <widget-text name="#FIELD{ID}#" value="#FIELDVAR#"/>
+	</maly-if>
+      </td>
+    </tr>
+  </maly-loop>
+
+  <tr class="input">
+    <maly-if var="PAGE" eq="popup_main">
+      <td align=left>
+        <input type=submit name=action value="Update">
+      </td>
+      <td align=right>
+        <input type=submit value="Close" onClick="closePopup()">
+      </td>
+    <maly-else/>
+      <td align=left colspan=2>
+        <input type=submit name=action value="Update">
+      </td>
+    </maly-if>
+  </tr>
+  </table>
+
+  </form>
+
+<maly-print text="
+</maly-set>
+#include #PAGE#
+">

@@ -1,0 +1,34 @@
+    <a href="cgi-bin/Tasks.pl/Browse">Browse</a> |
+    <a href="cgi-bin/Tasks.pl/Search">Search</a> |
+    <a href="Javascript:void(0)" onClick="addTaskPopup();">Add Task</a> |
+    <a href="Javascript:void(0)" onClick="helpPopup('component_tasks');" class="help">HELP</a>
+    <br><br>
+
+    <maly-if var="SESSION{SITEADMIN}">
+      <maly-set var="AVAILABLE_OWNERS" as="ARRAY" from="ALL_USERS"/>
+    <maly-else/>
+      <maly-set var="AVAILABLE_OWNERS" as="ARRAY" from="SESSION{MANAGED},SESSION,SESSION{MANAGED_GROUPS}{MEMBERS}"/>
+    </maly-if>
+
+    <maly-if eval="'#SCALAR:AVAILABLE_OWNERS#' and '#MODE#' eq 'Browse'">
+    <form action="#URL#/Browse" method="GET" name="browseByUidForm">
+    View By User:
+      <select name="BY_UID" onChange="document.browseByUidForm.submit();">
+        <option value="">Myself</option>
+        <option value="-2">Unassigned</option>
+        <option value="-1">Everyone</option>
+	<maly-loop name="EACH_USER" var="AVAILABLE_OWNERS">
+	  <maly-if not=1 var="IN_LIST{#EACH_USER{UID}#}">
+	    <maly-set var="IN_LIST{#EACH_USER{UID}#}" value=1/>
+	    <option value="#EACH_USER{UID}#">#EACH_USER{FULLNAME}#</option>
+	  </maly-if>
+	</maly-loop>
+      </select>
+    </form>
+    </maly-if>
+    <maly-if var="MODE" eq="Browse">
+    <div align=right style="padding-top: 10px">
+    <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_browsetasks');">HELP</a>
+    </div>
+
+    </maly-if>

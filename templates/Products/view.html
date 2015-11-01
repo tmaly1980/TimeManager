@@ -1,0 +1,205 @@
+<maly-set var="CUSTOM_ONLOAD">
+  set_select(document.productForm.manager_uid, "#PRODUCT{MANAGER_UID}#");
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+function formSubmit(f)
+{
+  selectSubmit(f.versions);
+  return true;
+}
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+<form method=POST action="cgi-bin/Admin.pl/product" onSubmit="return formSubmit(this);" name="productForm">
+<input type=hidden name="PROD_ID" value="#FORM{PROD_ID}#">
+<table border=0 cellspacing=2 cellpadding=5 width=600>
+
+<tr class="transparent">
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td width="20%">&nbsp;</td>
+</tr>
+<tr>
+	<th align=left class="transparent" colspan=2>
+	  <a href="#FULL_URL#">
+	    View Product:
+	  </a>
+	  <a href="Javascript:void(0)" onClick="editProductPopup('#PRODUCT{PROD_ID}#');">Edit</a>
+	</th>
+	<td align=right class="transparent">
+	  <maly-if eval="'#SESSION{SITEADMIN}#' and '#FORM{PROD_ID}#' ne ''">
+	    <a href="#PATHINFO_URL#?prod_id=#PRODUCT{PROD_ID}#&action=Delete" class="delete">Delete</a>
+	  <maly-else/>
+	    &nbsp;
+	  </maly-if>
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Name: </th>
+	<td align=left colspan=2>
+		#PRODUCT{NAME}#
+	</td>
+</tr>
+<tr>
+	<th class="requiredfield left_header" valign=top align=right>Abbreviation: </th>
+	<td align=left colspan=2>
+		#PRODUCT{ABBREV}#
+	</td>
+</tr>
+<tr>
+	<th class="left_header" valign=top align=right>Manager: </th>
+	<td align=left colspan=2>
+	  <maly-if var="PRODUCT{MANAGER}{EMAIL}">
+	        <a href="mailto:#PRODUCT{MANAGER}{EMAIL}#">
+		#PRODUCT{MANAGER}{FULLNAME}#
+		</a>
+	  <maly-else/>
+		#PRODUCT{MANAGER}{FULLNAME}#
+	  </maly-if>
+	</td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Objective: </th>
+  <td align=left>
+    #HTML:PRODUCT{OBJECTIVE}#
+  </td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Mission Statement: </th>
+  <td align=left>
+    #HTML:PRODUCT{MISSION}#
+  </td>
+</tr>
+
+<tr>
+  <th class="left_header" valign=top align=right>Priority: </th>
+  <td align=left>
+    <div class="box #CLASSMAP:CONF{PRIORITYMAP}{#PRODUCT{PRIORITY}#}#" style="width: 75px" align=center>
+    #CONF{PRIORITYMAP}{#PRODUCT{PRIORITY}#}#
+    </div>
+  </td>
+</tr>
+
+<tr>
+	<th class="left_header" valign=top align=right>Versions: </th>
+	<td align=left colspan=2>
+	<table border=0>
+	<maly-loop var="PRODUCT{VERSIONS}" sort="VER_NAME" name="VERSION">
+	  <tr>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="editProductVersionPopup('#PRODUCT{PROD_ID}#', '#VERSION{VER_ID}#')">#VERSION{VER_NAME}# <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+	      </a>
+	    </td>
+	  </tr>
+	</maly-loop>
+	</table>
+
+	</td>
+</tr>
+
+
+<tr>
+	<th class="left_header" valign=top align=right>Competitors: </th>
+	<td align=left colspan=2>
+	<table border=0 cellpadding=5 cellspacing=5 width="100%">
+	  <tr>
+	    <th colspan=5 align=right>
+	      <a href="Javascript:void(0)" onClick="addCompetitorPopup('#PRODUCT{PROD_ID}#');">Add</a>
+	    </th>
+	  </tr>
+	  <tr>
+	    <th style="width: 75px">Priority</th>
+	    <th align=left>Name</th>
+	    <th align=left>Product Level</th>
+	    <th align=left style="width: 30px">Score</th>
+	  </tr>
+	<maly-loop var="PRODUCT{COMPETITORS}" name="COMP" sort="PRIORITY,SCORE,NAME">
+	<maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+	  <tr class="#BGCLASS#">
+	    <td class="box #CLASSMAP:CONF{PRIORITYMAP}{#COMP{PRIORITY}#}#" align=center>
+	      #CONF{PRIORITYMAP}{#COMP{PRIORITY}#}#
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="editCompetitorPopup('#COMP{COMP_ID}#')">#COMP{NAME}# 
+	      <maly-if var="COMP{URL}">
+	      (<a href="#COMP{URL}#" target="_new">URL</a>)
+	      </maly-if>
+	      </a>
+	    </td>
+	    <td class="box #CLASSMAP:CONF{COMPLEVELMAP}{#COMP{LEVEL}#}#" style="width: 125px">
+              #CONF{COMPLEVELMAP}{#COMP{LEVEL}#}#
+	    </td>
+	    <td align=center>
+	      #COMP{SCORE}#
+	    </td>
+	  </tr>
+	</maly-loop>
+	</table>
+
+	</td>
+</tr>
+
+
+
+<tr>
+	<th class="left_header" valign=top align=right>Enhancement Requests: </th>
+	<td align=left colspan=2>
+	<table border=0 cellpadding=5 cellspacing=5 width="100%">
+	  <tr>
+	    <th colspan=6 align=right>
+	      <a href="Javascript:void(0)" onClick="addFeatureRequestPopup();">Add</a>
+	    </th>
+	  </tr>
+	  <tr>
+	    <th>Priority</th>
+	    <th align=left>Name</th>
+	    <th style="width: 20px">Ver</th>
+	    <th>Scope</th>
+	    <th>Status</th>
+	    <th>Estimated</th>
+	  </tr>
+	<maly-loop var="PRODUCT{FEATURE_REQUESTS}" name="FR">
+	<maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+	  <tr class="#BGCLASS#">
+	    <td class="box #CLASSMAP:CONF{PRIORITYMAP}{#FR{PRIORITY}#}#" align=center>
+	      #CONF{PRIORITYMAP}{#FR{PRIORITY}#}#
+	    </td>
+	    <td>
+	      <a href="Javascript:void(0)" onClick="editFeatureRequestPopup('#FR{REQ_ID}#')">#FR{NAME}# 
+	      </a>
+	    </td>
+	    <td style="width: 20px">
+	      #FR{VERSION}{VER_NAME}#
+	    </td>
+	    <td class="box #CLASSMAP:CONF{SCOPEMAP}{#FR{SCOPE}#}#">
+	      #CONF{SCOPEMAP}{#FR{SCOPE}#}#
+	    </td>
+	    <td class="box #CLASSMAP:CONF{FRSTATUSMAP}{#FR{STATUS}#}#">
+	      #CONF{FRSTATUSMAP}{#FR{STATUS}#}#
+	    </td>
+	    <td>
+	      #FR{ESTIMATED_DATE}#
+	    </td>
+	  </tr>
+	</maly-loop>
+	</table>
+
+	</td>
+</tr>
+
+<tr>
+	<td align=right>
+		<input type=submit value="Close" onClick="closePopup();">
+	</td>
+</tr>
+
+</table>
+</form>
+</td></tr>
+</maly-set>
+
+#include popup_main

@@ -1,0 +1,61 @@
+<maly-set var="CUSTOM_SCRIPT">
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td align=center class="transparent">
+
+<div align=right>
+  <a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_calendar');">HELP</a>
+
+</div>
+
+<table border=1 cellspacing=0 cellpadding=5>
+  <tr>
+    <th colspan=7 align=center>
+      <a href="#URL#/#SCOPE#/#PREV_YEAR#?set_field=#FORM{SET_FIELD}#">&lt;&lt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#PREV_MONTH#?set_field=#FORM{SET_FIELD}#">&lt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#CURRENT_MONTH#?set_field=#FORM{SET_FIELD}#">
+      #MONTHNAME# #YEAR#
+      </a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_MONTH#?set_field=#FORM{SET_FIELD}#">&gt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_YEAR#?set_field=#FORM{SET_FIELD}#">&gt;&gt;</a>
+    </th>
+  </tr>
+  <tr>
+    <th>Su</th>
+    <th>M</th>
+    <th>Tu</th>
+    <th>W</th>
+    <th>Th</th>
+    <th>F</th>
+    <th>Sa</th>
+  </tr>
+  <maly-loop name=WEEK to="#WEEKCOUNT#">
+  <tr>
+    <maly-loop name=DAY to=6>
+    <maly-set var=DAYNUMBER eval=1 value="#WEEK#*7+#DAY#"/>
+    <td class="#CLASS[#DAYNUMBER#]#">
+      <a href="Javascript:void(0)" onClick="return dateSet('#FORM{SET_FIELD}#', '#YMD[#DAYNUMBER#]#');">
+        #DAYS[#DAYNUMBER#]#
+      </a>
+      </maly-if>
+    </td>
+    </maly-loop>
+  </tr>
+  </maly-loop>
+
+</table>
+</td></tr>
+
+<tr><td align=left class="transparent">&nbsp;</td></tr>
+
+<tr><td align=right class="transparent">
+<input type=submit value="Close" onClick="closePopup(1);">
+</td></tr>
+
+</maly-set>
+#include popup_main

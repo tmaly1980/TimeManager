@@ -1,0 +1,53 @@
+<maly-cutws>
+  <maly-set var="COLSPAN" eval=1 value="'#SCALAR:TABLE_META{LIST}#'"/>
+  <maly-set var="FIELDS" from="TABLE_META{LIST}"/>
+  <maly-set default=1 var="FIELDS" from="TABLE_META{EDIT}"/>
+  <maly-set var="POSTFIX" value="_\\##LOOPNAME#{#TABLE_META{KEY}#}\\#" if="'#TABLE_META{KEY_POSTFIX}#'"/>
+    <maly-if var="TABLE_META{SORTBY}" in="FIELDS">
+      <maly-if var="TABLE_META{FIELDS}{#TABLE_META{SORTBY}#}{LISTMODE_EDIT}">
+        <maly-set var="LISTMODE_EDIT"/>
+      </maly-if>
+    </maly-if>
+
+</maly-cutws>
+<maly-if var="LISTMODE_EDIT">
+  <maly-print>
+    <maly-set var="CUSTOM_ONLOAD">
+      <maly-loop var="#TABLE#" sort="#TABLE_META{SORTBY}#">
+      set_select('#TABLE#[\#MALYITER\#]{#TABLE_META{SORTBY}#}', '\##TABLE_META{SORTBY}#\#', '\#MALYITERNUM\#');
+    </maly-set>
+  </maly-print>
+</maly-if>
+<maly-print text="<maly-set var='CONTENT'>"/>
+  <maly-if var="LISTMODE_EDIT">
+    <maly-print text="
+      <form method=POST action='\#PATHINFO_URL\#'>
+    "/>
+    <maly-if var="PARENT_META">
+      <input type=hidden name="#PARENT_META{KEY}#" value="\#FORM{#PARENT_META{KEY}#}\#">
+    </maly-if>
+  </maly-if>
+  <widget-list/>
+  <div style="width: 100%">
+    <maly-if var="LISTMODE_EDIT">
+      <div style="float: left">
+        <input type=submit value="Update" name="action">
+      </div>
+    </maly-if>
+
+    <div style="float: right">
+      <input type=submit value="Close" onClick="closePopup()">
+    </div>
+  </div>
+
+  <maly-if var="LISTMODE_EDIT">
+    <maly-print text="
+      </form>
+    "/>
+
+  </maly-if>
+<maly-print text="
+</maly-set>
+
+#include popup_main
+"/>

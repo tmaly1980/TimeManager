@@ -1,0 +1,329 @@
+<maly-if var="SESSION{SITEADMIN}">
+  <maly-set var="AVAILABLE_OWNERS" as="ARRAY" from="ALL_USERS"/>
+<maly-else/>
+  <maly-if defined=1 var="TASK{PID}">
+    <maly-set var="AVAILABLE_OWNERS" as=ARRAY from="TASK{PROJECT}{PARTICIPANTS},SESSION"/>
+  <maly-else/>
+    <maly-set var="AVAILABLE_OWNERS" as=ARRAY from="SESSION{MANAGED_GROUPS}{MEMBERS},SESSION{MANAGED},SESSION"/>
+  </maly-if>
+</maly-if>
+
+<maly-if var="MILESTONE{MID}" defined=1>
+  <maly-set var="PID" from="MILESTONE{PID}"/>
+<maly-else/>
+  <maly-set var="PID" from="FORM{PID}"/>
+</maly-if>
+
+<maly-set var="WRITEABLE" value=1/>
+<maly-set var="ADDING_THIS_MILESTONE" value="#FORM{ADD_MILESTONE}#"/>
+<maly-set var="EDIT_THIS_MILESTONE" value="#FORM{EDIT_MILESTONE}#"/>
+<maly-set var="EDIT_OR_ADD" value="1"/>
+<maly-set var="PROJECT" value=1/>
+<maly-if var="EDIT_THIS_MILESTONE">
+<!--  <maly-set var="MILESTONE" from="MILESTONES{MID=#FORM{EDIT_MILESTONE}#}"/> -->
+</maly-if>
+
+<maly-set var="CUSTOM_ONLOAD">
+
+  // Set all tasks' stuff.
+  <maly-loop name="T_ID" var="MILESTONE{TASK_IDS}" sort="NTID">
+    <maly-set var="NTID_ITER" eval=1 value="'#MALYITER#'+1"/>
+    <maly-set var="T" from="MILESTONE{TASKS}{TID=#T_ID{TID}#}"/>
+    set_select(document.getElementById("pmid_#T{TID}#"), "#T{MID}#");
+    set_select(document.getElementById("ntid_#T{TID}#"), "#NTID_ITER#");
+  </maly-loop>
+  
+  if (document.editForm.SUBMITTED.value == 1) { return; } 
+
+  set_popup('uid', "#MILESTONE{UID}#", '#SESSION{UID}#');
+  set_popup('priority', "#MILESTONE{PRIORITY}#", '3');
+
+  if ('#FORM{ADDED}#' && '#FORM{LINK_FIELD}#')
+  {
+    linkField('#FORM{LINK_FIELD}#', ':#MILESTONE{MID}#', '#NOQUOT:MILESTONE{SUMMARY}#');
+    window.opener.noreload = 1; // Don't reload parent on close.
+  }
+</maly-set>
+<maly-set var="CUSTOM_SCRIPT">
+function checkAll(x, name)
+{
+  var a = document.editForm[name];
+  if (a.length)
+  {
+    for(var i = 0; i < a.length; i++)
+    {
+      a[i].checked = x.checked;
+    }
+  } else if (a) {
+      a.checked = x.checked;
+  }
+}
+
+function confirmDeleteMilestone()
+{
+  return confirm("Are you sure you want to DELETE this task group/milestone? All tasks will still exist. If this is a project milestone, please first add the project to the task prior to deleting this milestone if you wish to keep the task within the project.");
+}
+
+function confirmRemoveProject()
+{
+  return confirm("Are you sure you want to remove the milestone from the project (and thus converting to a standalone task group)? All tasks will remain as before.");
+}
+
+function formSubmit(f)
+{
+  // Add in JS verification.
+
+  f.SUBMITTED.value = 1;
+
+  return true;
+}
+
+</maly-set>
+
+<maly-set var="CONTENT">
+  <tr><td align=center>
+  <form method="POST" action="#PATHINFO_URL#" name="editForm" onSubmit="return formSubmit(this);">
+    <input type=hidden name=SUBMITTED value="0">
+    <input type=hidden name=PID value="#PID#">
+    <input type=hidden name="EDIT_MILESTONE" value="#MILESTONE{MID}#">
+    <input type=hidden name="LINK_FIELD" value="#FORM{LINK_FIELD}#">
+    <input type=hidden name="MID" value="#MILESTONE{MID}#">
+
+  <maly-if eval="'#FORM{SAVED}#' or '#FORM{ACTION}#' eq 'Save' or '#FORM{ADDED}#'">
+  <div style="align: left; font-style: bold; color: #DD0000; font-size: 14px">
+    <maly-if var="MILESTONE{PID}">
+      Milestone
+    <maly-else/>
+      Task Group
+    </maly-if>
+    Saved
+  </div>
+  </maly-if>
+
+  <table border=0 cellpadding=0 cellspacing=2 width="95%">
+    <tr>
+      <th align=left>
+        <a href="Javascript:void(0)" onClick="viewProjectPopup('#MILESTONE{PID}#');" style="font-size: 16px">
+	  <maly-if var="MILESTONE{PID}">
+	    #MILESTONE{PROJECT}{TITLE}#: 
+	  </maly-if>
+	</a>
+	<a href="#PATHINFO_URL#?mid=#FORM{MID}#" style="font-size: 16px">
+	  <maly-if var="MILESTONE{MID}" defined=1>
+	    Edit
+	  <maly-else/>
+	    Add
+	  </maly-if>
+	  <maly-if var="MILESTONE{PID}">
+	    Milestone <maly-if var="MILESTONE{MID}"># #MILESTONE{MID}#</maly-if>
+	    <br>
+	  <maly-else/>
+	    Task Group <maly-if var="MILESTONE{MID}"># #MILESTONE{MID}#</maly-if>
+	  </maly-if>
+	</a>
+      </th>
+      <td align=right>
+        <maly-if var="MILESTONE{MID}" defined=1>
+	<!--
+        have to worry about whether to add to PROJECT_IDS or TGROUP_IDS (depends if milestone is in project or not).
+	WORRY AFTER ABLE TO ADD TO TGROUP_IDS!!!!
+	since we can be in many projects, we simply need to say whether we're in any or not. i.e a new parameter.
+	-->
+          <!-- <a href="Javascript:void(0)" onClick="addTaskPopup(null, new Array('#MILESTONE{MID}#', '#MILESTONE{SUMMARY}#'), null, 'prod_id=#MILESTONE{PROJECT}{PROD_ID}#&duedate=#MILESTONE{ENDDATE}#');">Add New Task</a> | -->
+	  <maly-if var="MILESTONE{UID}" eq="#SESSION{UID}#">
+            <a href="Javascript:void(0)" onClick="addTaskPopup('mid=#MILESTONE{MID}#');">Add New Task</a> |
+            <a href="Javascript:void(0)" onClick="searchTaskPopup(null, '#MILESTONE{MID}#');">Add Existing Task</a> |
+	  </maly-if>
+          <a href="Javascript:void(0)" onClick="viewGanttPopup('MID', '#MILESTONE{MID}#');">Gantt</a>
+	  |
+	</maly-if>
+	<maly-if var="MODE" eq="Add">
+	<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_addtgroup');">HELP</a>
+	<maly-else/>
+	<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_edittgroup');">HELP</a>
+	</maly-if>
+      </td>
+    </tr>
+    </table>
+
+    <table border=0 width=98%>
+#include Milestones/edit_header
+    <tr class="milestone">
+      <td class="#MCLASS#" align=left valign=top>
+        <maly-if var="EDITABLE{SUMMARY}">
+          <input type=text size=30 maxlength=50 name="summary" value="#MILESTONE{SUMMARY}#">
+	<maly-else/>
+	  #MILESTONE{SUMMARY}#
+	</maly-if>
+      </td>
+      <td class="#MCLASS#" align=center valign=top>
+        <maly-if var="EDITABLE{PRIORITY}">
+#include Tasks/priority_select
+         <maly-else/>
+	 #PRIORITYMAP{#MILESTONE{PRIORITY}#}#
+	 </maly-if>
+      </td>
+      <td class="#MCLASS#" align=center valign=top>
+        <maly-if var="EDITABLE{UID}">
+        <select name=uid id="uid">
+	  <maly-loop var="AVAILABLE_OWNERS" name="O">
+	    <maly-if not=1 var="O_LIST{#O{UID}#}">
+	      <maly-set var="O_LIST{#O{UID}#}" value=1/>
+	      <option value="#O{UID}#">#O{FULLNAME}#</option>
+	    </maly-if>
+	  </maly-loop>
+	  <maly-if not=1 var="AVAILABLE_OWNERS{UID=#MILESTONE{UID}#}">
+	    <option value="#MILESTONE{UID}#">#MILESTONE{OWNER}{FULLNAME}#</option>
+	  </maly-if>
+	</select>
+	<maly-else/>
+	  <a href="Javascript:void(0)" onClick="editUserPopup('#MILESTONE{UID}#')">
+	    #MILESTONE{OWNER}{FULLNAME}#
+	  </a>
+	</maly-if>
+      </td>
+      <td class="#MCLASS#" align=center valign=top>
+        <maly-if var="EDITABLE{STARTDATE}">
+          <input type=text size=10 maxlength=10 name="startdate" id="startdate" value="#MILESTONE{STARTDATE}#" onChange="return checkDateFormat(this);"><br>
+	  YYYY-MM-DD<br>
+	  (<a href="Javascript:void(0)" onClick="setDatePopup('startdate', document.editForm.startdate.value);">Calendar</a>)
+	<maly-else/>
+	  #MILESTONE{STARTDATE}#
+	</maly-if>
+      </td>
+      <td class="#MCLASS#" align=center valign=top>
+        <maly-if var="EDITABLE{ENDDATE}">
+          <input type=text size=10 maxlength=10 name="enddate" id="enddate" value="#MILESTONE{ENDDATE}#" onChange="return checkDateFormat(this);"><br>
+	  YYYY-MM-DD<br>
+	  (<a href="Javascript:void(0)" onClick="setDatePopup('enddate', document.editForm.enddate.value);">Calendar</a>)
+	<maly-else/>
+	  #MILESTONE{STARTDATE}#
+	</maly-if>
+      </td>
+      <maly-if var="MILESTONE{MID}" defined=1>
+      <td class="box #STATUSCLASSMAP{#MILESTONE{STATUS}#}#" align=center>
+        #STATUSMAP{#MILESTONE{STATUS}#}# (#NUM:MILESTONE{PERCENT}#%)
+      </td>
+      <maly-else/>
+      <td class="#MCLASS#">
+        &nbsp;
+      </td>
+      </maly-if>
+      <td class="#MCLASS#" align=center style="background-color: #C0C0C0; width: 40px">
+        <maly-if var="MILESTONE{MID}" defined=1>
+          #NUM:MILESTONE{HOURS}# / #NUM:MILESTONE{ESTHOURS}#
+	<maly-else/>
+	&nbsp;
+	</maly-if>
+      </td>
+    </tr>
+
+    </table>
+
+    <table border=0 width="98%">
+    <tr>
+      <th align=left valign=top>
+      Description:
+      <maly-if var="EDITABLE{DESCRIPTION}">
+        <textarea name="DESCRIPTION" style="vertical-align: top; height: 200px; width: 80%">#MILESTONE{DESCRIPTION}#</textarea>
+      <maly-else/>
+        <div style="font-weight: normal; width: 65%; padding-left: 30px">
+        #HTML:MILESTONE{DESCRIPTION}#
+	</div>
+      </maly-if>
+      </th>
+    </tr>
+    </table>
+
+
+    <maly-if var="TASKS">
+    <table border=0 width="98%">
+    <tr>
+      <td align=left>
+      <span style="font-size: 16px">
+        Tasks (in execution order):
+      </span>
+      <maly-if var="MILESTONE{UID}" eq="#SESSION{UID}#">
+        <a href="Javascript:void(0)" onClick="searchTaskPopup('pidmid=:#MILESTONE{MID}#');">Bulk Change</a>
+	|
+	</maly-if>
+
+	<maly-if var="FORM{ACTIVE}">
+	  <a href="cgi-bin/TaskGroups.pl/Edit?mid=#MILESTONE{MID}#">View All</a>
+	<maly-else/>
+	  <a href="cgi-bin/TaskGroups.pl/Edit?mid=#MILESTONE{MID}#&active=1">View Active</a>
+	</maly-if>
+      </td>
+    </tr>
+    </table>
+
+
+    <table border=0 width=98%>
+    
+#include Tasks/short_header
+         <maly-loop name=TASK var="TASKS" eval=1 where="'#FORM{ACTIVE}#' ? '#TASK{STATUS}#' < 10 : 1">
+	      <maly-set var="MTID_ITER" eval=1 value="'#MALYITER#'+1"/>
+              <maly-set var="ANCHOR" value="TID_#TASK{TID}#"/>
+              <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Tasks/short_edit
+          </maly-loop>
+    </table>
+
+    </maly-if>
+
+  <table border=0 width=98%>
+  <tr>
+    <th colspan=2><hr></th>
+  </tr>
+  <tr>
+    <th align=right valign=top width="15px">
+      Notes:
+    </th>
+    <td align=left>
+      <maly-if eval="'#MODE#' eq 'Add' or '#EDITABLE{NOTES}#'">
+        <textarea name=notes rows=5 wrap=virtual style="width: 65%"></textarea>
+	<hr>
+      </maly-if>
+  	    <maly-if var="MILESTONE{NOTES}">
+  	      <table cellspacing=0 cellpadding=2 class="input" width="65%" align=left>
+  	        <maly-loop name=NOTE var="MILESTONE{NOTES}" sort="TIMESTAMP_FORMATTED" reverse=1>
+  		  <tr>
+  		    <td align=left>
+  		      At #NOTE{TIMESTAMP_FORMATTED}#, #NOTE{USER}{FULLNAME}# wrote:<br>
+  
+  		      #HTML:NOTE{TEXT}#
+  		    </td>
+  		  </tr>
+  		</maly-loop>
+  	      </table>
+  	    </maly-if>
+    </td>
+  </tr>
+  </table>
+
+  <table border=0 width="98%">
+  <tr>
+    <td align=left style="padding-top: 10px">
+      <maly-if eval="not '#MILESTONE{MID}#' or '#MILESTONE{UID}#' eq '#SESSION{UID}#'"> 
+        <input type=submit name="action" value="Save">
+      </maly-if>
+      <input type=submit value="Close" onClick="closePopup()">
+    </td>
+    <td align=right>
+      <maly-if eval="'#MILESTONE{MID}#' and '#MILESTSONE{UID}#' eq '#SESSION{UID}#'"> 
+        <input type=submit class="delete" name="action" value="Delete" onClick="return confirmDeleteMilestone();">
+	<maly-if var="MILESTONE{PID}">
+          <input type=submit class="delete" name="action" value="Remove from Project" onClick="return confirmRemoveProject();">
+	</maly-if>
+      </maly-if>
+    </td>
+  </tr>
+  </table>
+
+  <div class="milestone_spacer">&nbsp;</div>
+    
+  </form>
+  </td></tr>
+</maly-set>
+
+#include popup_main

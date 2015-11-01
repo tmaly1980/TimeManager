@@ -1,0 +1,99 @@
+<maly-set var="CUSTOM_SCRIPT">
+</maly-set>
+
+<maly-set var="CONTENT">
+
+<tr>
+  <td align=left class="transparent">
+  <table border=0 cellspacing=0 cellpadding=1>
+  <maly-loop var="DATA" name="ROW">
+    <maly-if var="ROW{MILE}">
+      <maly-set var="COMPLETED" value="gantt_milestone_completed"/>
+      <maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'title_header' : 'title_header_2'"/>
+    <maly-elsif var="ROW{PROJECT}"/>
+      <maly-set var="COMPLETED" value="gantt_project_completed"/>
+      <maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'title_header' : 'title_header_2'"/>
+    <maly-else/>
+      <maly-set var="COMPLETED" value="gantt_task_completed"/>
+      <maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2'"/>
+    </maly-if>
+
+    <maly-if eval="'#MALYITER#' % 10 == 0">
+#include Analysis/Gantt/timeline
+    </maly-if>
+
+    <tr class="transparent">
+      <td class="#BGCLASS#" style="width: 150px; border-style: solid; border-width: 1px 0px 1px 0px">
+	  <maly-if var="ROW{PROJECT}">
+            <div style="float: left; overflow: hidden; width: 150px">
+	      <a href="Javascript:void(0)" onClick="viewProjectPopup('#ROW{ID}#')" class="gantt_project_text">
+	        #ROW{TITLE}#
+	      </a>
+  	    </div>
+	  <maly-elsif var="ROW{MILE}"/>
+            <div style="float: right; overflow: hidden; width: 140px; align: right">
+	      <a href="Javascript:void(0)" onClick="viewMilestonePopup('#ROW{ID}#')" class="gantt_milestone_text">
+	        #ROW{TITLE}#
+	      </a>
+	    </div>
+	  <maly-elsif var="ROW{PTASK}"/>
+            <div style="float: right; overflow: hidden; width: 140px; align: right">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#ROW{ID}#')" class="gantt_ptask_text">
+	        #ROW{TITLE}#
+	      </a>
+	    </div>
+	  <maly-else/>
+            <div style="float: right; overflow: hidden; width: 125px; align: right">
+	      <a href="Javascript:void(0)" onClick="editTaskPopup('#ROW{ID}#')" class="gantt_task_text">
+	        #ROW{TITLE}#
+	      </a>
+	    </div>
+	  </maly-if>
+      </td>
+      <td align=center style="width: 20px; border-style: solid; border-width: 1px 0px 1px 0px" class="#BGCLASS#">
+        <maly-if var="ROW{IS_BEFORE}">
+	    &lt;&lt; 
+	</maly-if>
+      </td>
+      <td align=left class="title_header #BGCLASS#" style="width: #NUM:GRAPH_WIDTH#px; vertical-align: middle; border-style: solid; border-width: 1px 0px 1px 0px">
+        <maly-if var="ROW{DURATION}" defined=1>
+	  <div style="align: left; float: left;" class="">
+	    <maly-if var="ROW{IS_BEFORE}">
+	    </maly-if>
+	    <div style="float: left; width: #NUM:ROW{SPACER}#px">&nbsp;</div>
+	    <maly-if var="ROW{STATUS}" eq=10>
+	      <maly-set var="CANCELED" value="background-color: red"/>
+	    <maly-else/>
+	      <maly-set var="CANCELED" value=""/>
+	    </maly-if>
+	    <div style="float: left; width: #NUM:ROW{DURATION}#px; #CANCELED#" class="#COMPLETED#">
+	      <maly-if var="ROW{PERCENT}" gt=0>
+	        <div style="float: left; width: #NUM:ROW{PERCENT}#%; background-color: #00FF00;">&nbsp;</div>
+	      <maly-else/>
+	        &nbsp; 
+	      </div>
+	    <div style="float: left; vertical-align: middle">
+	      #ROW{TEXT}#
+	    </div>
+	  </div>
+
+	<maly-else/>
+	  <span style="padding-left: 40px;">
+	    <a href="Javascript:void(0)" onClick="helpPopup('gantt_incomplete');">Incomplete data</a>
+	  </span>
+	</maly-if>
+      </td>
+      <td align=center style="width: 20px; border-style: solid; border-width: 1px 0px 1px 0px" class="#BGCLASS#">
+        <maly-if var="ROW{IS_AFTER}">
+	    &gt;&gt; 
+	</maly-if>
+      </td>
+    </tr>
+
+    </maly-loop>
+    </table>
+  </td>
+</tr>
+</maly-set>
+
+#include popup_main

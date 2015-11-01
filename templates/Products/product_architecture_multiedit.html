@@ -1,0 +1,203 @@
+<widget-multieditform table="PRODUCT_ARCHITECTURE">
+
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+<maly-loop plus=1 sort="PARAGRAPH_ORDER" var="PRODUCT_ARCHITECTURE">
+            set_select('PRODUCT_ARCHITECTURE[#MALYITER#]{PARAGRAPH_ORDER}', '#PARAGRAPH_ORDER#', '#MALYITERNUM#');
+	  </maly-loop>
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+<maly-loop from=1 plus=1 to="#SCALAR:PRODUCT_ARCHITECTURE#">
+            selectSubmit('PRODUCT_ARCHITECTURE[#MALYITER#]{REFERENCE_IMAGES}');
+	  </maly-loop>
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#URL#/PRODUCT_ARCHITECTURE/Multiedit" method="POST" onsubmit="return formSubmit(this);">
+      
+        <input name="VER_ID" type="hidden" value="#FORM{VER_ID}#"></input>
+      
+
+
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="5">
+    Edit Product Architecture List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="center">
+      Remove
+    </th>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+    <th align="center">
+      Text
+    </th>
+    
+    <th align="center">
+      Images
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_ARCHITECTURE' name='PRODUCT_ARCHITECTURE_ITEM' plus=1 sort='PARAGRAPH_ORDER' loopvar='MITER'>
+  
+
+  <tr>
+    <td align="center" valign="top">
+      
+        <input name="PRODUCT_ARCHITECTURE[#MITER#]{VER_ID}" type="hidden" value="#FORM{VER_ID}#"></input>
+      
+      <input name="PRODUCT_ARCHITECTURE[#MITER#]{ARCH_ID}" type="hidden" value="#PRODUCT_ARCHITECTURE_ITEM{ARCH_ID}#"></input>
+      <widget-checkbox name="PRODUCT_ARCHITECTURE[\#MITER\#]{_delete}" value="\#PRODUCT_ARCHITECTURE_ITEM{ARCH_ID}\#">
+<input id="PRODUCT_ARCHITECTURE[#MITER#]{_delete}" name="PRODUCT_ARCHITECTURE[#MITER#]{_delete}" type="checkbox" value="#PRODUCT_ARCHITECTURE_ITEM{ARCH_ID}#"></input>
+
+</widget-checkbox>
+    </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield>
+        
+	  <widget-select id="PRODUCT_ARCHITECTURE[\#MITER\#]{PARAGRAPH_ORDER}" name="PRODUCT_ARCHITECTURE[\#MITER\#]{PARAGRAPH_ORDER}" numlist="\#SCALAR:PRODUCT_ARCHITECTURE\#" plus="1" value="\#PRODUCT_ARCHITECTURE_ITEM{PARAGRAPH_ORDER}\#" var="">
+<select id="PRODUCT_ARCHITECTURE[#MITER#]{PARAGRAPH_ORDER}" name="PRODUCT_ARCHITECTURE[#MITER#]{PARAGRAPH_ORDER}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="1" to="#SCALAR:PRODUCT_ARCHITECTURE#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield>
+        
+	  <widget-text id="PRODUCT_ARCHITECTURE[\#MITER\#]{TITLE}" name="PRODUCT_ARCHITECTURE[\#MITER\#]{TITLE}" size="15" value="\#PRODUCT_ARCHITECTURE_ITEM{TITLE}\#">
+<input id="PRODUCT_ARCHITECTURE[#MITER#]{TITLE}" maxlength="255" name="PRODUCT_ARCHITECTURE[#MITER#]{TITLE}" size="15" type="text" value="#PRODUCT_ARCHITECTURE_ITEM{TITLE}#"></input>
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield>
+        
+	  <widget-textarea height="" id="PRODUCT_ARCHITECTURE[\#MITER\#]{TEXT}" name="PRODUCT_ARCHITECTURE[\#MITER\#]{TEXT}" value="\#PRODUCT_ARCHITECTURE_ITEM{TEXT}\#" width="100%">
+<textarea name="PRODUCT_ARCHITECTURE[#MITER#]{TEXT}" style="width: 100%; height: 100px">#PRODUCT_ARCHITECTURE_ITEM{TEXT}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield>
+        
+	  <widget-multilist id="PRODUCT_ARCHITECTURE[\#MITER\#]{REFERENCE_IMAGES}" loopname="" name="PRODUCT_ARCHITECTURE[\#MITER\#]{REFERENCE_IMAGES}" opttext="\#SRC\#" optval="\#IMAGE_ID\#:\#SRC\#" pkeyname="PRODUCT_ARCHITECTURE[\#MITER\#]{REFERENCE_IMAGES}[\#MALYITER\#]{ARCH_ID}" pkeyvalue="\#PRODUCT_ARCHITECTURE{ARCH_ID}\#" reorder="1" reorder_hilight="1" sortby="ORDER_ID" var="PRODUCT_ARCHITECTURE_ITEM{REFERENCE_IMAGES}">
+<table border="0">
+<tr>
+  <td>
+    <select id="PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}" multiple="multiple" name="PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}" onchange="return multiList_edit(this, new Array(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden&apos;, &apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text&apos;));" size="5" style="width: 100%">
+      <maly-loop sort="ORDER_ID" var="PRODUCT_ARCHITECTURE_ITEM{REFERENCE_IMAGES}">
+        <option value="#IMAGE_ID#:#SRC#">#SRC#</option>
+      </maly-loop>
+
+    </select>
+  </td>
+  
+    <td align="left" valign="middle">
+      <a href="Javascript:void(0)" onclick="multiList_up(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}&apos;, new Array(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden&apos;, &apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text&apos;), &apos;1&apos;);">Up</a><br></br>
+      <a href="Javascript:void(0)" onclick="multiList_down(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}&apos;, new Array(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden&apos;, &apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text&apos;), &apos;1&apos;);">Down</a>
+    </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <a href="Javascript:void(0)" onclick="multiList_add(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}&apos;, new Array(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden&apos;, &apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text&apos;), &apos;%1%&apos;);">Add</a> |
+    <a href="Javascript:void(0)" onclick="multiList_replace(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}&apos;, new Array(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden&apos;, &apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text&apos;), &apos;%1%&apos;);">Replace</a> |
+    <a href="Javascript:void(0)" onclick="multiList_remove(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}&apos;, new Array(&apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden&apos;, &apos;PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text&apos;), &apos;%1%&apos;);">Remove</a>
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align="left">
+    <input id="PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text" name="PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_text" style="width: 100%" type="text"></input>
+    
+    <input id="PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden" name="PRODUCT_ARCHITECTURE[#MITER#]{REFERENCE_IMAGES}_hidden" type="hidden"></input>
+    
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+</table>
+
+</widget-multilist>
+	
+
+</widget-editfield>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+  <tr>
+    <td align="center" colspan="5" valign="top">
+      <div align="left" style="float: left">
+        <input name="action" type="submit" value="Update"></input>
+      </div>
+
+      <div align="right" style="float: right">
+        <input onclick="closePopup()" type="submit" value="Close"></input>
+      </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-multieditform>

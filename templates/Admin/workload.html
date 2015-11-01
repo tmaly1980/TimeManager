@@ -1,0 +1,117 @@
+<maly-set var="CONTENT">
+<tr><td align=left>
+<div align=right>
+  <a href="Javascript:void(0)" class="help" onClick="helpPopup('component_workload');">HELP</a>
+</div>
+<table border=0 cellspacing=0 cellpadding=1 width="100%">
+
+<tr>
+  <td colspan=2>
+  <form method=POST action="cgi-bin/Admin.pl/workload">
+  <maly-loop var="USERS" name="U">
+  <input type=hidden name=UID value="#U{UID}#">
+  </maly-loop>
+  <table border=0 cellspacing=0 cellpadding=1 align=right style="float: left">
+    <tr>
+      <th rowspan=2 width="50%" align=left><a href="#FULL_URL#" style="font-size: 20px">Workload Statistics</a></th>
+      <td>From:</td>
+      <td>
+        <input size=10 maxlength=10 type=text id=startdate name=startdate value="#SQLSTART#"> YYYY-MM-DD (<a href="javascript:void(0)" onClick="setDatePopup('startdate', '#SQLSTART#');">Calendar</a>)<br>
+
+      </td>
+      <td rowspan=2>
+        <input type=submit value="Refresh">
+<input type=submit value="Close" onClick="closePopup(1);">
+      </td>
+    </tr>
+    <tr>
+      <td>To:</td>
+      <td>
+        <input type=text id=enddate size=10 maxlength=10 name=enddate value="#SQLEND#"> YYYY-MM-DD (<a href="javascript:void(0)" onClick="setDatePopup('enddate', '#SQLEND#');">Calendar</a>)
+      </td>
+    </tr>
+  </table>
+  </form>
+  </td>
+</tr>
+
+<maly-loop var="WEEKS" name="WEEK">
+<tr>
+  <td align=left>
+    <table border=0 cellspacing=1 cellpadding=1 width="100%">
+    <tr>
+      <td align=right>&nbsp;</td>
+      <td>
+        <table border=0 cellspacing=0 cellpadding=0>
+	  <tr class="ruler">
+	    <maly-loop name="HOUR" var="HOURS">
+	      <td width="#HOURWIDTH#" align=left valign=bottom>&nbsp; #HOUR#h</td>
+	    </maly-loop>
+	  </tr>
+	</table>
+      </td>
+    </tr>
+    <tr>
+      <td align=left valign=bottom>&nbsp;</td>
+      <td>&nbsp;</td>
+    </tr>
+    <maly-loop name="USER" var="USERS">
+    <tr>
+      <td style="width: 150px">
+        <a href="Javascript:void(0)" onClick="taskSearchPopup('uid=#USER{UID}#&date_vector=during&date1span=week&date1=#WEEK{SQLSTART}#');">
+          #USER{FULLNAME}#
+	</a>
+
+	<maly-if var="FORM{SELECT}">
+	  (<a href="Javascript:void(0)" onClick="return set_select(window.opener.document.getElementById('#FORM{SELECT}#'), '#USER{UID}#');">Select</a>)
+	</maly-if>
+      </td>
+      <td align=left valign=middle>
+        <nobr>
+	<maly-set var="ALLOCATED" value="#WEEK{ALLOCATED}{#USER{UID}#}#"/>
+	<maly-if eval="'#ALLOCATED#' > '#USER{HOURSPERWEEK}#'">
+	  <maly-set var="OUTER_BGCOLOR" value="#FF0000"/>
+	  <maly-set var="OUTER_WIDTH" value="#WEEK{ALLOCATED_PIXELS}{#USER{UID}#}#"/>
+	  <maly-set var="INNER_WIDTH" value="#USER{TOTAL_HOUR_PIXELS}#"/>
+        <maly-else/>
+	  <maly-set var="OUTER_BGCOLOR" value="#C0C0C0"/>
+	  <maly-set var="OUTER_WIDTH" value="#USER{TOTAL_HOUR_PIXELS}#"/>
+	  <maly-set var="INNER_WIDTH" value="#WEEK{ALLOCATED_PIXELS}{#USER{UID}#}#"/>
+	</maly-if>
+
+        <table border=1 cellspacing=0 cellpadding=0 align=left width="#OUTER_WIDTH#" style="background-color: #OUTER_BGCOLOR#">
+	  <tr>
+	    <td>
+	      <div style="background-color: #USER{COLOR}#; align: left; width: #INNER_WIDTH#px">&nbsp;</div>
+	    </td>
+	  </tr>
+	</table>  
+	#ALLOCATED# / #USER{HOURSPERWEEK}#h
+	(#WEEK{ALLOCATED_PERCENT}{#USER{UID}#}#%)
+	</nobr>
+      </td>
+    </tr>
+    </maly-loop>
+  </td>
+  <td align=center>
+    #WEEK{START}# - #WEEK{END}#
+  </td>
+</tr>
+<tr>
+  <td colspan=2>
+    <hr>
+  </td>
+</tr>
+</maly-loop>
+
+</table>
+</td></tr>
+<tr>
+<td>
+</td>
+</tr>
+
+
+</maly-set>
+
+#include popup_main

@@ -1,0 +1,38 @@
+<maly-if var="QUEUE">
+<table border=0 cellspacing=0 cellpadding=1 width="100%">
+<tr>
+  <th width="10%"align=left>Prio.</th>
+  <maly-if var="ALL">
+    <th>Owner</th>
+    <th width="50%">Name</th>
+  <maly-else/>
+    <th width="75%">Name</th>
+  </maly-if>
+  <th width="15%" align=left>Due</th>
+</tr>
+
+<maly-loop var="QUEUE" name="PROJECT" sort="ENDDATE,PRIORITY">
+<maly-set var="BGCLASS" eval=1 value="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2' "/>
+<tr class="#PROJECT{OVERDUE_OPEN}##BGCLASS#">
+  <td class="#PRIORITYCLASSMAP{#PROJECT{PRIORITY}#}# box">
+    #PROJECT{PRIORITY}#
+  </td>
+  <maly-if var="ALL">
+    <td>
+      <a href="mailto:#PROJECT{MANAGER}{EMAIL}#">#PROJECT{MANAGER}{FULLNAME}#</a>
+    </td>
+  </maly-if>
+  <td>
+    <a href="Javascript:void(0)" onClick="editProjectPopup('#PROJECT{PID}#');">#PROJECT{TITLE}#</a>
+  </td>
+  <td>
+    <nobr>#DATE:PROJECT{ENDDATE}#</nobr>
+  </td>
+</tr>
+</maly-loop>
+
+</table>
+
+<maly-else/>
+No items
+</maly-if>

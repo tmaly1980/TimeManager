@@ -1,0 +1,278 @@
+<widget-editpage TABLE="PRODUCT_FEATURE_HOWTO">
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+<maly-loop loopvar="MITER" loopvarnum="MITERNUM" name="PRODUCT_FEATURE_HOWTO_STEP_ITEM" sort="HOWTO_NUM" var="PRODUCT_FEATURE_HOWTO{PRODUCT_FEATURE_HOWTO_STEP}">
+	      set_select('PRODUCT_FEATURE_HOWTO_STEP[#MITER#]{HOWTO_NUM}', '#PRODUCT_FEATURE_HOWTO_STEP_ITEM{HOWTO_NUM}#', '#MITERNUM#');
+	    </maly-loop>
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+selectSubmit('PRODUCT_FEATURE_HOWTO_IMAGE');
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#PATHINFO_URL#" method="POST" onsubmit="return formSubmit(this);">
+
+  <maly-if var="FORM{FEATURE_HOWTO_ID}">
+  <div align="right">
+    <a href="#PATHINFO_URL#?FEATURE_HOWTO_ID=#FORM{FEATURE_HOWTO_ID}#&amp;action=Delete">Delete</a>
+  </div>
+  </maly-if>
+
+
+  
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="4">
+      <a href="#PATHINFO_URL#?FEATURE_HOWTO_ID=#FORM{FEATURE_HOWTO_ID}#">
+    Edit Feature Howto Entry:
+      </a>
+    </th>
+  </tr>
+
+      
+        
+	  <maly-if eq="Add" var="MODE">
+        <input name="CFEATURE_ID" type="hidden" value="#FORM{CFEATURE_ID}#">
+	  </maly-if>
+
+	
+      
+      <input name="FEATURE_HOWTO_ID" type="hidden" value="#FORM{FEATURE_HOWTO_ID}#">
+
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Title:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-text ID="TITLE" NAME="TITLE" SIZE="" VALUE="\#PRODUCT_FEATURE_HOWTO{TITLE}\#">
+<input id="TITLE" maxlength="255" name="TITLE" size="30" type="text" value="#PRODUCT_FEATURE_HOWTO{TITLE}#">
+
+</widget-text>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Overview:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-textarea HEIGHT="" ID="OVERVIEW" NAME="OVERVIEW" VALUE="\#PRODUCT_FEATURE_HOWTO{OVERVIEW}\#" WIDTH="">
+<textarea name="OVERVIEW" style="width: 100%; height: 100px">#PRODUCT_FEATURE_HOWTO{OVERVIEW}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Images:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+          <widget-editfield>
+
+	  <widget-multilist ID="PRODUCT_FEATURE_HOWTO_IMAGE" LOOPNAME="" NAME="PRODUCT_FEATURE_HOWTO_IMAGE" OPTTEXT="\#SRC\#" OPTVAL="\#IMAGE_ID\#:\#SRC\#" PKEYNAME="PRODUCT_FEATURE_HOWTO_IMAGE[\#MALYITER\#]{FEATURE_HOWTO_ID}" PKEYVALUE="\#PRODUCT_FEATURE_HOWTO{FEATURE_HOWTO_ID}\#" REORDER="1" REORDER_HILIGHT="1" SORTBY="" VAR="PRODUCT_FEATURE_HOWTO{PRODUCT_FEATURE_HOWTO_IMAGE}">
+<table border="0">
+<tr>
+  <td>
+    <select id="PRODUCT_FEATURE_HOWTO_IMAGE" multiple="multiple" name="PRODUCT_FEATURE_HOWTO_IMAGE" onchange="return multiList_edit(this, new Array(&apos;PRODUCT_FEATURE_HOWTO_IMAGE_hidden&apos;, &apos;PRODUCT_FEATURE_HOWTO_IMAGE_text&apos;));" size="5" style="width: 100%">
+      <maly-loop sort="" var="PRODUCT_FEATURE_HOWTO{PRODUCT_FEATURE_HOWTO_IMAGE}">
+        <option value="#IMAGE_ID#:#SRC#">#SRC#</option>
+      </maly-loop>
+
+    </select>
+  </td>
+  
+    <td align="left" valign="middle">
+      <a href="Javascript:void(0)" onclick="multiList_up(&apos;PRODUCT_FEATURE_HOWTO_IMAGE&apos;, new Array(&apos;PRODUCT_FEATURE_HOWTO_IMAGE_hidden&apos;, &apos;PRODUCT_FEATURE_HOWTO_IMAGE_text&apos;), &apos;1&apos;);">Up</a><br>
+      <a href="Javascript:void(0)" onclick="multiList_down(&apos;PRODUCT_FEATURE_HOWTO_IMAGE&apos;, new Array(&apos;PRODUCT_FEATURE_HOWTO_IMAGE_hidden&apos;, &apos;PRODUCT_FEATURE_HOWTO_IMAGE_text&apos;), &apos;1&apos;);">Down</a>
+    </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <a href="Javascript:void(0)" onclick="multiList_add(&apos;PRODUCT_FEATURE_HOWTO_IMAGE&apos;, new Array(&apos;PRODUCT_FEATURE_HOWTO_IMAGE_hidden&apos;, &apos;PRODUCT_FEATURE_HOWTO_IMAGE_text&apos;), &apos;%1%&apos;);">Add</a> |
+    <a href="Javascript:void(0)" onclick="multiList_replace(&apos;PRODUCT_FEATURE_HOWTO_IMAGE&apos;, new Array(&apos;PRODUCT_FEATURE_HOWTO_IMAGE_hidden&apos;, &apos;PRODUCT_FEATURE_HOWTO_IMAGE_text&apos;), &apos;%1%&apos;);">Replace</a> |
+    <a href="Javascript:void(0)" onclick="multiList_remove(&apos;PRODUCT_FEATURE_HOWTO_IMAGE&apos;, new Array(&apos;PRODUCT_FEATURE_HOWTO_IMAGE_hidden&apos;, &apos;PRODUCT_FEATURE_HOWTO_IMAGE_text&apos;), &apos;%1%&apos;);">Remove</a>
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align="left">
+    <input id="PRODUCT_FEATURE_HOWTO_IMAGE_text" name="PRODUCT_FEATURE_HOWTO_IMAGE_text" style="width: 100%" type="text">
+    
+    <input id="PRODUCT_FEATURE_HOWTO_IMAGE_hidden" name="PRODUCT_FEATURE_HOWTO_IMAGE_hidden" type="hidden">
+    
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+</table>
+
+</widget-multilist>
+	
+
+</widget-editfield>
+	
+      </td>
+    </tr>
+  
+    <tr>
+      
+      <th align="right" class="left_header" valign="top">
+        Steps:
+      </th>
+      <td align="left" class="input" valign="top">
+        
+	  
+	    <widget-list LOOPNAME="PRODUCT_FEATURE_HOWTO_STEP_ITEM" PREFIX="PRODUCT_FEATURE_HOWTO" TABLE="PRODUCT_FEATURE_HOWTO_STEP">
+<table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="4">
+    Feature Howto Step List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="right" colspan="4">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_FEATURE_HOWTO_STEP/Add?FEATURE_HOWTO_ID=#FORM{FEATURE_HOWTO_ID}#&apos;, &apos;add_PRODUCT_FEATURE_HOWTO_STEP_#FORM{FEATURE_HOWTO_ID}#&apos;, 450, 550);">Add</a>
+    </th>
+  </tr>
+
+  <tr>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Summary
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_FEATURE_HOWTO{PRODUCT_FEATURE_HOWTO_STEP}' name='PRODUCT_FEATURE_HOWTO_STEP_ITEM' sort='HOWTO_NUM' loopvar='MITER'>
+  
+  
+    <maly-set eval=1 value="'#MITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+
+  <tr class="#BGCLASS#">
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <input name="PRODUCT_FEATURE_HOWTO_STEP[#MITER#]{STEP_ID}" type="hidden" value="#PRODUCT_FEATURE_HOWTO_STEP_ITEM{STEP_ID}#">
+	  <widget-editfield PREFIX="PRODUCT_FEATURE_HOWTO" PREFIXITER="\\#MITER\\#" TABLE="PRODUCT_FEATURE_HOWTO_STEP">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="PRODUCT_FEATURE_HOWTO_STEP[\#MITER\#]{HOWTO_NUM}" NAME="PRODUCT_FEATURE_HOWTO_STEP[\#MITER\#]{HOWTO_NUM}" PLUS="\#PLUS\#" TO="\#SCALAR:PRODUCT_FEATURE_HOWTO{PRODUCT_FEATURE_HOWTO_STEP}\#" VALUE="\#PRODUCT_FEATURE_HOWTO_STEP_ITEM{HOWTO_NUM}\#" VAR="PRODUCT_FEATURE_HOWTO_STEP[\#MITER\#]{HOWTO_NUM}">
+<select id="PRODUCT_FEATURE_HOWTO_STEP[#MITER#]{HOWTO_NUM}" name="PRODUCT_FEATURE_HOWTO_STEP[#MITER#]{HOWTO_NUM}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:PRODUCT_FEATURE_HOWTO{PRODUCT_FEATURE_HOWTO_STEP}#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+	
+      </td>
+    
+      
+      <td align="center" class="#BGCLASS#" valign="top">
+        
+	  <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/PRODUCT_FEATURE_HOWTO_STEP/Edit?STEP_ID=#PRODUCT_FEATURE_HOWTO_STEP_ITEM{STEP_ID}#&apos;, &apos;edit_PRODUCT_FEATURE_HOWTO_STEP_#PRODUCT_FEATURE_HOWTO_STEP_ITEM{STEP_ID}#&apos;);">
+	    <widget-viewfield>
+        
+	  #PRODUCT_FEATURE_HOWTO_STEP_ITEM{SUMMARY}#
+	
+
+</widget-viewfield>
+	  </a>
+	
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+
+  </table>
+
+</widget-list>
+	  
+	
+      </td>
+    </tr>
+  
+
+  <tr>
+    <td align="right" colspan="4">
+    <div style="float: left">
+      <input name="action" type="submit" value="Update">
+    </div>
+    <div style="float: right">
+      <input onclick="closePopup()" type="submit" value="Close">
+    </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-editpage>

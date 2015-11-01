@@ -1,0 +1,173 @@
+<widget-multieditform TABLE="COMPONENT_OVERVIEW">
+
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+<maly-loop plus=1 sort="ORDER_ID" var="COMPONENT_OVERVIEW">
+            set_select('COMPONENT_OVERVIEW[#MALYITER#]{ORDER_ID}', '#ORDER_ID#', '#MALYITERNUM#');
+	  </maly-loop>
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#URL#/COMPONENT_OVERVIEW/Multiedit" method="POST" onsubmit="return formSubmit(this);">
+      
+        <input name="COMPONENT_ID" type="hidden" value="#FORM{COMPONENT_ID}#"></input>
+      
+
+
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="5">
+    Edit Component Overview List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="center">
+      Remove
+    </th>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+    <th align="center">
+      Image
+    </th>
+    
+    <th align="center">
+      Description
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='COMPONENT_OVERVIEW' name='COMPONENT_OVERVIEW_ITEM' plus=1 sort='ORDER_ID' loopvar='MITER'>
+  
+
+  <tr>
+    <td align="center" valign="top">
+      
+        <input name="COMPONENT_OVERVIEW[#MITER#]{COMPONENT_ID}" type="hidden" value="#FORM{COMPONENT_ID}#"></input>
+      
+      <input name="COMPONENT_OVERVIEW[#MITER#]{OVERVIEW_ID}" type="hidden" value="#COMPONENT_OVERVIEW_ITEM{OVERVIEW_ID}#"></input>
+      <widget-checkbox NAME="COMPONENT_OVERVIEW[\#MITER\#]{_delete}" VALUE="\#COMPONENT_OVERVIEW_ITEM{OVERVIEW_ID}\#">
+<input id="COMPONENT_OVERVIEW[#MITER#]{_delete}" name="COMPONENT_OVERVIEW[#MITER#]{_delete}" type="checkbox" value="#COMPONENT_OVERVIEW_ITEM{OVERVIEW_ID}#"></input>
+
+</widget-checkbox>
+    </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="COMPONENT_OVERVIEW[\#MITER\#]{ORDER_ID}" NAME="COMPONENT_OVERVIEW[\#MITER\#]{ORDER_ID}" PLUS="\#PLUS\#" TO="\#SCALAR:COMPONENT_OVERVIEW\#" VALUE="\#COMPONENT_OVERVIEW_ITEM{ORDER_ID}\#" VAR="">
+<select id="COMPONENT_OVERVIEW[#MITER#]{ORDER_ID}" name="COMPONENT_OVERVIEW[#MITER#]{ORDER_ID}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:COMPONENT_OVERVIEW#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="COMPONENT_OVERVIEW[\#MITER\#]{TITLE}" NAME="COMPONENT_OVERVIEW[\#MITER\#]{TITLE}" SIZE="15" VALUE="\#COMPONENT_OVERVIEW_ITEM{TITLE}\#">
+<input id="COMPONENT_OVERVIEW[#MITER#]{TITLE}" maxlength="255" name="COMPONENT_OVERVIEW[#MITER#]{TITLE}" size="15" type="text" value="#COMPONENT_OVERVIEW_ITEM{TITLE}#"></input>
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="COMPONENT_OVERVIEW[\#MITER\#]{SRC}" NAME="COMPONENT_OVERVIEW[\#MITER\#]{SRC}" SIZE="15" VALUE="\#COMPONENT_OVERVIEW_ITEM{SRC}\#">
+<input id="COMPONENT_OVERVIEW[#MITER#]{SRC}" maxlength="255" name="COMPONENT_OVERVIEW[#MITER#]{SRC}" size="15" type="text" value="#COMPONENT_OVERVIEW_ITEM{SRC}#"></input>
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-textarea HEIGHT="100" ID="COMPONENT_OVERVIEW[\#MITER\#]{DESCRIPTION}" NAME="COMPONENT_OVERVIEW[\#MITER\#]{DESCRIPTION}" VALUE="\#COMPONENT_OVERVIEW_ITEM{DESCRIPTION}\#" WIDTH="300">
+<textarea name="COMPONENT_OVERVIEW[#MITER#]{DESCRIPTION}" style="width: 300; height: 100">#COMPONENT_OVERVIEW_ITEM{DESCRIPTION}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+  <tr>
+    <td align="center" colspan="5" valign="top">
+      <div align="left" style="float: left">
+        <input name="action" type="submit" value="Update"></input>
+      </div>
+
+      <div align="right" style="float: right">
+        <input onclick="closePopup()" type="submit" value="Close"></input>
+      </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-multieditform>

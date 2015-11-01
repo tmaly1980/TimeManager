@@ -1,0 +1,234 @@
+<maly-if var="FORM{SORT}">
+<maly-set var="SORT" value="#LIST:FORM{SORT}#"/>
+<maly-else/>
+<maly-set var="SORT" value="STARTDATE,DUEDATE,PRIORITY,STATUS"/>
+</maly-if>
+<maly-if not=1 var="FORM{DESC}">
+  <maly-set var="DESC" map="#SORT#=1"/>
+</maly-if>
+
+<maly-set var="CUSTOM_ONLOAD">
+  if (document.searchForm)
+  {
+    set_popup(document.searchForm.gid, '#FORM{GID}#');
+    set_popup(document.searchForm.pidmid, '#FORM{PIDMID}#');
+    <maly-if var="SEARCH_SUBMITTED" not=1>
+    set_popup(document.searchForm.status, '#FORM{STATUS}#', '-1');
+    <maly-else/>
+    set_popup(document.searchForm.status, '#FORM{STATUS}#');
+    </maly-if>
+    set_popup(document.searchForm.uid, '#FORM{UID}#');
+    set_popup(document.searchForm.date_vector, '#FORM{DATE_VECTOR}#');
+    set_popup(document.searchForm.date_span, '#FORM{DATE_SPAN}#');
+    set_popup(document.searchForm.date1span, '#FORM{DATE1SPAN}#');
+    set_popup(document.searchForm.date2span, '#FORM{DATE2SPAN}#');
+    set_popup(document.searchForm.priority, '#FORM{PRIORITY}#');
+    set_popup(document.searchForm.pid, '#FORM{PID}#');
+    set_popup(document.searchForm.prod_id, '#FORM{PROD_ID}#');
+    set_popup(document.searchForm.group_by, '#FORM{GROUP_BY}#');
+    set_popup(document.searchForm.time_unit, '#FORM{TIME_UNIT}#');
+    set_popup(document.searchForm.time_type, '#FORM{TIME_TYPE}#');
+  }
+  if (document.browseByUidForm)
+  {
+    set_select(document.browseByUidForm.BY_UID, "#FORM{BY_UID}#");
+  }
+  <maly-loop split="#SORT#" name="SORT_VALUE">
+    set_popup('sort#MALYITER#', '#SORT_VALUE#');
+  </maly-loop>
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+</maly-set>
+
+
+<maly-set var="CONTENT">
+<tr><td>
+<table border=0 cellspacing=0 cellpadding=2 width="100%">
+
+  <maly-if var="FORM{POPUP}" not=1>
+  <tr>
+    <td align=right>
+#include Tasks/nav
+    </td>
+  </tr>
+  </maly-if>
+
+  <tr>
+  <td align=center>
+
+<table border=0 cellspacing=0 cellpadding=1 width=95%>
+  <maly-if eval="'#SEARCH#' and not '#FORM{NO_SEARCH_FORM}#'">
+  <tr>
+    <td align=center valign=middle>
+#include Tasks/search_form
+    </td>
+  </tr>
+  </maly-if>
+
+  <!--
+  <tr>
+    <th align=left>
+      Sort By:
+      <select name="sort" id=sort0>
+        <option value="TID">Task ID #</option>
+        <option value="PRIORITY">Priority</option>
+        <option value="TITLE">Title</option>
+        <option value="UID">Owner</option>
+        <option value="DUEDATE">Due Date</option>
+        <option value="STATUS">Status</option>
+        <option value="UPDATED">Updated</option>
+        <option value="PERCENT">Percent</option>
+        <option value="HOURS">Hours</option>
+      </select>
+      <select name="sort" id=sort1>
+        <option value="TID">Task ID #</option>
+        <option value="PRIORITY">Priority</option>
+        <option value="TITLE">Title</option>
+        <option value="UID">Owner</option>
+        <option value="DUEDATE">Due Date</option>
+        <option value="STATUS">Status</option>
+        <option value="UPDATED">Updated</option>
+        <option value="PERCENT">Percent</option>
+        <option value="HOURS">Hours</option>
+      </select>
+      <select name="sort" id=sort2>
+        <option value="TID">Task ID #</option>
+        <option value="PRIORITY">Priority</option>
+        <option value="TITLE">Title</option>
+        <option value="UID">Owner</option>
+        <option value="DUEDATE">Due Date</option>
+        <option value="STATUS">Status</option>
+        <option value="UPDATED">Updated</option>
+        <option value="PERCENT">Percent</option>
+        <option value="HOURS">Hours</option>
+      </select>
+      <input type=checkbox name="DESC" value=1> Descending
+      <input type=submit value="Refresh">
+
+    </th>
+
+  </tr>
+  -->
+
+  <tr>
+    <th align=left valign=middle>
+      <maly-if eval="'#MODE#' ne 'Search' or '#SEARCH_SUBMITTED#' ne ''">
+        <a href="#FULL_URL#">
+          #COUNT# Tasks Found
+	</a>
+      </maly-if>
+    </th>
+    <!--
+    <td align=right valign=middle>
+    <maly-if not=1 var=search>
+      <form method="GET" name="browseForm">
+        Task Group:
+        <select name=gid onChange="this.form.submit()">
+          <option value="">My Tasks</option>
+          <maly-loop var="EFFGROUPNAMEMAP" hash=1 sort=1>
+            <option value="#KEY#">#VALUE#</option>
+          </maly-loop>
+        </select>
+      </form>
+
+      <script>
+        set_popup(document.browseForm.gid, '#gid#');
+      </script>
+    </maly-if>
+    </td>
+    -->
+  </tr>
+
+</table>
+
+
+<form name="bulkChangeForm" method="POST" action="cgi-bin/Tasks.pl/Search">
+<maly-if var="COUNT">
+  <hr>
+
+    <table border=0 cellspacing=0 cellpadding=1 width=95%>
+
+
+    <maly-if var="TASK_GROUPS">
+      <maly-loop var=TASK_GROUPS name="TG">
+        <maly-set var="GROUPITER" from="MALYITER"/>
+        <tr>
+          <th colspan=9 style="font-size: 14px; text-align: left">
+	    <maly-if var="TG{NAME}">
+	      <maly-if var="TG{ONCLICK}">
+	        <a href="Javascript:void(0)" onClick="#TG{ONCLICK}#" style="font-size: 14px;">
+		  #TG{NAME}#:
+		</a>
+	      <maly-else/>
+	        #TG{NAME}#:
+	      </maly-if>
+	    <maly-else/>
+	    Other/None:
+	    </maly-if>
+	  </th>
+        </tr>
+#include Tasks/browse_header
+        <maly-loop name=TASK var=TG{LIST} sort="#SORT#" reverse="#FORM{DESC}#">
+          <maly-set var="TASKITER" from="MALYITER"/>
+  	  <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Tasks/browse_task
+        </maly-loop>
+	<tr>
+	  <td colspan=9>&nbsp;</td>
+	</tr>
+
+      </maly-loop>
+    <maly-elsif var="TASKS"/>
+#include Tasks/browse_header
+      <maly-loop name=TASK var=TASKS sort="#SORT#" reverse="#FORM{DESC}#">
+        <maly-set var="TASKITER" from="MALYITER"/>
+  	<maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Tasks/browse_task
+      </maly-loop>
+
+    </maly-if>
+
+    </table>
+
+
+  <!--
+  <div align=left>
+    <maly-if eval="'#SESSION{SITEADMIN}#' and '#MODE#' eq 'Search' and not '#FORM{LINK_FIELD}#'">
+      Reassign Checked To:
+      <select name="reassign_uid">
+        <maly-loop name="RUSER" var="AVAILABLE_OWNERS" sort="FULLNAME">
+          <option value="#RUSER{UID}#">#RUSER{FULLNAME}#</option>
+        </maly-loop>
+      </select>
+      <input type=submit name="action" value="Reassign">
+    </maly-if>
+  </div>
+  -->
+
+  <maly-if eval="not '#FORM{LINK_FIELD}#' and '#MODE#' eq 'Search' and '#SEARCH_SUBMITTED#' eq '1' and '#COUNT#' > 0">
+#include Tasks/bulk_edit
+  </maly-if>
+
+
+</maly-if>
+</form>
+
+
+</td></tr>
+<maly-if var="FORM{POPUP}">
+<tr>
+  <td align=right>
+      <input type=submit value="Close" onClick="closePopup(1)">
+    <maly-if var="FORM{LINK_FIELD}" not=1>
+      <input type=submit value="Close/Refresh" onClick="closePopup()">
+    </maly-if>
+  </td>
+</tr>
+</maly-if>
+</table>
+
+
+</td></tr>
+
+</maly-set>

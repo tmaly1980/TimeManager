@@ -1,0 +1,41 @@
+#include top
+
+<table border=1 cellspacing=0 cellpadding=5>
+  <tr>
+    <th colspan=7 align=center>
+      <a href="#URL#/#SCOPE#/#PREV_YEAR#+#SMALL_DATE#">&lt;&lt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#PREV_MONTH#+#SMALL_DATE#">&lt;</a>
+      &nbsp;
+      #MONTHNAME# #YEAR#
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_MONTH#+#SMALL_DATE#">&gt;</a>
+      &nbsp;
+      <a href="#URL#/#SCOPE#/#NEXT_YEAR#+#SMALL_DATE#">&gt;&gt;</a>
+    </tr>
+  </tr>
+  <tr>
+    <th>Sunday</th>
+    <th>Monday</th>
+    <th>Tuesday</th>
+    <th>Wednesday</th>
+    <th>Thursday</th>
+    <th>Friday</th>
+    <th>Saturday</th>
+  </tr>
+  <maly-loop name=WEEK to="#WEEKCOUNT#">
+  <tr>
+    <maly-loop name=DAY to=6>
+    <maly-set var=DAYNUMBER eval=1 value="#WEEK#*7+#DAY#"/>
+    <td class="monthday #CLASS[#DAYNUMBER#]#">
+      <a href="#URL#/day/#YMD[#DAYNUMBER#]#+#SMALL_DATE#">
+        #DAYS[#DAYNUMBER#]#
+      </a>
+    </td>
+    </maly-loop>
+  </tr>
+  </maly-loop>
+
+</table>
+
+#include bottom

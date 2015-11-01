@@ -1,0 +1,84 @@
+<maly-set var="CUSTOM_ONLOAD">
+  <maly-loop var="PRODUCT_APPLICATIONS" name="APP">
+    <maly-set var="DEFAULTNUM" eval=1 value="'#MALYITER#'+1"/>
+    set_select('application_order_#APP{APPLICATION_ID}#', '#APP{APPLICATION_ORDER}#', '#DEFAULTNUM#');
+  </maly-loop>
+</maly-set>
+
+<maly-set var="CUSTOM_SCRIPT">
+</maly-set>
+
+<maly-set var="CONTENT">
+	  <widget-dbolist col_names="#,Name" cols="application_order,name" key="APPLICATION_ID" link="name" loopname="APP" parent="PRODUCT_VERSIONS" pkey="VER_ID" pkeyvalue="\#PRODUCT_VERSIONS{VER_ID}\#" resort="APPLICATION_ORDER" table="product_applications" var="PRODUCT_APPLICATIONS">
+<form action='#URL#/product_applications/Sort' method='POST'>
+      <input type=hidden name='VER_ID' value='#PRODUCT_VERSIONS{VER_ID}#'>
+      <input type=hidden name='_RETPAGE' value='#PATHINFO_URL#?VER_ID=#PRODUCT_VERSIONS{VER_ID}#'>
+<table border="0" width="100%">
+  <tr>
+    <td align="right" class="input" colspan="2">
+      <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/product_applications/Add?VER_ID=#PRODUCT_VERSIONS{VER_ID}#&apos;, &apos;add_product_applications_#PRODUCT_VERSIONS{VER_ID}#&apos;, &apos;450&apos;, &apos;550&apos;)">Add</a>
+    </td>
+  </tr>
+  <tr class="header">
+    
+    <th align="left">
+      #
+    </th>
+    
+    <th align="left">
+      Name
+    </th>
+    
+  </tr>
+
+   <maly-loop var='PRODUCT_APPLICATIONS' name='APP' sort="APPLICATION_ORDER"> 
+  
+    <maly-set eval="'#MALYITER#' % 2 == 0 ? 'data1' : 'data2' " var="BGCLASS"></maly-set>
+
+  
+  <tr>
+    
+    <td align="left" class="#BGCLASS#">
+      
+        
+	  <input name="APPLICATION_ID" type="hidden" value="#APP{APPLICATION_ID}#">
+
+	  <select id="application_order_#APP{APPLICATION_ID}#" name="application_order">
+	    <maly-loop from=1 name="NUM" to="#SCALAR:PRODUCT_APPLICATIONS#">
+	      <option value="#NUM#">#NUM#</option>
+	    </maly-loop>
+	  </select>
+
+	
+      
+    </td>
+
+    
+    <td align="left" class="#BGCLASS#">
+      
+        <a href="Javascript:void(0)" onclick="widgetPopup(&apos;#URL#/product_applications/Edit?APPLICATION_ID=#APP{APPLICATION_ID}#&apos;, &apos;edit_product_applications_#APP{APPLICATION_ID}#&apos;, &apos;450&apos;, &apos;550&apos;)">
+          #APP{name}#
+	</a>
+      
+    </td>
+
+    
+  </tr>
+  </maly-loop>
+  
+  <tr>
+    <td align="right" colspan="2">
+      <input name="action" type="submit" value="Update"></input>
+    </td>
+  </tr>
+  
+</table>
+
+  </form>
+
+
+</widget-dbolist>
+
+</maly-set>
+
+#include popup_main

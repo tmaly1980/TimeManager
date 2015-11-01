@@ -1,0 +1,214 @@
+<widget-multieditform TABLE="COMPONENT_ACCESS">
+
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+<maly-loop plus=1 sort="ORDER_ID" var="COMPONENT_ACCESS">
+            set_select('COMPONENT_ACCESS[#MALYITER#]{ORDER_ID}', '#ORDER_ID#', '#MALYITERNUM#');
+	  </maly-loop>
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+<maly-loop from=1 plus=1 to="#SCALAR:COMPONENT_ACCESS#">
+            selectSubmit('COMPONENT_ACCESS[#MALYITER#]{COMPONENT_ACCESS_IMAGES}');
+	  </maly-loop>
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#URL#/COMPONENT_ACCESS/Multiedit" method="POST" onsubmit="return formSubmit(this);">
+      
+        <input name="COMPONENT_ID" type="hidden" value="#FORM{COMPONENT_ID}#">
+      
+
+
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="5">
+      <a href="#PATHINFO_URL#?COMPONENT_ID=#FORM{COMPONENT_ID}#">
+    Edit Component Access Method List:
+      </a>
+    </th>
+  </tr>
+
+  <tr>
+    <th align="center">
+      Remove
+    </th>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+    <th align="center">
+      Description
+    </th>
+    
+    <th align="center">
+      Images
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='COMPONENT_ACCESS' name='COMPONENT_ACCESS_ITEM' plus=1 sort='ORDER_ID' loopvar='MITER'>
+  
+
+  <tr>
+    <td align="center" valign="top">
+      
+        <input name="COMPONENT_ACCESS[#MITER#]{COMPONENT_ID}" type="hidden" value="#FORM{COMPONENT_ID}#">
+      
+      <input name="COMPONENT_ACCESS[#MITER#]{ACCESS_ID}" type="hidden" value="#COMPONENT_ACCESS_ITEM{ACCESS_ID}#">
+      <widget-checkbox NAME="COMPONENT_ACCESS[\#MITER\#]{_delete}" VALUE="\#COMPONENT_ACCESS_ITEM{ACCESS_ID}\#">
+<input id="COMPONENT_ACCESS[#MITER#]{_delete}" name="COMPONENT_ACCESS[#MITER#]{_delete}" type="checkbox" value="#COMPONENT_ACCESS_ITEM{ACCESS_ID}#">
+
+</widget-checkbox>
+    </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="COMPONENT_ACCESS[\#MITER\#]{ORDER_ID}" NAME="COMPONENT_ACCESS[\#MITER\#]{ORDER_ID}" PLUS="\#PLUS\#" TO="\#SCALAR:COMPONENT_ACCESS\#" VALUE="\#COMPONENT_ACCESS_ITEM{ORDER_ID}\#" VAR="COMPONENT_ACCESS[\#MITER\#]{ORDER_ID}">
+<select id="COMPONENT_ACCESS[#MITER#]{ORDER_ID}" name="COMPONENT_ACCESS[#MITER#]{ORDER_ID}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:COMPONENT_ACCESS#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="COMPONENT_ACCESS[\#MITER\#]{TITLE}" NAME="COMPONENT_ACCESS[\#MITER\#]{TITLE}" SIZE="15" VALUE="\#COMPONENT_ACCESS_ITEM{TITLE}\#">
+<input id="COMPONENT_ACCESS[#MITER#]{TITLE}" maxlength="255" name="COMPONENT_ACCESS[#MITER#]{TITLE}" size="15" type="text" value="#COMPONENT_ACCESS_ITEM{TITLE}#">
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-textarea HEIGHT="100" ID="COMPONENT_ACCESS[\#MITER\#]{DESCRIPTION}" NAME="COMPONENT_ACCESS[\#MITER\#]{DESCRIPTION}" VALUE="\#COMPONENT_ACCESS_ITEM{DESCRIPTION}\#" WIDTH="300">
+<textarea name="COMPONENT_ACCESS[#MITER#]{DESCRIPTION}" style="width: 300; height: 100">#COMPONENT_ACCESS_ITEM{DESCRIPTION}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-multilist ID="COMPONENT_ACCESS[\#MITER\#]{COMPONENT_ACCESS_IMAGES}" LOOPNAME="" NAME="COMPONENT_ACCESS[\#MITER\#]{COMPONENT_ACCESS_IMAGES}" OPTTEXT="\#SRC\#" OPTVAL="\#IMAGE_ID\#:\#SRC\#" PKEYNAME="COMPONENT_ACCESS_IMAGES[\#MALYITER\#]{ACCESS_ID}" PKEYVALUE="\#COMPONENT_ACCESS{ACCESS_ID}\#" REORDER="1" REORDER_HILIGHT="1" SORTBY="ORDER_ID" VAR="COMPONENT_ACCESS_ITEM{COMPONENT_ACCESS_IMAGES}">
+<table border="0">
+<tr>
+  <td>
+    <select id="COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}" multiple="multiple" name="COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}" onchange="return multiList_edit(this, new Array(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden&apos;, &apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text&apos;));" size="5" style="width: 100%">
+      <maly-loop sort="ORDER_ID" var="COMPONENT_ACCESS_ITEM{COMPONENT_ACCESS_IMAGES}">
+        <option value="#IMAGE_ID#:#SRC#">#SRC#</option>
+      </maly-loop>
+
+    </select>
+  </td>
+  
+    <td align="left" valign="middle">
+      <a href="Javascript:void(0)" onclick="multiList_up(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}&apos;, new Array(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden&apos;, &apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text&apos;), &apos;1&apos;);">Up</a><br>
+      <a href="Javascript:void(0)" onclick="multiList_down(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}&apos;, new Array(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden&apos;, &apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text&apos;), &apos;1&apos;);">Down</a>
+    </td>
+  
+</tr>
+
+<tr>
+  <td align="left">
+    <a href="Javascript:void(0)" onclick="multiList_add(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}&apos;, new Array(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden&apos;, &apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text&apos;), &apos;%1%&apos;);">Add</a> |
+    <a href="Javascript:void(0)" onclick="multiList_replace(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}&apos;, new Array(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden&apos;, &apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text&apos;), &apos;%1%&apos;);">Replace</a> |
+    <a href="Javascript:void(0)" onclick="multiList_remove(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}&apos;, new Array(&apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden&apos;, &apos;COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text&apos;), &apos;%1%&apos;);">Remove</a>
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+<tr>
+  <td align="left">
+    <input id="COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text" name="COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_text" style="width: 100%" type="text">
+    
+    <input id="COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden" name="COMPONENT_ACCESS[#MITER#]{COMPONENT_ACCESS_IMAGES}_hidden" type="hidden">
+    
+  </td>
+  <td>&nbsp;</td>
+</tr>
+
+</table>
+
+</widget-multilist>
+	
+
+</widget-editfield>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+  <tr>
+    <td align="center" colspan="5" valign="top">
+      <div align="left" style="float: left">
+        <input name="action" type="submit" value="Update">
+      </div>
+
+      <div align="right" style="float: right">
+        <input onclick="closePopup()" type="submit" value="Close">
+      </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-multieditform>

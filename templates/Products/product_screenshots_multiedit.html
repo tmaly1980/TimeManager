@@ -1,0 +1,199 @@
+<widget-multieditform TABLE="PRODUCT_SCREENSHOTS">
+
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+<maly-loop plus=1 sort="ORDER_NUM" var="PRODUCT_SCREENSHOTS">
+            set_select('PRODUCT_SCREENSHOTS[#MALYITER#]{ORDER_NUM}', '#ORDER_NUM#', '#MALYITERNUM#');
+	  </maly-loop>
+      
+    
+  
+    
+    
+      
+	  <maly-loop sort="ORDER_NUM" var="PRODUCT_SCREENSHOTS">
+            set_checkbox('PRODUCT_SCREENSHOTS[#MALYITER#]{MAIN_PAGE}', '#MAIN_PAGE#');
+	  </maly-loop>
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#URL#/PRODUCT_SCREENSHOTS/Multiedit" method="POST" onsubmit="return formSubmit(this);">
+      
+        <input name="VER_ID" type="hidden" value="#FORM{VER_ID}#">
+      
+
+
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="6">
+    Edit Product Screenshot List:
+    </th>
+  </tr>
+
+  <tr>
+    <th align="center">
+      Remove
+    </th>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Main
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+    <th align="center">
+      Image
+    </th>
+    
+    <th align="center">
+      Description
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_SCREENSHOTS' name='PRODUCT_SCREENSHOTS_ITEM' plus=1 sort='ORDER_NUM' loopvar='MITER'>
+  
+
+  <tr>
+    <td align="center" valign="top">
+      
+        <input name="PRODUCT_SCREENSHOTS[#MITER#]{VER_ID}" type="hidden" value="#FORM{VER_ID}#">
+      
+      <input name="PRODUCT_SCREENSHOTS[#MITER#]{IMAGE_ID}" type="hidden" value="#PRODUCT_SCREENSHOTS_ITEM{IMAGE_ID}#">
+      <widget-checkbox NAME="PRODUCT_SCREENSHOTS[\#MITER\#]{_delete}" VALUE="\#PRODUCT_SCREENSHOTS_ITEM{IMAGE_ID}\#">
+<input id="PRODUCT_SCREENSHOTS[#MITER#]{_delete}" name="PRODUCT_SCREENSHOTS[#MITER#]{_delete}" type="checkbox" value="#PRODUCT_SCREENSHOTS_ITEM{IMAGE_ID}#">
+
+</widget-checkbox>
+    </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="PRODUCT_SCREENSHOTS[\#MITER\#]{ORDER_NUM}" NAME="PRODUCT_SCREENSHOTS[\#MITER\#]{ORDER_NUM}" PLUS="\#PLUS\#" TO="\#SCALAR:PRODUCT_SCREENSHOTS\#" VALUE="\#PRODUCT_SCREENSHOTS_ITEM{ORDER_NUM}\#" VAR="PRODUCT_SCREENSHOTS[\#MITER\#]{ORDER_NUM}">
+<select id="PRODUCT_SCREENSHOTS[#MITER#]{ORDER_NUM}" name="PRODUCT_SCREENSHOTS[#MITER#]{ORDER_NUM}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:PRODUCT_SCREENSHOTS#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-checkbox NAME="PRODUCT_SCREENSHOTS[\#MITER\#]{MAIN_PAGE}" VALUE="1">
+<input id="PRODUCT_SCREENSHOTS[#MITER#]{MAIN_PAGE}" name="PRODUCT_SCREENSHOTS[#MITER#]{MAIN_PAGE}" type="checkbox" value="1">
+
+</widget-checkbox>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="PRODUCT_SCREENSHOTS[\#MITER\#]{TITLE}" NAME="PRODUCT_SCREENSHOTS[\#MITER\#]{TITLE}" SIZE="15" VALUE="\#PRODUCT_SCREENSHOTS_ITEM{TITLE}\#">
+<input id="PRODUCT_SCREENSHOTS[#MITER#]{TITLE}" maxlength="255" name="PRODUCT_SCREENSHOTS[#MITER#]{TITLE}" size="15" type="text" value="#PRODUCT_SCREENSHOTS_ITEM{TITLE}#">
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="PRODUCT_SCREENSHOTS[\#MITER\#]{SRC}" NAME="PRODUCT_SCREENSHOTS[\#MITER\#]{SRC}" SIZE="15" VALUE="\#PRODUCT_SCREENSHOTS_ITEM{SRC}\#">
+<input id="PRODUCT_SCREENSHOTS[#MITER#]{SRC}" maxlength="255" name="PRODUCT_SCREENSHOTS[#MITER#]{SRC}" size="15" type="text" value="#PRODUCT_SCREENSHOTS_ITEM{SRC}#">
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-textarea HEIGHT="100" ID="PRODUCT_SCREENSHOTS[\#MITER\#]{DESCRIPTION}" NAME="PRODUCT_SCREENSHOTS[\#MITER\#]{DESCRIPTION}" VALUE="\#PRODUCT_SCREENSHOTS_ITEM{DESCRIPTION}\#" WIDTH="300">
+<textarea name="PRODUCT_SCREENSHOTS[#MITER#]{DESCRIPTION}" style="width: 300; height: 100">#PRODUCT_SCREENSHOTS_ITEM{DESCRIPTION}#</textarea>
+
+</widget-textarea>
+	
+
+</widget-editfield>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+  <tr>
+    <td align="center" colspan="6" valign="top">
+      <div align="left" style="float: left">
+        <input name="action" type="submit" value="Update">
+      </div>
+
+      <div align="right" style="float: right">
+        <input onclick="closePopup()" type="submit" value="Close">
+      </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-multieditform>

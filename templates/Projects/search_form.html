@@ -1,0 +1,167 @@
+<form method=GET name="searchForm" action="#PATHINFO_URL#">
+<input type=hidden name="POPUP" value="#FORM{POPUP}#">
+<input type=hidden name="LINK_FIELD" value="#FORM{LINK_FIELD}#">
+
+<table border=0 cellspacing=0 cellpadding=5 align=center>
+  <tr>
+    <th class="header" colspan=6>Search Projects
+    (<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_searchprojects');">HELP</a>)
+    
+    </th>
+  </tr>
+  <!--
+  <tr class="input">
+    <td> Task Group: </td>
+    <td> Status: </td>
+    <td> Urgency: </td>
+    <td> Assigned To: </td>
+    <td> Due: </td>
+  </tr>
+  -->
+  <tr class="input">
+    <td valign=top>
+      <table border=0 cellspacing=0 cellpadding=2 align=center class="input">
+        <tr>
+	  <th align=left> Project: </th>
+	  <td colspan=3>
+	    <select name="pid">
+	      <option value=""> </option>
+	      <maly-loop var="ALL_PROJECTS" name="P" sort="TITLE">
+	        <option value="#P{PID}#">#P{TITLE}#</option>
+	      </maly-loop>
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th align=left>Product: </th>
+	  <td colspan=3>
+	    <select name="prod_id">
+	        <option value=""></option>
+	        <option value="-1">None</option>
+		<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+		  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+		  <maly-if var="PRODUCT{VERSIONS}">
+		    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+		    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+		      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+		      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+		    </option>
+		  </maly-if>
+		</maly-loop>
+	    </select>
+	  </td>
+	</tr>
+	<tr>
+	  <th align=left>Status:</th>
+	  <td>
+            <select name=status>
+              <option value=""></option>
+              <option value="-1">Active</option>
+	      <maly-loop hash=1 sort=1 var="STATUSMAP">
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+            </select>
+	  </td>
+	</tr>
+
+	<tr>
+	  <th align=left>Project Manager:</th>
+	  <td>
+            <select name=pmuid>
+              <option value=""> </option>
+	      <maly-loop name=O var="AVAILABLE_OWNERS" sort=FULLNAME>
+	      <maly-if not=1 var="SEARCH_IN_PM_LIST{#O{UID}#}">
+	        <maly-set var="SEARCH_IN_PM_LIST{#O{UID}#}" value=1/>
+	        <option value="#O{UID}#">#O{FULLNAME}#</option>
+	      </maly-if>
+	      </maly-loop>
+            </select>
+          </td>
+
+	  <th align=left>Participant:</th>
+	  <td>
+            <select name=participant_uid>
+              <option value=""> </option>
+	      <maly-loop name=O var="AVAILABLE_OWNERS" sort=FULLNAME>
+	      <maly-if not=1 var="SEARCH_IN_PARTY_LIST{#O{UID}#}">
+	        <maly-set var="SEARCH_IN_PARTY_LIST{#O{UID}#}" value=1/>
+	        <option value="#O{UID}#">#O{FULLNAME}#</option>
+	      </maly-if>
+	      </maly-loop>
+            </select>
+          </td>
+	</tr>
+
+	<tr>
+	  <th align=left valign=top>
+	    Date:<br>
+	    (YYYY-MM-DD)
+	  </th>
+	  <td colspan=1 align=left valign=top>
+	    <select name="date_vector">
+	        <option value="STARTDATE">Started</option>
+	        <option value="ENDDATE">Due</option>
+	        <option value="during">Worked on</option>
+	    </select>
+	    <br>
+	    <select name="date_span">
+	      <option value="between">Between</option>
+	      <option value="after">After</option>
+	      <option value="before">Before</option>
+	      <option value="on">On</option>
+	    </select>
+	  </td>
+	  <td colspan=4 align=left valign=top>
+	    <select name="date1span">
+	      <option value="day">Day Of</option>
+	      <option value="week">Week Of</option>
+	    </select>
+	      <input type=text name=date1 id=date1 size="10" maxlength="10" value="#FORM{DATE1}#">
+	      (<a href="Javascript:void(0)" onClick="return setDatePopup('date1', document.searchForm.date1.value);">Calendar</a>)
+	      <br>
+
+	    <select name="date2span">
+	      <option value="day">Day Of</option>
+	      <option value="week">Week Of</option>
+	    </select>
+	      <input type=text name=date2 id=date2 size="10" maxlength="10" value="#FORM{DATE2}#">
+	      (<a href="Javascript:void(0)" onClick="return setDatePopup('date2', document.searchForm.date2.value);">Calendar</a>)
+	  </td>
+	</tr>
+
+	
+
+      </table>
+    </td>
+  </tr>
+
+  <tr class="input">
+    <th align=left colspan=1>
+      Group By:
+      <select name=group_by>
+        <option value=""></option>
+        <option value="pmuid">Project Manager</option>
+        <option value="prod_id">Product</option>
+        <option value="party_uid">Participant</option>
+        <option value="status">Status</option>
+        <option value="priority">Priority</option>
+        <option value="startdate">Start Date</option>
+        <option value="startweek">Start Week</option>
+        <option value="enddate">End Date</option>
+        <option value="endweek">End Week</option>
+      </select>
+      <input type=checkbox name="show_mile" value=1> Show Milestones
+    </th>
+  </tr>
+
+  <tr class="input">
+    <td align=left colspan=1>
+      <input type=submit name=action value="Search">
+      <maly-if var="FORM{POPUP}">
+      <input type=submit value="Close" onClick="closePopup(1)">
+      </maly-if>
+    </td>
+  </tr>
+</table>
+
+</form>

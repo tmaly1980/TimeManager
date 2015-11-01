@@ -1,0 +1,141 @@
+<maly-set var="CONTENT">
+<tr>
+<td class="spacing" align=center>
+
+<form name="form">
+
+<div align=right>
+    <a href="Javascript:void(0)" onClick="helpPopup('component_admin');" class="help">HELP</a>
+</div>
+
+<br>
+
+<table border=0 cellspacing=0 cellpadding=5>
+<tr>
+  <th align=left>Groups:</th>
+  <td align=right colspan=2>
+    <maly-if var="SESSION{SITEADMIN}">
+      <a href="Javascript:void(0)" onClick="addGroupPopup();">Add</a> |
+    </maly-if>
+    <a href="Javascript:void(0)" onClick="helpPopup('tutorial_groups');" class="help">HELP</a>
+  </td>
+</tr>
+<tr class="header">
+  <th align=left style="width: 50px">ID</th>
+  <th align=left style="width: 100px">Group Name</th>
+  <th align=left style="width: 100px">Manager</th>
+</tr>
+<maly-loop name="G" var=GROUPS>
+  <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? 'data1' : 'data2'</maly-set>
+<tr class="#CLASS#">
+  <td>#G{GID}#</td>
+  <td>
+    <a href="Javascript:void(0)" onClick="editGroupPopup('#G{GID}#');">#G{NAME}#</a>
+  </td>
+  <td> 
+    <maly-if var="G{MANAGER}{EMAIL}">
+      <a href="mailto:#G{MANAGER}{EMAIL}#">#G{MANAGER}{FULLNAME}#</a>
+    <maly-else/>
+      #G{MANAGER}{FULLNAME}#
+    </maly-if>
+  </td>
+</tr>
+</maly-loop>
+</table>
+
+<br>
+
+<table border=0 cellspacing=0 cellpadding=5 width=95%>
+<tr>
+  <th align=left>Users:</th>
+  <td align=right colspan=5>
+    <maly-if var="SESSION{SITEADMIN}">
+      <a href="Javascript:void(0)" onClick="addUserPopup()">Add</a> |
+    </maly-if>
+    <a href="Javascript:void(0)" onClick="helpPopup('tutorial_users');" class="help">HELP</a>
+  </td>
+</tr>
+<tr class="header">
+  <th width=50>ID</th>
+  <th>Username</th>
+  <th>Full Name</th>
+  <th>Title</th>
+  <th>Email</th>
+  <th align=center>Workload
+  (<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_workload');">HELP</a>)
+  </th>
+</tr>
+<maly-loop name="U" var=USERS>
+  <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? 'data1' : 'data2'</maly-set>
+<tr class="#CLASS#">
+  <td>#U{UID}#</td>
+  <td><a href="Javascript:void(0)" onClick="editUserPopup('#U{UID}#');">#U{USERNAME}#</a></td>
+  <td>#U{FULLNAME}#</td>
+  <td>#U{TITLE}#</td>
+  <td>
+    <maly-if var="U{EMAIL}">
+      <a href="mailto:#U{EMAIL}#">#U{EMAIL}#</a>
+    </maly-if>
+  </td>
+  <td align=center>
+    <input type=checkbox name="workload_uid" value="#U{UID}#">
+  </td>
+</tr>
+</maly-loop>
+<tr>
+  <td colspan=6 align=right>
+    <a href="Javascript:void(0)" onClick="workloadPopup(document.form.workload_uid);">View/Compare</a>
+  </td>
+</tr>
+</table>
+
+<table border=0 cellspacing=0 cellpadding=5>
+<tr>
+  <th align=left>Products:</th>
+  <td align=right colspan=2>
+    <maly-if var="SESSION{SITEADMIN}">
+      <a href="Javascript:void(0)" onClick="origAddProductPopup();">Add</a>
+      |
+    <a href="Javascript:void(0)" onClick="helpPopup('tutorial_products');" class="help">HELP</a>
+    </maly-if>
+  </td>
+</tr>
+<tr class="header">
+  <th align=left style="width: 100px">Priority</th>
+  <th align=left style="width: 100px">Name</th>
+  <th align=left style="width: 100px">Manager</th>
+</tr>
+<maly-loop name="P" var=PRODUCTS>
+  <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? 'data1' : 'data2'</maly-set>
+<tr class="#CLASS#">
+  <td class="box #CLASSMAP:CONF{PRIORITYMAP}{#P{PRIORITY}#}#" align=center>
+    #CONF{PRIORITYMAP}{#P{PRIORITY}#}#
+  </td>
+  <td>
+    <maly-if eval="'#SESSION{SITEADMIN}#' or ('#SESSION{UID}#' and '#SESSION{UID}#' eq '#P{MANAGER_UID}#')">
+    <a href="Javascript:void(0)" onClick="origViewProductPopup('#P{PROD_ID}#');">#P{NAME}#</a>
+    <maly-else/>
+      #P{NAME}#
+    </maly-if>
+  </td>
+  <td> 
+    <maly-if var="P{MANAGER}{EMAIL}">
+      <a href="mailto:#P{MANAGER}{EMAIL}#">#P{MANAGER}{FULLNAME}#</a>
+    <maly-else/>
+      #P{MANAGER}{FULLNAME}#
+    </maly-if>
+  </td>
+</tr>
+</maly-loop>
+</table>
+
+<br>
+</form>
+
+
+
+</td>
+</tr>
+</maly-set>
+
+#include main

@@ -1,0 +1,47 @@
+<maly-set var="CONTENT">
+<tr>
+<td class="spacing" align=center>
+
+<table border=0 cellspacing=0 cellpadding=5>
+<tr>
+  <th align=left>Products:</th>
+  <td align=right colspan=2>
+    <maly-if var="SESSION{SITEADMIN}">
+      <a href="Javascript:void(0)" onClick="addProductPopup();">Add</a>
+    </maly-if>
+  </td>
+</tr>
+<tr class="header">
+  <th align=left style="width: 100px">Priority</th>
+  <th align=left style="width: 100px">Name</th>
+  <th align=left style="width: 100px">Manager</th>
+</tr>
+<maly-loop name="P" var=PRODUCTS>
+  <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? 'data1' : 'data2'</maly-set>
+<tr class="#CLASS#">
+  <td class="box #CLASSMAP:CONF{PRIORITYMAP}{#P{PRIORITY}#}#" align=center>
+    #CONF{PRIORITYMAP}{#P{PRIORITY}#}#
+  </td>
+  <td>
+    <maly-if eval="'#SESSION{SITEADMIN}#' or ('#SESSION{UID}#' and '#SESSION{UID}#' eq '#P{MANAGER_UID}#')">
+    <a href="Javascript:void(0)" onClick="viewProductPopup(#P{PROD_ID}#);">#P{NAME}#</a>
+    <maly-else/>
+      #P{NAME}#
+    </maly-if>
+  </td>
+  <td> 
+    <maly-if var="P{MANAGER}{EMAIL}">
+      <a href="mailto:#P{MANAGER}{EMAIL}#">#P{MANAGER}{FULLNAME}#</a>
+    <maly-else/>
+      #P{MANAGER}{FULLNAME}#
+    </maly-if>
+  </td>
+</tr>
+</maly-loop>
+</table>
+
+</td>
+</tr>
+</maly-set>
+
+#include main

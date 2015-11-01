@@ -1,0 +1,165 @@
+<hr>
+
+<table border=0 cellspacing=0 cellpadding=5 align=center>
+  <tr>
+    <th class="header" colspan=6>Bulk Change Tasks
+    (<a class="help" href="Javascript:void(0)" onClick="helpPopup('tutorial_bulkchange');">HELP</a>)
+    
+    </th>
+  </tr>
+  <tr class="input">
+    <td valign=top>
+      <table border=0 cellspacing=0 cellpadding=2 align=center class="input">
+        <tr>
+          <th align=right>Category:</th>
+	  <td colspan=3>
+	    <select name=bulk_tcid>
+              <option value=""> </option>
+	      <maly-loop name=G sort=NAME var=AVAILABLE_GROUPS>
+		<maly-loop name="TC" var="G{TASK_CATEGORIES}" sort=NAME>
+	          <option value="#TC{TCID}#"> #G{NAME}# :: #TC{NAME}#</option>
+		</maly-loop>
+	      </maly-loop>
+            </select>
+          </td>
+	</tr>
+	<tr>
+
+	  <th align=right>Priority:</th>
+	  <td>
+	    <select name=bulk_priority>
+	      <option value=""> </option>
+	      <maly-loop hash=1 sort=1 var="PRIORITYMAP">
+	        <option value="#KEY#">#VALUE#</option>
+	      </maly-loop>
+	    </select>
+	  </td>
+		  <th align=right>Status:</th>
+		  <td align=left>
+		    <select name=bulk_status>
+		      <option value=""></option>
+		      <maly-loop hash=1 sort=1 var="STATUSMAP">
+			<option value="#KEY#">#VALUE#</option>
+		      </maly-loop>
+		    </select>
+		  </td>
+		</tr>
+		<tr>
+		  <th align=right>Product: </th>
+		  <td colspan=3>
+		    <select name="bulk_prod_id">
+			<option value=""></option>
+			<maly-loop name="PRODUCT" var="PRODUCTS" sort="NAME">
+			  <option value="#PRODUCT{PROD_ID}#" style="font-weight: bold">#PRODUCT{NAME}# (All Versions)</option>
+			  <maly-if var="PRODUCT{VERSIONS}">
+			    <maly-loop var="PRODUCT{VERSIONS}" name="VERSION">
+			    <option value="#PRODUCT{PROD_ID}#:#VERSION{VER_ID}#">&nbsp;&nbsp;&nbsp;
+			      #PRODUCT{NAME}# #VERSION{VER_NAME}#
+			      <maly-if var="VERSION{VER_ALIAS}">(#VERSION{VER_ALIAS}#)</maly-if>
+			    </option>
+			  </maly-if>
+			</maly-loop>
+		    </select>
+		  </td>
+		</tr>
+
+		<tr>
+		  <th align=right>Task Group / Milestone: </th>
+		  <td colspan=3>
+		    <select name="bulk_mid">
+			<option value=""></option>
+			<maly-loop name="TGROUP" var="TGROUPS" sort="SUMMARY">
+			  <option value="#TGROUP{MID}#">#TGROUP{SUMMARY}#</option>
+			</maly-loop>
+		    </select>
+		    <select name="bulk_mid_action">
+		      <option value="add">Add</option>
+		      <option value="rm">Remove</option>
+		    </select>
+		  </td>
+		</tr>
+
+		<tr>
+
+		  <th align=right>Owner:</th>
+		  <td>
+		    <select name=bulk_uid>
+		      <option value=""> </option>
+		      <option value="-1">Unassigned</option>
+		      <maly-loop name=O var="AVAILABLE_OWNERS" sort=FULLNAME>
+		      <maly-if not=1 var="SEARCH_IN_LIST_O{#O{UID}#}">
+			<maly-set var="SEARCH_IN_LIST_O{#O{UID}#}" value=1/>
+			<option value="#O{UID}#">#O{FULLNAME}#</option>
+		      </maly-if>
+		      </maly-loop>
+		    </select>
+		  </td>
+		  <th align=right>Requestor:</th>
+		  <td>
+		    <select name=bulk_requestor_uid>
+		      <option value=""> </option>
+		      <maly-loop name=R var="AVAILABLE_REQUESTORS" sort=FULLNAME>
+		      <maly-if not=1 var="SEARCH_IN_LIST_R{#R{UID}#}">
+			<maly-set var="SEARCH_IN_LIST_R{#R{UID}#}" value=1/>
+			<option value="#R{UID}#">#R{FULLNAME}#</option>
+		      </maly-if>
+		      </maly-loop>
+		    </select>
+		  </td>
+		</tr>
+		<tr>
+		  <th align=right valign=top>Start Date: </th>
+		  <td align=left>
+		    <input type=text name="bulk_STARTDATE" id="STARTDATE_CHANGE" size=12>
+		    <br>
+		    YYYY-MM-DD
+		    <br>
+		      (<a href="Javascript:void(0)" onClick="return setDatePopup('STARTDATE_CHANGE', document.bulkChangeForm.bulk_STARTDATE.value);">Calendar</a>)
+		  </td>
+
+		  <th align=right valign=top>Due Date: </th>
+		  <td align=left>
+		    <input type=text name="bulk_DUEDATE" id="DUEDATE_CHANGE" size=12> 
+		    <br>
+		    YYYY-MM-DD
+		    <br>
+		      (<a href="Javascript:void(0)" onClick="return setDatePopup('DUEDATE_CHANGE', document.bulkChangeForm.bulk_DUEDATE.value);">Calendar</a>)
+		  </td>
+	</tr>
+		<tr>
+		  <th align=right valign=top>Relative Start Date: </th>
+		  <td align=left>
+		    <input type=text name="bulk_REL_STARTDATE" id="REL_STARTDATE_CHANGE" size=4>
+		    <br>
+		    <select name="bulk_REL_STARTDATE_UNIT">
+		      <option value="1">Days Forward</option>
+		      <option value="7">Weeks Forward</option>
+		      <option value="-1">Days Back</option>
+		      <option value="-7">Weeks Back</option>
+		    </select>
+		  </td>
+
+		  <th align=right valign=top>Relative Due Date: </th>
+		  <td align=left>
+		    <input type=text name="bulk_REL_DUEDATE" id="REL_DUEDATE_CHANGE" size=4> 
+		    <br>
+		    <select name="bulk_REL_DUEDATE_UNIT">
+		      <option value="1">Days Forward</option>
+		      <option value="7">Weeks Forward</option>
+		      <option value="-1">Days Back</option>
+		      <option value="-7">Weeks Back</option>
+		    </select>
+		  </td>
+	</tr>
+
+      </table>
+    </td>
+  </tr>
+
+  <tr class="input">
+    <td align=right>
+      <input type=hidden name=search_url value="#FULL_URL#">
+      <input type=submit name=action value="Change Tasks">
+    </td>
+  </tr>
+</table>

@@ -1,0 +1,158 @@
+<widget-multieditpage TABLE="PRODUCT_FEATURE_OVERVIEW">
+
+
+
+  <maly-set var='CUSTOM_ONLOAD'>
+<maly-loop plus=1 sort="ORDER_NUM" var="PRODUCT_FEATURE_OVERVIEW">
+            set_select('PRODUCT_FEATURE_OVERVIEW[#MALYITER#]{ORDER_NUM}', '#ORDER_NUM#', '#MALYITERNUM#');
+	  </maly-loop>
+
+  </maly-set>
+
+  <maly-set var='CUSTOM_SCRIPT'>
+    function formSubmit(f)
+    {
+
+
+      return true;
+    }
+  </maly-set>
+
+
+
+<maly-set var='CONTENT'>
+<form action="#URL#/PRODUCT_FEATURE_OVERVIEW/Multiedit" method="POST" onsubmit="return formSubmit(this);">
+      
+        <input name="CFEATURE_ID" type="hidden" value="#FORM{CFEATURE_ID}#">
+      
+
+
+  <table border="0" width="100%">
+  <tr>
+    <th align="left" colspan="4">
+      <a href="#PATHINFO_URL#?CFEATURE_ID=#FORM{CFEATURE_ID}#">
+    Edit Feature Overview List:
+      </a>
+    </th>
+  </tr>
+
+  <tr>
+    <th align="center">
+      Remove
+    </th>
+    
+    <th align="center">
+      #
+    </th>
+    
+    <th align="center">
+      Title
+    </th>
+    
+    <th align="center">
+      Image
+    </th>
+    
+  </tr>
+
+  
+    <maly-loop var='PRODUCT_FEATURE_OVERVIEW' name='PRODUCT_FEATURE_OVERVIEW_ITEM' plus=1 sort='ORDER_NUM' loopvar='MITER'>
+  
+
+  <tr>
+    <td align="center" valign="top">
+      
+        <input name="PRODUCT_FEATURE_OVERVIEW[#MITER#]{CFEATURE_ID}" type="hidden" value="#FORM{CFEATURE_ID}#">
+      
+      <input name="PRODUCT_FEATURE_OVERVIEW[#MITER#]{FEATURE_OVERVIEW_ID}" type="hidden" value="#PRODUCT_FEATURE_OVERVIEW_ITEM{FEATURE_OVERVIEW_ID}#">
+      <widget-checkbox NAME="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{_delete}" VALUE="\#PRODUCT_FEATURE_OVERVIEW_ITEM{FEATURE_OVERVIEW_ID}\#">
+<input id="PRODUCT_FEATURE_OVERVIEW[#MITER#]{_delete}" name="PRODUCT_FEATURE_OVERVIEW[#MITER#]{_delete}" type="checkbox" value="#PRODUCT_FEATURE_OVERVIEW_ITEM{FEATURE_OVERVIEW_ID}#">
+
+</widget-checkbox>
+    </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  
+	    <maly-set eval=1 value="'#MODE#' eq 'Multiedit' ? 1 : 0" var="PLUS"></maly-set>
+
+	  
+	  
+	    
+	      
+	    
+	  
+	  <widget-select ID="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{ORDER_NUM}" NAME="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{ORDER_NUM}" PLUS="\#PLUS\#" TO="\#SCALAR:PRODUCT_FEATURE_OVERVIEW\#" VALUE="\#PRODUCT_FEATURE_OVERVIEW_ITEM{ORDER_NUM}\#" VAR="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{ORDER_NUM}">
+<select id="PRODUCT_FEATURE_OVERVIEW[#MITER#]{ORDER_NUM}" name="PRODUCT_FEATURE_OVERVIEW[#MITER#]{ORDER_NUM}">
+  
+    
+      <maly-loop from=1 name="NUM" plus="#PLUS#" to="#SCALAR:PRODUCT_FEATURE_OVERVIEW#">
+        <option value="#NUM#">#NUM#</option>
+      </maly-loop>
+
+    
+  
+
+</select>
+
+</widget-select>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{TITLE}" NAME="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{TITLE}" SIZE="" VALUE="\#PRODUCT_FEATURE_OVERVIEW_ITEM{TITLE}\#">
+<input id="PRODUCT_FEATURE_OVERVIEW[#MITER#]{TITLE}" maxlength="255" name="PRODUCT_FEATURE_OVERVIEW[#MITER#]{TITLE}" size="30" type="text" value="#PRODUCT_FEATURE_OVERVIEW_ITEM{TITLE}#">
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+      
+      <td align="center" valign="top">
+        <widget-editfield PREFIXITER="\\#MITER\\#">
+
+	  <widget-text ID="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{SRC}" NAME="PRODUCT_FEATURE_OVERVIEW[\#MITER\#]{SRC}" SIZE="" VALUE="\#PRODUCT_FEATURE_OVERVIEW_ITEM{SRC}\#">
+<input id="PRODUCT_FEATURE_OVERVIEW[#MITER#]{SRC}" maxlength="255" name="PRODUCT_FEATURE_OVERVIEW[#MITER#]{SRC}" size="30" type="text" value="#PRODUCT_FEATURE_OVERVIEW_ITEM{SRC}#">
+
+</widget-text>
+	
+
+</widget-editfield>
+      </td>
+    
+  </tr>
+
+  
+    </maly-loop>
+  
+
+  <tr>
+    <td align="center" colspan="4" valign="top">
+      <div align="left" style="float: left">
+        <input name="action" type="submit" value="Update">
+      </div>
+
+      <div align="right" style="float: right">
+        <input onclick="closePopup()" type="submit" value="Close">
+      </div>
+    </td>
+  </tr>
+
+  </table>
+</form>
+
+</maly-set>
+
+#include popup_main
+
+
+</widget-multieditpage>

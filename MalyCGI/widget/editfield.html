@@ -1,0 +1,33 @@
+<maly-cutws>
+  <maly-if var="PREFIXITER">
+    <maly-set var="COLNAME" value="#TABLE#[#PREFIXITER#]{#COL#}"/>
+    <maly-if var="LOOPNAME">
+      <maly-set var="COLVALUE" value="#LOOPNAME#{#COL#}"/>
+    <maly-else/>
+      <maly-set var="COLVALUE" value="#COL#"/>
+    </maly-if>
+  <maly-else/>
+    <maly-set var="COLNAME" value="#COL#"/>
+    <maly-set var="COLVALUE" value="#TABLE#{#COL#}"/>
+  </maly-if>
+</maly-cutws><maly-if var="FIELD{TYPE}" eq="multilist">
+	  <widget-multilist name="#COLNAME#" id="#COLNAME#" var="#COLVALUE#" loopname="#FIELD{LOOPNAME}#" optval="#FIELD{OPTVAL}#" opttext="#FIELD{OPTTEXT}#" pkeyname="#COL#[\#MALYITER\#]{#TABLE_META{KEY}#}" pkeyvalue="\##TABLE#{#TABLE_META{KEY}#}\#" reorder="#FIELD{REORDER}#" reorder_hilight="1" sortby="#FIELD{SORTBY}#"/>
+	<maly-elsif var="FIELD{TYPE}" eq="textarea"/>
+	  <widget-textarea name="#COLNAME#" id="#COLNAME#" value="\##COLVALUE#\#" width="#FIELD{WIDTH}#" height="#FIELD{HEIGHT}#"/>
+	<maly-elsif var="FIELD{TYPE}" eq="checkbox"/>
+	  <widget-checkbox name="#COLNAME#" value="1"/>
+	<maly-elsif var="FIELD{TYPE}" eq="select"/>
+	  <maly-print>
+	    <maly-set var="PLUS" eval=1 value="'\#MODE\#' eq 'Multiedit' ? 1 : 0"/>
+	  </maly-print>
+	  <maly-if eval="'#COL#' eq '#TABLE_META{SORTBY}#'">
+	    <maly-if var="PREFIX">
+	      <maly-set var="TO" value="\\#SCALAR:#PREFIX#{#TABLE#}\\#"/>
+	    <maly-else/>
+	      <maly-set var="TO" value="\\#SCALAR:#TABLE#\\#"/>
+	    </maly-if>
+	  </maly-if>
+	  <widget-select name="#COLNAME#" id="#COLNAME#" value="\##COLVALUE#\#" var="#COLNAME#" plus="\#PLUS\#" to="#TO#"/>
+	<maly-else/>
+	  <widget-text name="#COLNAME#" id="#COLNAME#" value="\##COLVALUE#\#" size="#FIELD{SIZE}#"/>
+	</maly-if>

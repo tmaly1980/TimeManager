@@ -1,0 +1,154 @@
+<maly-set var="CUSTOM_ONLOAD">
+  if (document.searchForm)
+  {
+    set_popup(document.searchForm.uid, '#FORM{UID}#');
+    set_popup(document.searchForm.pid, '#FORM{PID}#');
+    set_popup(document.searchForm.prod_id, '#FORM{PROD_ID}#');
+    <maly-if var="SUBMITTED" not=1>
+    set_popup(document.searchForm.status, '#FORM{STATUS}#', '-1');
+    <maly-else/>
+    set_popup(document.searchForm.status, '#FORM{STATUS}#');
+    </maly-if>
+    set_popup(document.searchForm.priority, '#FORM{PRIORITY}#');
+  
+    set_popup(document.searchForm.date_vector, '#FORM{DATE_VECTOR}#');
+    set_popup(document.searchForm.date1span, '#FORM{DATE1SPAN}#');
+    set_popup(document.searchForm.date2span, '#FORM{DATE2SPAN}#');
+
+    set_popup(document.searchForm.group_by, '#FORM{GROUP_BY}#');
+    set_checkbox(document.searchForm.show_tasks, '#FORM{SHOW_TASKS}#');
+  }
+  if (document.browseByUidForm)
+  {
+    set_select(document.browseByUidForm.BY_UID, "#FORM{BY_UID}#");
+  }
+
+</maly-set>
+
+<maly-set var="CONTENT">
+<tr><td>
+<maly-if not=1 var="FORM{POPUP}">
+  <table border=0 cellspacing=0 cellpadding=2 width="100%">
+    <tr>
+      <td align=right>
+#include Milestones/nav
+      </td>
+    </tr>
+  </table>
+</maly-if>
+
+  <table border=0 cellspacing=0 cellpadding=1 width=95% align=center>
+    <maly-if var="MODE" eq="Search">
+    <tr>
+      <td align=center valign=middle>
+#include Milestones/search_form
+      </td>
+    </tr>
+    </maly-if>
+    <tr>
+      <th align=left valign=middle>
+        <maly-if eval="'#MODE#' ne 'Search' or '#SUBMITTED#' eq '1'">
+        #NUM:COUNT# Task Groups
+        </maly-if>
+      </th>
+    </tr>
+    <tr>
+      <th align=center>
+        <hr>
+      </th>
+    </tr>
+  </table>
+
+  <form method=POST action="cgi-bin/TaskGroups.pl/Search" name="bulkChangeForm">
+
+
+<maly-if var="FORM{SORT}">
+  <maly-set var="SORT" value="#FORM{SORT}#"/>
+<maly-else/>
+  <maly-set var="SORT" value="ENDDATE,PRIORITY,STARTDATE"/>
+</maly-if>
+
+<maly-set var="DESC" map="#SORT#=1"></maly-set>
+
+<maly-if var="COUNT">
+  <table border=0 cellspacing=0 cellpadding=2 width=95% align=center>
+
+    <maly-if var="MILE_GROUPS">
+      <maly-loop var=MILE_GROUPS name="MG">
+        <tr>
+          <th colspan=9 style="font-size: 14px; text-align: left">
+	    <maly-if var="MG{NAME}">
+	      <maly-if var="MG{ONCLICK}">
+	        <a href="Javascript:void(0)" onClick="#MG{ONCLICK}#" style="font-size: 14px;">
+		  #MG{NAME}#:
+		</a>
+	      <maly-else/>
+	        #MG{NAME}#:
+	      </maly-if>
+	    <maly-else/>
+	    Other/None:
+	    </maly-if>
+	  </th>
+        </tr>
+#include Milestones/browse_header
+  <maly-loop name=MILESTONE var=MG{LIST} sort="#SORT#" reverse="#FORM{DESC}#">
+    <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Milestones/browse_milestone
+   <maly-if var="FORM{SHOW_TASKS}">
+   <tr>
+     <td colspan=9>
+     <table border=0 width="95%" align=right>
+      <maly-if var="MILESTONE{TASKS}">
+#include Tasks/browse_pm_header
+       <maly-loop var="MILESTONE{TASKS}" name="TASK">
+         <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data2" : "data1" </maly-set>
+#include Tasks/browse_pm_task
+       </maly-loop>
+      </maly-if>
+     </table>
+     </td>
+   </tr>
+   </maly-if>
+  </maly-loop>
+
+	<tr>
+	  <td colspan=9>&nbsp;</td>
+	</tr>
+
+      </maly-loop>
+    <maly-elsif var="MILES"/>
+#include Milestones/browse_header
+  <maly-loop name=MILESTONE var=MILES sort="#SORT#" reverse="#FORM{DESC}#">
+    <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data1" : "data2" </maly-set>
+#include Milestones/browse_milestone
+   <maly-if var="FORM{SHOW_TASKS}">
+   <tr>
+     <td colspan=9>
+     <table border=0 width="95%" align=right>
+      <maly-if var="MILESTONE{TASKS}">
+#include Tasks/browse_pm_header
+       <maly-loop var="MILESTONE{TASKS}" name="TASK">
+         <maly-set var="CLASS" eval=1>(#MALYITER# % 2 == 0) ? "data2" : "data1" </maly-set>
+#include Tasks/browse_pm_task
+       </maly-loop>
+      </maly-if>
+     </table>
+     </td>
+   </tr>
+   </maly-if>
+  </maly-loop>
+
+  </table>
+</maly-if>
+
+<maly-if eval="'#MODE#' eq 'Search' and '#SUBMITTED#' eq '1' and '#COUNT#' > 0 and '#FORM{LINK_FIELD}#' eq ''">
+#include Milestones/bulk_edit
+</maly-if>
+</form>
+
+</td></tr>
+
+<tr><td>
+  &nbsp;
+</td></tr>
+</maly-set>
